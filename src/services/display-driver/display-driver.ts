@@ -1,4 +1,3 @@
-import { Vec2D } from "@/types/physics";
 import { SpriteLoader } from "./sprite-loader";
 
 class DisplayDriver {
@@ -30,7 +29,6 @@ class DisplayDriver {
     return fetch(location.origin + "/assets/autoload.json")
       .then((response) => response.json())
       .then((spriteData: SpriteData[]) => {
-        console.log(spriteData);
         return Promise.all(
           spriteData.map((sprite) => this.spriteLoader.loadSprite(sprite.name, sprite.src, sprite.config))
         );
@@ -44,11 +42,13 @@ class DisplayDriver {
     return this.spriteLoader.getSprite(name);
   }
 
-  clear() {
+  clear(color: string = "black") {
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    this._ctx.fillStyle = color;
+    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
   }
 
-  drawSprite(sprite: Sprite, position: Vec2D, currentSprite: number) {
+  drawSprite({ sprite, position, currentSprite }: DisplayData) {
     const currentSpriteX = currentSprite * sprite.config.spriteWidth;
     this._ctx.drawImage(
       sprite.image,

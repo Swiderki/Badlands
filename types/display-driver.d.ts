@@ -13,3 +13,9 @@ type SpriteData = {
   src: string;
   config: SpriteConfig;
 };
+
+type DisplayData = {
+  sprite: Sprite;
+  position: Vec2D;
+  currentSprite: number;
+};
