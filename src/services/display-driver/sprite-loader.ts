@@ -1,3 +1,5 @@
+import { Sprite, SpriteConfig } from "@/types/display-driver";
+
 class SpriteLoader {
   //* We store the sprites in a map, to cache them for later use
   private sprites: Map<string, Sprite> = new Map();

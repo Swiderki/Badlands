@@ -1,4 +1,5 @@
 import { Vector } from "@/src/util/vec-util";
+import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 
 class PhysicsBasedController {

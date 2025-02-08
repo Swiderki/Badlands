@@ -1,20 +1,21 @@
-type Sprite = {
+import { Vec2D } from "./maths-driver";
+export type Sprite = {
   image: HTMLImageElement; // The actual image element
   config: SpriteConfig; // Configuration for sprite-specific parameters
 };
 
-type SpriteConfig = {
+export type SpriteConfig = {
   spriteWidth: number; // Width of a single frame in the sprite sheet
   spriteHeight: number; // Height of a single frame in the sprite sheet
 };
 
-type SpriteData = {
+export type SpriteData = {
   name: string;
   src: string;
   config: SpriteConfig;
 };
 
-type DisplayData = {
+export type DisplayData = {
   sprite: Sprite;
   position: Vec2D;
   currentSprite: number;

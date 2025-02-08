@@ -1,3 +1,4 @@
+import { DisplayData, SpriteData } from "@/types/display-driver";
 import { SpriteLoader } from "./sprite-loader";
 
 class DisplayDriver {

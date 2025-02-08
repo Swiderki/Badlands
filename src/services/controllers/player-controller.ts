@@ -1,3 +1,4 @@
+import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 
 class PlayerController extends PhysicsBasedController {
