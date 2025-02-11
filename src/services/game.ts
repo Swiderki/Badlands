@@ -37,7 +37,7 @@ class Game {
   }
 
   //* This method is called every frame, but it should be free of any game logic
-  //* It's sonly purpose is to keep FPS stable
+  //* It's only purpose is to keep FPS stable
   //* It prevents the game from running too fast or too slow
   //! For any game logic check out the update method
   private _update() {
