@@ -1,55 +1,55 @@
 import BonusBase from "@/src/services/bonus/bonus-base";
 
 class Track {
-    // List of bonuses that will spawn on the track (inheriting from a base Bonus class)
-    private bonuses: BonusBase[];
-    
-    // Traction coefficient of the track (affects car handling)
-    private traction: number;
-    
-    // Start positions (list of 5 starting positions for each car)
-    private startPositions: { x: number; y: number }[];
-    
-    // Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
-    private layers: string[];
-    
-    // Collider image (black/white PNG defining where cars can/can't go)
-    private colliderImage: Uint8ClampedArray[][];
+  // List of bonuses that will spawn on the track (inheriting from a base Bonus class)
+  private _bonuses: BonusBase[];
 
-    constructor(
-        bonuses: BonusBase[], 
-        traction: number, 
-        startPositions: { x: number; y: number }[], 
-        layers: string[], 
-        colliderImage: Uint8ClampedArray[][] // Nowa struktura
-    ) {
-        this.bonuses = bonuses;
-        this.traction = traction;
-        this.startPositions = startPositions;
-        this.layers = layers;
-        this.colliderImage = colliderImage;
-    }
+  // Traction coefficient of the track (affects car handling)
+  private readonly _traction: number;
 
-    // Getters for accessing private fields safely
-    public getBonuses(): BonusBase[] {
-        return this.bonuses;
-    }
+  // Start positions (list of 5 starting positions for each car)
+  private _startPositions: { x: number; y: number }[];
 
-    public getTraction(): number {
-        return this.traction;
-    }
+  // Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
+  private _layers: string[];
 
-    public getStartPositions(): { x: number; y: number }[] {
-        return this.startPositions;
-    }
+  // Collider image (black/white PNG defining where cars can/can't go)
+  private _colliderImage: Uint8ClampedArray[][];
 
-    public getLayers(): string[] {
-        return this.layers;
-    }
+  constructor(
+    bonuses: BonusBase[],
+    traction: number,
+    startPositions: { x: number; y: number }[],
+    layers: string[],
+    colliderImage: Uint8ClampedArray[][] // Nowa struktura
+  ) {
+    this._bonuses = bonuses;
+    this._traction = traction;
+    this._startPositions = startPositions;
+    this._layers = layers;
+    this._colliderImage = colliderImage;
+  }
 
-    public getColliderImage(): Uint8ClampedArray[][] {
-        return this.colliderImage;
-    }
+  // Getters for accessing private fields safely
+  get bonuses(): BonusBase[] {
+    return this._bonuses;
+  }
+
+  get traction(): number {
+    return this._traction;
+  }
+
+  get startPositions(): { x: number; y: number }[] {
+    return this._startPositions;
+  }
+
+  get layers(): string[] {
+    return this._layers;
+  }
+
+  get colliderImage(): Uint8ClampedArray[][] {
+    return this._colliderImage;
+  }
 }
 
 export default Track;
