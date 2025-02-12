@@ -1,6 +1,7 @@
 import { Vector } from "@/src/util/vec-util";
 import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
+import { log } from "node:console";
 
 class PhysicsBasedController {
   protected _sprite: Sprite | null = null;
@@ -10,8 +11,10 @@ class PhysicsBasedController {
   protected _currentSprite: number = 0;
 
   protected _position: Vec2D = { x: 0, y: 0 };
+  protected _actualForce: Vec2D = { x: 0, y: 0 };
   protected _velocity: Vec2D = { x: 0, y: 0 };
   protected _acceleration: Vec2D = { x: 0, y: 0 };
+  protected _angle: number = 0;
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;
@@ -45,8 +48,40 @@ class PhysicsBasedController {
     this._acceleration = acceleration;
   }
 
-  applyForce(force: Vec2D) {
+  get actualForce() {
+    return this._actualForce;
+  }
+
+  set actualForce(actualForce: Vec2D) {
+    this._actualForce = actualForce;
+  }
+
+  get angle() {
+    return this._angle;
+  }
+
+  set angle(angle: number) {
+    this._angle = angle;
+  }
+
+  applyForce(magnitude: number) {
+    let force = { x: 0, y: 0 };
+    // liczenie wektora siły z dlugosci i kata mozna dac do utilsow
+    const angle = (this.angle * Math.PI) / 180; // Konwersja stopni na radiany
+
+    force = {
+      x: magnitude * Math.cos(angle),
+      y: magnitude * Math.sin(angle),
+    };
     this._acceleration = Vector.add(this._acceleration, force);
+    console.log(force);
+  }
+
+  rotate(angle: number) {
+    this._angle += angle;
+    this._angle %= 360;
+
+    console.log(this._angle);
   }
 
   setPosition(position: Vec2D) {

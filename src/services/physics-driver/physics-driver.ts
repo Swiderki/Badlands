@@ -6,16 +6,23 @@ import { Vector } from "@/src/util/vec-util";
 //* Such as track information, enemies etc.
 class PhysicsDriver {
   //* TRACK INFO REF WILL BE HERE
+  private frictionCoefficient = 0.97;
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
-    //* This is a simple physics loop
-    const newVelocity = Vector.add(controller.velocity, Vector.scale(controller.acceleration, deltaTime));
-    const newPosition = Vector.add(controller.position, Vector.scale(newVelocity, deltaTime));
+    //* This is a simple physics laoop
 
-    controller.velocity = newVelocity;
+    this.calculateActualForce(controller);
+    controller.actualForce = Vector.scale(controller.actualForce, this.frictionCoefficient);
+    controller.acceleration = Vector.scale(controller.acceleration, this.frictionCoefficient);
+
+    const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
 
     //? The physics loop will be more complex but for now we keep it simple
+  }
+
+  calculateActualForce(controller: PhysicsBasedController) {
+    controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
   }
 }
 
