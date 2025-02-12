@@ -12,7 +12,7 @@ class Track {
   //* Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
   private _layers: Sprite;
 
-  //* Collider Sprite (black/white PNG defining where cars can/can't go)
+  //* Collider 2d array (value under each record is defining where cars can/can't go)
   private _colliderImage: number[][];
 
   constructor(
