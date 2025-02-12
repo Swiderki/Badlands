@@ -1,4 +1,4 @@
-import PlayerController from "./controllers/player-controller";
+import PlayerController from "../controllers/player-controller";
 import DisplayDriver from "./display-driver/display-driver";
 import PhysicsDriver from "./physics-driver/physics-driver";
 
@@ -45,7 +45,7 @@ class Game {
     const deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
 
     this.update(deltaTime);
-    
+
     requestAnimationFrame((renderTime) => {
       this._penultimateRenderTime = this._lastRenderTime;
       this._lastRenderTime = renderTime;

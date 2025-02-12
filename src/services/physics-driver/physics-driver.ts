@@ -1,5 +1,5 @@
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Vector } from "@/src/util/vec-util";
-import PhysicsBasedController from "../controllers/physics-based-controller";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't preform physics inside the controller, it's 'cause it uses information that single controller has no access to
