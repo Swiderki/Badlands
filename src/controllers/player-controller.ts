@@ -12,7 +12,7 @@ class PlayerController extends PhysicsBasedController {
 
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
-      console.log(this._playerInput);
+      //console.log(this._playerInput);
       this._playerInput[e.key] = true;
     });
 
@@ -28,7 +28,7 @@ class PlayerController extends PhysicsBasedController {
   override update(deltaTime: number) {
     //* This one is just for testing purposes
     if (this.getInput("ArrowUp")) {
-      this.applyForce(0.3);
+      this.applyForce(3);
     }
     if (this.getInput("ArrowRight")) {
       this.rotate(5);

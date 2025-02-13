@@ -67,14 +67,13 @@ class PhysicsBasedController {
   applyForce(magnitude: number) {
     let force = { x: 0, y: 0 };
     // liczenie wektora siły z dlugosci i kata mozna dac do utilsow
-    const angle = (this.angle * Math.PI) / 180; // Konwersja stopni na radiany
+    const angle = (this.angle * Math.PI) / 180;
 
     force = {
       x: magnitude * Math.cos(angle),
       y: magnitude * Math.sin(angle),
     };
-    this._acceleration = Vector.add(this._acceleration, force);
-    console.log(force);
+    this.acceleration = force;
   }
 
   rotate(angle: number) {
