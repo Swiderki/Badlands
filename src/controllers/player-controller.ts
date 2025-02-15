@@ -29,8 +29,8 @@ class PlayerController extends PhysicsBasedController {
 
   override update(deltaTime: number) {
     //* This one is just for testing purposes
-    console.log(deltaTime);
-    console.log(this._lastRotation);
+    // console.log(deltaTime);
+    // console.log(this._lastRotation);
     if (this.getInput("ArrowUp")) {
       this.applyForce(15);
     }
