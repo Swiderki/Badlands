@@ -25,9 +25,9 @@ class PhysicsDriver {
   }
 
   calculateEnvironmentFriction() {
-    const mapAdesion = 0.9; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
+    const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
     const ratio = 0.97; // ratio of how much air friction affects the car compared to ground friction
-    const frictionFactor = ratio + (1 - ratio) * (1 - mapAdesion) - 0.01;
+    const frictionFactor = ratio + (1 - ratio) * (1 - mapAdesion) - 0.02;
     return frictionFactor;
   }
 }
