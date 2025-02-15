@@ -12,7 +12,6 @@ class PhysicsDriver {
 
     this.calculateActualForce(controller);
     controller.actualForce = Vector.scale(controller.actualForce, this.calculateEnvironmentFriction());
-    //controller.acceleration = Vector.scale(controller.acceleration, this.calculateEnvironmentFriction());
 
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
@@ -26,9 +25,9 @@ class PhysicsDriver {
   }
 
   calculateEnvironmentFriction() {
-    const mapAdesion = 0.1; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
+    const mapAdesion = 0.9; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
     const ratio = 0.97; // ratio of how much air friction affects the car compared to ground friction
-    const frictionFactor = ratio + (1 - ratio) * (1 - mapAdesion);
+    const frictionFactor = ratio + (1 - ratio) * (1 - mapAdesion) - 0.01;
     return frictionFactor;
   }
 }

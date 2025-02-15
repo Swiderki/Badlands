@@ -18,6 +18,7 @@ class PhysicsBasedController {
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;
+    this.setCurrentSprite();
   }
 
   get sprite() {
@@ -64,6 +65,14 @@ class PhysicsBasedController {
     this._angle = angle;
   }
 
+  get currentSprite() {
+    return this._currentSprite;
+  }
+
+  set currentSprite(currentSprite: number) {
+    this._currentSprite = currentSprite;
+  }
+
   applyForce(magnitude: number) {
     let force = { x: 0, y: 0 };
     // liczenie wektora siły z dlugosci i kata mozna dac do utilsow
@@ -79,12 +88,19 @@ class PhysicsBasedController {
   rotate(angle: number) {
     this._angle += angle;
     this._angle %= 360;
-
+    if (this._angle < 0) {
+      this._angle += 360;
+    }
+    this.setCurrentSprite();
     console.log(this._angle);
   }
 
   setPosition(position: Vec2D) {
     this._position = position;
+  }
+
+  setCurrentSprite() {
+    this.currentSprite = (Math.round((this.angle / 360) * 8) + 5) % 8;
   }
 
   get displayData(): DisplayData {
