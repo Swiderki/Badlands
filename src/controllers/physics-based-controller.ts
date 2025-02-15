@@ -2,6 +2,7 @@ import { Vector } from "@/src/util/vec-util";
 import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { log } from "node:console";
+import { PhysicsUtils } from "../util/physics-util";
 
 class PhysicsBasedController {
   protected _sprite: Sprite | null = null;
@@ -74,23 +75,11 @@ class PhysicsBasedController {
   }
 
   applyForce(magnitude: number) {
-    let force = { x: 0, y: 0 };
-    // liczenie wektora siły z dlugosci i kata mozna dac do utilsow
-    const angle = (this.angle * Math.PI) / 180;
-
-    force = {
-      x: magnitude * Math.cos(angle),
-      y: magnitude * Math.sin(angle),
-    };
-    this.acceleration = force;
+    this.acceleration = PhysicsUtils.calculateForceVector(magnitude, this.angle);
   }
 
   rotate(angle: number) {
-    this._angle += angle;
-    this._angle %= 360;
-    if (this._angle < 0) {
-      this._angle += 360;
-    }
+    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
     this.setCurrentSprite();
     console.log(this._angle);
   }

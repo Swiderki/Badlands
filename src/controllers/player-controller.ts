@@ -3,6 +3,8 @@ import PhysicsBasedController from "./physics-based-controller";
 
 class PlayerController extends PhysicsBasedController {
   private _playerInput: { [key: string]: boolean } = {};
+  private _lastRotation: number = 0;
+  private _rotationCooldown: number = 0.2;
 
   constructor(sprite: Sprite) {
     super(sprite);
@@ -27,14 +29,21 @@ class PlayerController extends PhysicsBasedController {
 
   override update(deltaTime: number) {
     //* This one is just for testing purposes
+    console.log(deltaTime);
+    console.log(this._lastRotation);
     if (this.getInput("ArrowUp")) {
       this.applyForce(15);
     }
-    if (this.getInput("ArrowRight")) {
-      this.rotate(3);
+    this._lastRotation += deltaTime;
+
+    if (this.getInput("ArrowRight") && this._lastRotation >= this._rotationCooldown) {
+      this.rotate(45);
+      this._lastRotation = 0;
     }
-    if (this.getInput("ArrowLeft")) {
-      this.rotate(-3);
+
+    if (this.getInput("ArrowLeft") && this._lastRotation >= this._rotationCooldown) {
+      this.rotate(-45);
+      this._lastRotation = 0;
     }
   }
 }
