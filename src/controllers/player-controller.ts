@@ -4,7 +4,7 @@ import PhysicsBasedController from "./physics-based-controller";
 class PlayerController extends PhysicsBasedController {
   private _playerInput: { [key: string]: boolean } = {};
   private _lastRotation: number = 0;
-  private _rotationCooldown: number = 0.2;
+  private _rotationCooldown: number = 0.25;
 
   constructor(sprite: Sprite) {
     super(sprite);
