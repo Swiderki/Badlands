@@ -1,6 +1,6 @@
-import { Vector } from "@/src/util/vec-util";
 import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
+import { PhysicsUtils } from "../util/physics-util";
 
 class PhysicsBasedController {
   protected _sprite: Sprite | null = null;
@@ -10,11 +10,14 @@ class PhysicsBasedController {
   protected _currentSprite: number = 0;
 
   protected _position: Vec2D = { x: 0, y: 0 };
+  protected _actualForce: Vec2D = { x: 0, y: 0 };
   protected _velocity: Vec2D = { x: 0, y: 0 };
   protected _acceleration: Vec2D = { x: 0, y: 0 };
+  protected _angle: number = 0;
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;
+    this.setCurrentSprite();
   }
 
   get sprite() {
@@ -45,12 +48,46 @@ class PhysicsBasedController {
     this._acceleration = acceleration;
   }
 
-  applyForce(force: Vec2D) {
-    this._acceleration = Vector.add(this._acceleration, force);
+  get actualForce() {
+    return this._actualForce;
+  }
+
+  set actualForce(actualForce: Vec2D) {
+    this._actualForce = actualForce;
+  }
+
+  get angle() {
+    return this._angle;
+  }
+
+  set angle(angle: number) {
+    this._angle = angle;
+  }
+
+  get currentSprite() {
+    return this._currentSprite;
+  }
+
+  set currentSprite(currentSprite: number) {
+    this._currentSprite = currentSprite;
+  }
+
+  applyForce(magnitude: number) {
+    this.acceleration = PhysicsUtils.calculateForceVector(magnitude, this.angle);
+  }
+
+  rotate(angle: number) {
+    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
+    this.setCurrentSprite();
+    console.log(this._angle);
   }
 
   setPosition(position: Vec2D) {
     this._position = position;
+  }
+
+  setCurrentSprite() {
+    this.currentSprite = (Math.round((this.angle / 360) * 8) + 5) % 8;
   }
 
   get displayData(): DisplayData {

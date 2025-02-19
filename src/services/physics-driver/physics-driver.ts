@@ -1,5 +1,5 @@
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Vector } from "@/src/util/vec-util";
-import PhysicsBasedController from "../controllers/physics-based-controller";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't preform physics inside the controller, it's 'cause it uses information that single controller has no access to
@@ -8,14 +8,27 @@ class PhysicsDriver {
   //* TRACK INFO REF WILL BE HERE
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
-    //* This is a simple physics loop
-    const newVelocity = Vector.add(controller.velocity, Vector.scale(controller.acceleration, deltaTime));
-    const newPosition = Vector.add(controller.position, Vector.scale(newVelocity, deltaTime));
+    //* This is a simple physics laoop
 
-    controller.velocity = newVelocity;
+    this.calculateActualForce(controller);
+    controller.actualForce = Vector.scale(controller.actualForce, this.calculateEnvironmentFriction());
+
+    const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
 
     //? The physics loop will be more complex but for now we keep it simple
+  }
+
+  calculateActualForce(controller: PhysicsBasedController) {
+    controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
+    controller.acceleration = { x: 0, y: 0 };
+  }
+
+  calculateEnvironmentFriction() {
+    const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
+    const ratio = 0.96; // ratio of how much air friction affects the car compared to ground friction
+    const frictionFactor = ratio + (1 - ratio) * (1 - mapAdesion) - 0.02  ;
+    return frictionFactor;
   }
 }
 

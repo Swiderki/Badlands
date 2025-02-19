@@ -1,4 +1,4 @@
-import PlayerController from "./controllers/player-controller";
+import PlayerController from "../controllers/player-controller";
 import DisplayDriver from "./display-driver/display-driver";
 import PhysicsDriver from "./physics-driver/physics-driver";
 import Track from "./track-driver/track-driver";
