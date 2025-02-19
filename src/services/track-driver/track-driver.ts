@@ -6,29 +6,33 @@ class Track {
   //* List of bonuses that will spawn on the track (inheriting from a base Bonus class)
   private _bonuses: BonusBase[];
 
+  private _traction: number;
+
   //* Start positions (list of 5 starting positions for each car)
   private _startPositions: Vec2D[];
 
   //* Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
-  private _layers: Sprite;
+  private _layers: Array<Sprite | null>;
 
   //* Collider 2d array (value under each record is defining where cars can/can't go)
   private _colliderImage: number[][];
 
   constructor(
     bonuses: BonusBase[],
+    traction: number,
     startPositions: Vec2D[],
-    layers: Sprite,
+    layers: Array<Sprite | null>,
     colliderImage: number[][]
   ) {
     this._bonuses = bonuses;
+    this._traction = traction;
     this._startPositions = startPositions;
     this._layers = layers;
     this._colliderImage = colliderImage;
   }
 
   //* Getters for accessing private fields safely
-  
+
   get bonuses(): BonusBase[] {
     return this._bonuses;
   }
@@ -37,7 +41,7 @@ class Track {
     return this._startPositions;
   }
 
-  get layers(): Sprite {
+  get layers(): Array<Sprite | null> {
     return this._layers;
   }
 

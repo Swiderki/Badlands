@@ -1,10 +1,15 @@
 import { DisplayData, SpriteData } from "@/types/display-driver";
 import { SpriteLoader } from "./sprite-loader";
+import Track from "../track-driver/track-driver";
 
 class DisplayDriver {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
   private spriteLoader: SpriteLoader;
+
+  //* I should load this from config or set it dynamicly but it will be fixed 'cause im to lazy to bother
+  //* if this one causes u problems fixinf is up to u :*
+  private scaler: number = 3;
 
   constructor(canvas: HTMLCanvasElement) {
     //* Initialize the sprite loader
@@ -21,8 +26,8 @@ class DisplayDriver {
   }
 
   setResolution(width: number, height: number) {
-    this._canvas.width = width;
-    this._canvas.height = height;
+    this._canvas.width = width * this.scaler;
+    this._canvas.height = height * this.scaler;
   }
 
   //* Load all sprites from autoload file
@@ -62,6 +67,23 @@ class DisplayDriver {
       sprite.config.spriteWidth,
       sprite.config.spriteHeight
     );
+  }
+
+  displayTrack(track: Track) {
+    for (const layer of track.layers) {
+      if (!layer) {
+        continue;
+      }
+      //* Here we use direct draw 'cause this happens every frame and nedd to be as quick as possible
+      //* Since that's the case allocating usless SpriteData object would be a waste of resources(memory & compute power)
+      this._ctx.drawImage(
+        layer.image,
+        0,
+        0,
+        layer.config.spriteWidth * this.scaler,
+        layer.config.spriteHeight * this.scaler
+      );
+    }
   }
 }
 

@@ -20,3 +20,5 @@ export type DisplayData = {
   position: Vec2D;
   currentSprite: number;
 };
+
+export type SpriteArray = number[][];

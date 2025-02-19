@@ -6,5 +6,13 @@
       "spriteWidth": 32,
       "spriteHeight": 32
     }
+  },
+  {
+    "name": "test_track",
+    "src": "/assets/tracks/test-track.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
   }
 ]

@@ -1,0 +1,7 @@
+{
+  "traction": 0.5,
+  "bonuses": [],
+  "startPositions": [],
+  "layers": ["test_track"],
+  "colliderImage": "test_track"
+}

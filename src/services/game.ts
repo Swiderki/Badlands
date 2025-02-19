@@ -1,11 +1,14 @@
 import PlayerController from "./controllers/player-controller";
 import DisplayDriver from "./display-driver/display-driver";
 import PhysicsDriver from "./physics-driver/physics-driver";
+import Track from "./track-driver/track-driver";
+import TrackLoader from "./track-driver/track-loader";
 
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
   physicsDriver: PhysicsDriver;
+  track: Track | null = null;
 
   //* Used to keep track of time
   private _lastRenderTime: number = 0;
@@ -19,10 +22,11 @@ class Game {
   }
 
   async start() {
-    this.displayDriver.setResolution(800, 600);
+    this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
     await this.displayDriver.autoLoadSprites();
+    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
 
     //* In the future there will be separate function to do all the loading, as for now it's here
     const playerSprite = this.displayDriver.getSprite("red_vehicle");
@@ -45,7 +49,7 @@ class Game {
     const deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
 
     this.update(deltaTime);
-    
+
     requestAnimationFrame((renderTime) => {
       this._penultimateRenderTime = this._lastRenderTime;
       this._lastRenderTime = renderTime;
@@ -54,7 +58,16 @@ class Game {
   }
 
   update(deltaTime: number) {
+    this.trackUpdate();
     this.playerUpdate(deltaTime);
+  }
+
+  private trackUpdate() {
+    if (this.track == null) {
+      return;
+    }
+
+    this.displayDriver.displayTrack(this.track);
   }
 
   private playerUpdate(deltaTime: number) {
