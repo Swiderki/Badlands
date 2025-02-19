@@ -63,7 +63,7 @@ class Game {
   }
 
   private trackUpdate() {
-    if (this.track == null) {
+    if (this.track === null) {
       return;
     }
 
