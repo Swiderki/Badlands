@@ -8,7 +8,7 @@ class PhysicsDriver {
   //* TRACK INFO REF WILL BE HERE
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
-    //* This is a simple physics laoop
+    //* This is a simple physics loop
 
     this.calculateActualForce(controller);
     controller.actualForce = Vector.scale(controller.actualForce, this.calculateEnvironmentFriction());

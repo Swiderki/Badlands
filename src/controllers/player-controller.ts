@@ -1,13 +1,18 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
+import { StartPosition } from "@/types/track-driver";
 
 class PlayerController extends PhysicsBasedController {
   private _playerInput: { [key: string]: boolean } = {};
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.25;
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
+
+    this.setPosition(startPosition.position);
+    this.angle = startPosition.angle;
+    this.setCurrentSprite();
 
     this._addInputListeners();
   }

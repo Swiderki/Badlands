@@ -33,8 +33,8 @@ class Game {
     if (!playerSprite) {
       throw new Error("Failed to get sprite");
     }
-
-    this.playerController = new PlayerController(playerSprite);
+    const playerStartingPositon = this.track.startPositions[0];
+    this.playerController = new PlayerController(playerSprite, playerStartingPositon);
 
     //* Start the game loop
     this._update();

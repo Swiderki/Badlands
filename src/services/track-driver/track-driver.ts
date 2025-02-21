@@ -1,6 +1,6 @@
 import BonusBase from "@/src/services/bonus/bonus-base";
 import { Sprite } from "@/types/display-driver";
-import { Vec2D } from "@/types/physics";
+import { StartPosition } from "@/types/track-driver";
 
 class Track {
   //* List of bonuses that will spawn on the track (inheriting from a base Bonus class)
@@ -9,7 +9,7 @@ class Track {
   private _traction: number;
 
   //* Start positions (list of 5 starting positions for each car)
-  private _startPositions: Vec2D[];
+  private _startPositions: StartPosition[];
 
   //* Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
   private _layers: Array<Sprite | null>;
@@ -20,7 +20,7 @@ class Track {
   constructor(
     bonuses: BonusBase[],
     traction: number,
-    startPositions: Vec2D[],
+    startPositions: StartPosition[],
     layers: Array<Sprite | null>,
     colliderImage: number[][]
   ) {
@@ -37,7 +37,7 @@ class Track {
     return this._bonuses;
   }
 
-  get startPositions(): Vec2D[] {
+  get startPositions(): StartPosition[] {
     return this._startPositions;
   }
 
