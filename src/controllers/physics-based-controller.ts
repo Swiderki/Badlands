@@ -79,7 +79,6 @@ class PhysicsBasedController {
   rotate(angle: number) {
     this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
     this.setCurrentSprite();
-    console.log(this._angle);
   }
 
   setPosition(position: Vec2D) {
