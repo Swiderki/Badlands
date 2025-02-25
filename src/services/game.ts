@@ -32,7 +32,7 @@ class Game {
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
 
     //* In the future there will be separate function to do all the loading, as for now it's here
-    const playerSprite = this.displayDriver.getSprite("red_vehicle");
+    const playerSprite = this.displayDriver.getSprite("peugeot");
     if (!playerSprite) {
       throw new Error("Failed to get sprite");
     }
@@ -97,11 +97,7 @@ class Game {
       this.playerController.colliderWidth,
       this.playerController.angle
     );
-    this.displayDriver.displayColliderCorners(
-      playerCorners,
-      this.playerController.position,
-      this.playerController.angle
-    );
+
     const trackCollider = this.track.colliderImage;
     if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)) {
       this.displayDriver.displayCollisionEffect(); //* It's easier to

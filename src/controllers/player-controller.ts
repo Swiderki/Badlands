@@ -5,7 +5,7 @@ import { StartPosition } from "@/types/track-driver";
 class PlayerController extends PhysicsBasedController {
   private _playerInput: { [key: string]: boolean } = {};
   private _lastRotation: number = 0;
-  private _rotationCooldown: number = 0.25;
+  private _rotationCooldown: number = 0.04;
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
@@ -42,12 +42,12 @@ class PlayerController extends PhysicsBasedController {
     this._lastRotation += deltaTime;
 
     if (this.getInput("ArrowRight") && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(45);
+      this.rotate(6);
       this._lastRotation = 0;
     }
 
     if (this.getInput("ArrowLeft") && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(-45);
+      this.rotate(-6);
       this._lastRotation = 0;
     }
   }

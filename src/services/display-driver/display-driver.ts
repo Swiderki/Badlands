@@ -57,6 +57,8 @@ class DisplayDriver {
 
   drawSprite({ sprite, position, currentSprite }: DisplayData) {
     const currentSpriteX = currentSprite * sprite.config.spriteWidth;
+    //* Disable image antialiasing(blurriness)
+    this._ctx.imageSmoothingEnabled = false;
     this._ctx.drawImage(
       sprite.image,
       currentSpriteX,
@@ -102,7 +104,7 @@ class DisplayDriver {
 
   displayCollisionEffect() {
     this._ctx.lineWidth = 10;
-    this._ctx.fillStyle = "red";
+    this._ctx.strokeStyle = "red";
     this._ctx.beginPath();
     this._ctx.rect(0, 0, this._canvas.width, this._canvas.height);
     this._ctx.stroke();

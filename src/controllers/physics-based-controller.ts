@@ -2,6 +2,7 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 
+const spriteCount = 60;
 class PhysicsBasedController {
   protected _sprite: Sprite | null = null;
   protected _currentSprite: number = 0;
@@ -77,7 +78,7 @@ class PhysicsBasedController {
   }
 
   setCurrentSprite() {
-    this._currentSprite = (Math.round((this._angle / 360) * 8) + 5) % 8;
+    this._currentSprite = Math.floor(spriteCount - (this._angle / 360) * spriteCount + 8 + 15) % spriteCount;
   }
 
   get displayData(): DisplayData {
