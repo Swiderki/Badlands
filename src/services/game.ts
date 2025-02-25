@@ -1,13 +1,15 @@
 import PlayerController from "../controllers/player-controller";
+import CollisionManager from "./collision/collision-manager";
 import DisplayDriver from "./display-driver/display-driver";
 import PhysicsDriver from "./physics-driver/physics-driver";
 import Track from "./track-driver/track-driver";
 import TrackLoader from "./track-driver/track-loader";
-
+import { getCarCorners } from "../util/collision-util";
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
   physicsDriver: PhysicsDriver;
+  collisionManager: CollisionManager;
   track: Track | null = null;
 
   //* Used to keep track of time
@@ -19,6 +21,7 @@ class Game {
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
     this.physicsDriver = new PhysicsDriver();
+    this.collisionManager = new CollisionManager(this.displayDriver.scaler);
   }
 
   async start() {
@@ -60,6 +63,7 @@ class Game {
   update(deltaTime: number) {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
+    this.collisionUpdate();
   }
 
   private trackUpdate() {
@@ -75,9 +79,34 @@ class Game {
       return;
     }
 
+    console.log(this.playerController.position);
     this.playerController.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
+  }
+
+  private collisionUpdate() {
+    if (!this.track || !this.track.colliderImage || !this.playerController) {
+      return;
+    }
+
+    //* Handle player collision with track
+    const playerCorners = getCarCorners(
+      this.playerController.displayData.position,
+      this.playerController.colliderHeight,
+      this.playerController.colliderWidth,
+      this.playerController.angle
+    );
+    this.displayDriver.displayColliderCorners(
+      playerCorners,
+      this.playerController.position,
+      this.playerController.angle
+    );
+    const trackCollider = this.track.colliderImage;
+    if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)) {
+      this.displayDriver.displayCollisionEffect(); //* It's easier to
+      //* Here add the code for collision handling
+    }
   }
 }
 

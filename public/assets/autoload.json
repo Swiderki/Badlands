@@ -8,8 +8,16 @@
     }
   },
   {
-    "name": "test_track",
+    "name": "test-track",
     "src": "/assets/tracks/test-track.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "test-track-collider",
+    "src": "/assets/tracks/test-track-data.png",
     "config": {
       "spriteWidth": 320,
       "spriteHeight": 182

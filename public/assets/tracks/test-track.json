@@ -2,12 +2,12 @@
   "traction": 0.5,
   "bonuses": [],
   "startPositions": [
-    { "x": 50, "y": 290, "angle": 270},
+    { "x": 50, "y": 290, "angle": 90 },
     { "x": 80, "y": 290, "angle": 270 },
     { "x": 110, "y": 290, "angle": 270 },
     { "x": 140, "y": 290, "angle": 270 },
     { "x": 170, "y": 290, "angle": 270 }
   ],
-  "layers": ["test_track"],
-  "colliderImage": "test_track"
+  "layers": ["test-track", "test-track-collider"],
+  "colliderImage": "test-track-collider"
 }

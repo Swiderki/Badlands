@@ -1,6 +1,7 @@
 import { DisplayData, SpriteData } from "@/types/display-driver";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
+import { Vec2D } from "@/types/physics";
 
 class DisplayDriver {
   private _canvas: HTMLCanvasElement;
@@ -9,7 +10,7 @@ class DisplayDriver {
 
   //* I should load this from config or set it dynamicly but it will be fixed 'cause im to lazy to bother
   //* if this one causes u problems fixinf is up to u :*
-  private scaler: number = 3;
+  scaler: number = 3;
 
   constructor(canvas: HTMLCanvasElement) {
     //* Initialize the sprite loader
@@ -84,6 +85,28 @@ class DisplayDriver {
         layer.config.spriteHeight * this.scaler
       );
     }
+  }
+
+  displayColliderCorners(corners: Vec2D[], position: Vec2D, angle: number) {
+    this._ctx.lineWidth = 3;
+    this._ctx.strokeStyle = "red";
+    this._ctx.beginPath();
+    this._ctx.moveTo(corners[0].x, corners[0].y);
+    this._ctx.lineTo(corners[1].x, corners[1].y);
+    this._ctx.lineTo(corners[3].x, corners[3].y);
+    this._ctx.lineTo(corners[2].x, corners[2].y);
+    this._ctx.lineTo(corners[0].x, corners[0].y);
+    this._ctx.stroke();
+    this._ctx.closePath();
+  }
+
+  displayCollisionEffect() {
+    this._ctx.lineWidth = 10;
+    this._ctx.fillStyle = "red";
+    this._ctx.beginPath();
+    this._ctx.rect(0, 0, this._canvas.width, this._canvas.height);
+    this._ctx.stroke();
+    this._ctx.closePath();
   }
 }
 
