@@ -25,7 +25,7 @@
   },
   {
     "name": "peugeot",
-    "src": "/assets/sprites/peugeot.png",
+    "src": "/assets/sprites/spritesheet1.png",
     "config": {
       "spriteWidth": 80,
       "spriteHeight": 80
