@@ -21,18 +21,25 @@ class PhysicsDriver {
 
   calculateActualForce(controller: PhysicsBasedController) {
     controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
+    console.log(controller.actualForce);
+
     controller.acceleration = { x: 0, y: 0 };
   }
 
   calculateFriction(controller: PhysicsBasedController) {
-    const differenceInAngle = Math.abs(Vector.angle(controller.actualForce) - controller.angle)%180/180
-    const noFrictionValue = 0.2   
-    const frictionAmount = Math.round(Math.max(0,Math.sin((differenceInAngle*(3.14+2*noFrictionValue))-noFrictionValue))*100)/100
+    const differenceInAngle = (Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180;
+    const noFrictionValue = 0.2;
+    const frictionAmount =
+      Math.round(
+        Math.max(0, Math.sin(differenceInAngle * (3.14 + 2 * noFrictionValue) - noFrictionValue)) * 100
+      ) / 100;
     // bardzo zabawne obliczenia
     // powyższy komentarz należy usunąć w finalnej wersji projektu
 
     const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
-    const frictionFactor = 1 - mapAdesion * frictionAmount * 0.1;
+    const frictionFactor = Math.round((1 - mapAdesion * frictionAmount * 0.1) * 1000) / 1000;
+    console.log(frictionFactor);
+
     return frictionFactor;
   }
 }

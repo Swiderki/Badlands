@@ -8,6 +8,6 @@
     { "x": 140, "y": 290, "angle": 270 },
     { "x": 170, "y": 290, "angle": 270 }
   ],
-  "layers": ["test-track"],
+  "layers": ["test-track", "test-track-collider"],
   "colliderImage": "test-track-collider"
 }

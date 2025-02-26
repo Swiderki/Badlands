@@ -78,7 +78,8 @@ class PhysicsBasedController {
   }
 
   setCurrentSprite() {
-    this._currentSprite = Math.floor(spriteCount - (this._angle / 360) * spriteCount + 8 + 15) % spriteCount;
+    this._currentSprite =
+      Math.floor(spriteCount - (((this._angle + 270) % 360) / 360) * spriteCount) % spriteCount;
   }
 
   get displayData(): DisplayData {

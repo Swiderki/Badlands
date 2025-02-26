@@ -7,8 +7,7 @@ export namespace Vector {
   }
 
   export function scale(v: Vec2D, scalar: number): Vec2D {
-    return { x: v.x * scalar, y: v.y * scalar };
-    // dodać zaokrąglanie !!!!!!!! nie wiem jak by to dobrze zrobić, to ktoś inny niech się tym zajmie :3 (do 3 miejsc po , było by chyba git...)
+    return { x: Math.floor(v.x * 1000 * scalar) / 1000, y: Math.floor(v.y * 1000 * scalar) / 1000 };
   }
 
   export function add(v1: Vec2D, v2: Vec2D): Vec2D {
@@ -33,5 +32,5 @@ export namespace Vector {
 
   export function angle(v: Vec2D): number {
     return Math.atan2(v.y, v.x) * (180 / Math.PI); // pytanie czy ta funkcja jest dobrze zoptymalizowana, jak nie to trzeba to inaczej jakoś zrobić
-}
+  }
 }

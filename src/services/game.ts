@@ -79,7 +79,6 @@ class Game {
       return;
     }
 
-    console.log(this.playerController.position);
     this.playerController.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
@@ -95,6 +94,12 @@ class Game {
       this.playerController.displayData.position,
       this.playerController.colliderHeight,
       this.playerController.colliderWidth,
+      this.playerController.angle
+    );
+
+    this.displayDriver.displayColliderCorners(
+      playerCorners,
+      this.playerController.position,
       this.playerController.angle
     );
 

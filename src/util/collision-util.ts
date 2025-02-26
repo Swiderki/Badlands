@@ -13,9 +13,8 @@ export function getCarCorners(position: Vec2D, width: number, height: number, an
   //* We need to add some offset to the position of the car
   //* That's why we have +9 and +5
   //* It's probably worth investigating why we need this offset
-  const cx = position.x + halfHeight + 9;
-  const cy = position.y + halfWidth + 5;
-
+  const cx = position.x + halfHeight + 30;
+  const cy = position.y + halfWidth + 15;
   return [
     {
       //* Front Left
