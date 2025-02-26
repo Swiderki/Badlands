@@ -32,7 +32,7 @@ class PhysicsDriver {
     // powyższy komentarz należy usunąć w finalnej wersji projektu
 
     const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
-    const frictionFactor = 0.97 - mapAdesion * frictionAmount * 0.05
+    const frictionFactor = 1 - mapAdesion * frictionAmount * 0.1;
     return frictionFactor;
   }
 }

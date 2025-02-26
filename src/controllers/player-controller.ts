@@ -36,17 +36,17 @@ class PlayerController extends PhysicsBasedController {
     //* This one is just for testing purposes
     // console.log(deltaTime);
     // console.log(this._lastRotation);
-    if (this.getInput("ArrowUp")) {
+    if (this.getInput("ArrowUp") || this.getInput("w")) {
       this.applyForce(15);
     }
     this._lastRotation += deltaTime;
 
-    if (this.getInput("ArrowRight") && this._lastRotation >= this._rotationCooldown) {
+    if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
       this.rotate(6);
       this._lastRotation = 0;
     }
 
-    if (this.getInput("ArrowLeft") && this._lastRotation >= this._rotationCooldown) {
+    if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
       this.rotate(-6);
       this._lastRotation = 0;
     }
