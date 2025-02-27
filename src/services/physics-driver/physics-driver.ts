@@ -21,7 +21,7 @@ class PhysicsDriver {
 
   calculateActualForce(controller: PhysicsBasedController) {
     controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
-    console.log(controller.actualForce);
+    controller.actualForce = Vector.maxLenght(controller.actualForce, 400); // predkosc maksymalna powinna byc zczytywana z obietku autka, ktorego max predosc bedzie sie zmieniać np. przez nitro
 
     controller.acceleration = { x: 0, y: 0 };
   }
@@ -38,7 +38,6 @@ class PhysicsDriver {
 
     const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
     const frictionFactor = Math.round((1 - mapAdesion * frictionAmount * 0.1) * 1000) / 1000;
-    console.log(frictionFactor);
 
     return frictionFactor;
   }

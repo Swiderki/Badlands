@@ -1,6 +1,7 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
+import { Vector } from "../util/vec-util";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -65,7 +66,7 @@ class PhysicsBasedController {
   }
 
   applyForce(magnitude: number) {
-    this.acceleration = PhysicsUtils.calculateForceVector(magnitude, this.angle);
+    this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
   }
 
   rotate(angle: number) {

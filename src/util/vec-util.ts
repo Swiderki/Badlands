@@ -31,6 +31,22 @@ export namespace Vector {
   }
 
   export function angle(v: Vec2D): number {
-    return Math.atan2(v.y, v.x) * (180 / Math.PI); // pytanie czy ta funkcja jest dobrze zoptymalizowana, jak nie to trzeba to inaczej jakoś zrobić
+    return Math.atan2(v.y, v.x) * (180 / Math.PI);
+  }
+
+  export function generateVectorFromAngle(magnitude: number, angle: number): Vec2D {
+    const radianAngle = (angle * Math.PI) / 180;
+    return {
+      x: magnitude * Math.cos(radianAngle),
+      y: magnitude * Math.sin(radianAngle),
+    };
+  }
+
+  export function maxLenght(v: Vec2D, maxLenght: number): Vec2D {
+    let vector = v;
+    if (length(v) > maxLenght) {
+      vector = generateVectorFromAngle(maxLenght, angle(v));
+    }
+    return vector;
   }
 }
