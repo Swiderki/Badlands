@@ -1,4 +1,5 @@
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import { PhysicsUtils } from "@/src/util/physics-util";
 import { Vector } from "@/src/util/vec-util";
 
 //* We use separate drivers for physics and display to separate concerns
@@ -22,13 +23,17 @@ class PhysicsDriver {
   calculateActualForce(controller: PhysicsBasedController) {
     controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
     controller.actualForce = Vector.maxLenght(controller.actualForce, 400); // predkosc maksymalna powinna byc zczytywana z obietku autka, ktorego max predosc bedzie sie zmieniać np. przez nitro
-
+    controller.actualForce = PhysicsUtils.normalizeForceToAngle(
+      controller.actualForce,
+      controller.angle,
+      0.5
+    );
     controller.acceleration = { x: 0, y: 0 };
   }
 
   calculateFriction(controller: PhysicsBasedController) {
     const differenceInAngle = (Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180;
-    const noFrictionValue = 0.2;
+    const noFrictionValue = 0.6;
     const frictionAmount =
       Math.round(
         Math.max(0, Math.sin(differenceInAngle * (3.14 + 2 * noFrictionValue) - noFrictionValue)) * 100

@@ -14,6 +14,8 @@ class PhysicsBasedController {
   protected _acceleration: Vec2D = { x: 0, y: 0 };
   protected _angle: number = 0;
 
+  // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
+
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
 
