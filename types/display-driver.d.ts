@@ -21,4 +21,6 @@ export type DisplayData = {
   currentSprite: number;
 };
 
+export type DrawCall = () => void;
+
 export type SpriteArray = number[][];

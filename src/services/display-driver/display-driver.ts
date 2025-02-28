@@ -1,4 +1,4 @@
-import { DisplayData, SpriteData } from "@/types/display-driver";
+import { DisplayData, DrawCall, SpriteData } from "@/types/display-driver";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
@@ -11,6 +11,7 @@ class DisplayDriver {
   private _ctx: CanvasRenderingContext2D;
   private spriteLoader: SpriteLoader;
 
+  private topQueue: DrawCall[] = [];
   //* I should load this from config or set it dynamicly but it will be fixed 'cause im to lazy to bother
   //* if this one causes u problems fixinf is up to u :*
   scaler: number = 3;
@@ -140,13 +141,22 @@ class DisplayDriver {
   }
 
   drawForceVector(position: Vec2D, force: Vec2D, color: string = "green") {
-    this._ctx.strokeStyle = color;
-    this._ctx.lineWidth = 2;
-    this._ctx.beginPath();
-    this._ctx.moveTo(position.x, position.y);
-    this._ctx.lineTo(position.x + force.x, position.y + force.y);
-    this._ctx.stroke();
-    this._ctx.closePath();
+    this.topQueue.push(() => {
+      this._ctx.strokeStyle = color;
+      this._ctx.lineWidth = 2;
+      this._ctx.beginPath();
+      this._ctx.moveTo(position.x, position.y);
+      this._ctx.lineTo(position.x + force.x, position.y + force.y);
+      this._ctx.stroke();
+      this._ctx.closePath();
+    });
+  }
+
+  performDrawCalls() {
+    this.topQueue.forEach((call) => {
+      call();
+    });
+    this.topQueue = [];
   }
 }
 

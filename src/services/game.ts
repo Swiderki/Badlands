@@ -64,6 +64,8 @@ class Game {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
     this.collisionUpdate();
+
+    this.displayDriver.performDrawCalls();
   }
 
   private trackUpdate() {
