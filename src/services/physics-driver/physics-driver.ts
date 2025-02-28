@@ -2,6 +2,7 @@ import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { PhysicsUtils } from "@/src/util/physics-util";
 import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
+import DisplayDriver from "../display-driver/display-driver";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't perform physics inside the controller, it's 'cause it uses information that single controller has no access to
@@ -28,29 +29,25 @@ class PhysicsDriver {
     if (!collisionPoint) {
       return;
     }
+    //! const displayDriver = DisplayDriver.currentInstance;
+    //! displayDriver?.drawForceVector(controller.position, controller.actualForce, "");
 
-    // Obliczanie wektora zderzenia
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
-    const normalizedNormal = Vector.normalize(approachVector); // Normalizacja wektora zderzenia (pozycja -> kolizja)
+    const normalizedNormal = Vector.normalize(approachVector); 
 
-    // Zatrzymanie ruchu w kierunku kolizji
-    controller.actualForce = Vector.scale(controller.actualForce, 0); // Zatrzymanie prędkości w kierunku kolizji
+    controller.actualForce = Vector.scale(controller.actualForce, 0); 
 
     controller.position = Vector.add(controller.position, Vector.scale(normalizedNormal, 2));
 
-    // Możesz tutaj dodać odbicie w kierunku przeciwnym do normalnej powierzchni
-    // Możemy odbić siłę, ale w taki sposób, aby zwolniła, np. używając odbicia z mniejszą siłą:
-    const reflectionForce = Vector.scale(normalizedNormal, -1); // Delikatne odbicie
+    const reflectionForce = Vector.scale(normalizedNormal, -1); 
 
-    // Zaktualizowanie siły w oparciu o odbicie
     controller.actualForce = Vector.add(controller.actualForce, reflectionForce);
 
-    // Resetowanie flagi kolizji po krótkiej chwili, by umożliwić kolejne kolizje
 
     controller.setCurrentSprite();
     setTimeout(() => {
       this.isColliding = false;
-    }, 50); // Możesz dostosować czas w zależności od gry
+    }, 50); 
   }
 
   calculateActualForce(controller: PhysicsBasedController) {
