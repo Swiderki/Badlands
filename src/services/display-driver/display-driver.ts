@@ -159,6 +159,18 @@ class DisplayDriver {
     });
   }
 
+  drawLineBetweenVectors(vec1: Vec2D, vec2: Vec2D, color: string = "green") {
+    this.topQueue.push(() => {
+      this._ctx.strokeStyle = color;
+      this._ctx.lineWidth = 2;
+      this._ctx.beginPath();
+      this._ctx.moveTo(vec1.x, vec1.y);
+      this._ctx.lineTo(vec2.x, vec2.y);
+      this._ctx.stroke();
+      this._ctx.closePath();
+    });
+  }
+
   performDrawCalls() {
     this.topQueue.forEach((call) => {
       call();
