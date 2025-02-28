@@ -29,7 +29,9 @@ class TrackLoader {
           data.colliderImage
         );
 
-        const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver);
+        const pathOffset = data.pathOffset
+        const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
+        
         return new Track(
           data.bonuses,
           data.traction,

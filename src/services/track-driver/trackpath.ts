@@ -1,6 +1,7 @@
 import { getEvenlySpacedPoints, parseSVGPath } from "@/src/util/bezier-util";
 import { CheckPoint } from "@/types/track-driver";
 import DisplayDriver from "../display-driver/display-driver";
+import { Vec2D } from "@/types/physics";
 
 export class TrackPath {
   private path: string;
@@ -15,13 +16,13 @@ export class TrackPath {
     this.sampledPoints = getEvenlySpacedPoints(parseSVGPath(this.path), numPoints);
   }
 
-  centerTrackPath(canvasWidth: number, canvasHeight: number) {
+  centerTrackPath(canvasWidth: number, canvasHeight: number, pathOffset: Vec2D) {
     // Get the width and height of the track path
     const { width, height } = this._getWidthAndHeight();
 
     // Calculate the offset for the x and y coordinates
-    const offsetX = (canvasWidth - width) / 2;
-    const offsetY = (canvasHeight - height) / 2;
+    const offsetX = (canvasWidth - width) / 2 + pathOffset.x;
+    const offsetY = (canvasHeight - height) / 2 + pathOffset.y;
 
     console.log(width, height);
     console.log(offsetX, offsetY);
@@ -57,9 +58,18 @@ export class TrackPath {
     return { width, height };
   }
 
-  static createFromPath(path: string, numPoints: number, displayDriver: DisplayDriver) {
+  static createFromPath(path: string, numPoints: number, displayDriver: DisplayDriver, pathOffset: Vec2D) {
     const trackPath = new TrackPath(path, numPoints);
-    trackPath.centerTrackPath(displayDriver.normalizedDisplayWidth, displayDriver.normalizedDisplayHeight);
+    trackPath.centerTrackPath(
+      displayDriver.normalizedDisplayWidth,
+      displayDriver.normalizedDisplayHeight,
+      pathOffset
+    );
+    trackPath.reverse();
     return trackPath;
+  }
+
+  reverse() {
+    this.sampledPoints.reverse();
   }
 }

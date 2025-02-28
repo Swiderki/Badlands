@@ -1,6 +1,7 @@
 import { Vec2D } from "@/types/physics";
 import { CheckPoint, SVGCommand } from "@/types/track-driver";
 import { Bezier } from "bezier-js";
+import { Vector } from "./vec-util";
 
 export function parseSVGPath(svgPath: string): SVGCommand[] {
   const commands = svgPath.match(/[MLCQZVv][^MLCQZVv]*/g); // Include 'V' and 'v' in the regex
@@ -73,8 +74,9 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
   for (const command of commands) {
     if (command.type === "C") {
       // Cubic Bezier curve
+      const previous = sampledPoints[sampledPoints.length - 1];
       const bezier = new Bezier(
-        { x: command.cp1x, y: command.cp1y },
+        previous.point,
         { x: command.cp2x, y: command.cp2y },
         { x: command.x, y: command.y }
       );
@@ -89,6 +91,7 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
       }
     } else if (command.type === "Q") {
       // Quadratic Bezier curve
+      const previous = sampledPoints[sampledPoints.length - 1];
       const bezier = new Bezier(
         { x: command.cp1x, y: command.cp1y },
         { x: command.cp1x, y: command.cp1y },
@@ -123,6 +126,20 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
         // Tangent as the direction vector
         const tangent: Vec2D = direction;
 
+        sampledPoints.push({ point: { x, y }, tangent, curvature });
+      }
+    } else if (command.type === "Z") {
+      // draw points between the last point and the first point
+      const startPoint: Vec2D = sampledPoints[sampledPoints.length - 1].point;
+      const endPoint: Vec2D = sampledPoints[2 * numPoints].point;
+      console.log(endPoint, startPoint);
+      const direction = { x: endPoint.x - startPoint.x, y: endPoint.y - startPoint.y };
+      const curvature = 0;
+      for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        const x = startPoint.x + direction.x * t;
+        const y = startPoint.y + direction.y * t;
+        const tangent: Vec2D = direction;
         sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
     }

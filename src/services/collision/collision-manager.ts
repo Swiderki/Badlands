@@ -1,3 +1,4 @@
+import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
 
 class CollisionManager {
@@ -14,7 +15,7 @@ class CollisionManager {
     };
   }
 
-  public isCollidingWithTrack(corners: Vec2D[], trackCollider: number[][]): Vec2D | null {
+  private _isCollidingWithTrack(corners: Vec2D[], trackCollider: number[][]): Vec2D | null {
     // Iterujemy przez rogi i sprawdzamy, czy któryś z nich koliduje z torami
     for (const { x, y } of corners) {
       const gridPos = this.getGridPosition({ x, y });
@@ -37,6 +38,15 @@ class CollisionManager {
 
     // Jeśli żadna kolizja nie miała miejsca, zwracamy null
     return null;
+  }
+
+  public isCollidingWithTrack(corners: Vec2D[], trackCollider: number[][]): Vec2D | null {
+    const v = this._isCollidingWithTrack(corners, trackCollider);
+    if (!v) {
+      return null;
+    }
+
+    return Vector.scale(v, this.scalingFactor);
   }
 }
 
