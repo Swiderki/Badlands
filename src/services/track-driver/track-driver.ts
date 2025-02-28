@@ -1,6 +1,8 @@
 import BonusBase from "@/src/services/bonus/bonus-base";
 import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
+import { TrackPath } from "./trackpath";
+import DisplayDriver from "../display-driver/display-driver";
 
 class Track {
   //* List of bonuses that will spawn on the track (inheriting from a base Bonus class)
@@ -17,18 +19,22 @@ class Track {
   //* Collider 2d array (value under each record is defining where cars can/can't go)
   private _colliderImage: number[][];
 
+  private _checkPointPath: TrackPath | null = null;
+
   constructor(
     bonuses: BonusBase[],
     traction: number,
     startPositions: StartPosition[],
     layers: Array<Sprite | null>,
-    colliderImage: number[][]
+    colliderImage: number[][],
+    checkPointPath: TrackPath
   ) {
     this._bonuses = bonuses;
     this._traction = traction;
     this._startPositions = startPositions;
     this._layers = layers;
     this._colliderImage = colliderImage;
+    this._checkPointPath = checkPointPath;
   }
 
   //* Getters for accessing private fields safely
@@ -47,6 +53,12 @@ class Track {
 
   get colliderImage(): number[][] {
     return this._colliderImage;
+  }
+
+  displayCheckpoints(displayDriver: DisplayDriver) {
+    if (!this._checkPointPath) return;
+
+    displayDriver.displayCheckpoints(this._checkPointPath.sampledPoints);
   }
 }
 

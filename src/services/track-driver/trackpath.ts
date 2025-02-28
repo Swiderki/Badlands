@@ -1,66 +1,65 @@
-class TrackPath {
-  private path: Path2D;
-  private sampledPoints: { x: number; y: number }[] = [];
+import { getEvenlySpacedPoints, parseSVGPath } from "@/src/util/bezier-util";
+import { CheckPoint } from "@/types/track-driver";
+import DisplayDriver from "../display-driver/display-driver";
 
-  constructor() {
-    this.path = new Path2D();
-    this.generatePath();
-    this.samplePath(); // Store points along the path for progress calculation
+export class TrackPath {
+  private path: string;
+  sampledPoints: CheckPoint[] = [];
+
+  constructor(path: string, numPoints: number) {
+    this.path = path;
+    this._processCheckpoints(numPoints);
   }
 
-  private generatePath() {
-    this.path.moveTo(100, 100); // Start point
-    this.path.bezierCurveTo(200, 150, 300, 200, 400, 250); // Bézier curve
+  private _processCheckpoints(numPoints: number) {
+    this.sampledPoints = getEvenlySpacedPoints(parseSVGPath(this.path), numPoints);
   }
 
-  private samplePath(resolution: number = 100) {
-    this.sampledPoints = [];
-    for (let t = 0; t <= 1; t += 1 / resolution) {
-      const point = this.getBezierPoint(
-        t,
-        { x: 100, y: 100 }, // P0
-        { x: 200, y: 150 }, // P1
-        { x: 300, y: 200 }, // P2
-        { x: 400, y: 250 } // P3
-      );
-      this.sampledPoints.push(point);
+  centerTrackPath(canvasWidth: number, canvasHeight: number) {
+    // Get the width and height of the track path
+    const { width, height } = this._getWidthAndHeight();
+
+    // Calculate the offset for the x and y coordinates
+    const offsetX = (canvasWidth - width) / 2;
+    const offsetY = (canvasHeight - height) / 2;
+
+    console.log(width, height);
+    console.log(offsetX, offsetY);
+
+    // Loop through all sampled points and update the x and y coordinates
+    for (const checkpoint of this.sampledPoints) {
+      checkpoint.point.x += offsetX;
+      checkpoint.point.y += offsetY;
     }
   }
 
-  //* Beings honest i have no idea how these one works
-  //* I just the formula copied from the internet
-  //* If this part malfunctions, its your problem from now on
-  private getBezierPoint(
-    t: number,
-    p0: { x: number; y: number },
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-    p3: { x: number; y: number }
-  ) {
-    const u = 1 - t;
-    const tt = t * t;
-    const uu = u * u;
-    const uuu = uu * u;
-    const ttt = tt * t;
+  private _getWidthAndHeight() {
+    // Initialize variables to store the min and max coordinates
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
 
-    return {
-      x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
-      y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y,
-    };
+    // Loop through all sampled points and update min/max values
+    for (const checkpoint of this.sampledPoints) {
+      const { x, y } = checkpoint.point;
+
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y);
+    }
+
+    // Calculate the width and height of the track path
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    return { width, height };
   }
 
-  public getClosestProgress(playerPos: { x: number; y: number }): number {
-    let minDist = Infinity;
-    let closestIndex = 0;
-
-    this.sampledPoints.forEach((point, index) => {
-      const dist = Math.hypot(playerPos.x - point.x, playerPos.y - point.y);
-      if (dist < minDist) {
-        minDist = dist;
-        closestIndex = index;
-      }
-    });
-
-    return (closestIndex / (this.sampledPoints.length - 1)) * 100;
+  static createFromPath(path: string, numPoints: number, displayDriver: DisplayDriver) {
+    const trackPath = new TrackPath(path, numPoints);
+    trackPath.centerTrackPath(displayDriver.normalizedDisplayWidth, displayDriver.normalizedDisplayHeight);
+    return trackPath;
   }
 }

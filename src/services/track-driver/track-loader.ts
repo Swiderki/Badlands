@@ -4,6 +4,7 @@ import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
 import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
+import { TrackPath } from "./trackpath";
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
@@ -27,7 +28,16 @@ class TrackLoader {
           displayDriver,
           data.colliderImage
         );
-        return new Track(data.bonuses, data.traction, startPositions, layers, colliderImageData);
+
+        const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver);
+        return new Track(
+          data.bonuses,
+          data.traction,
+          startPositions,
+          layers,
+          colliderImageData,
+          checkPointPath
+        );
       })
       .catch((error) => {
         throw new Error(`Failed to load track: ${error}`);

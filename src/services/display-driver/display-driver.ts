@@ -2,6 +2,7 @@ import { DisplayData, SpriteData } from "@/types/display-driver";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
+import { CheckPoint } from "@/types/track-driver";
 
 class DisplayDriver {
   private _canvas: HTMLCanvasElement;
@@ -29,6 +30,14 @@ class DisplayDriver {
   setResolution(width: number, height: number) {
     this._canvas.width = width * this.scaler;
     this._canvas.height = height * this.scaler;
+  }
+
+  get normalizedDisplayWidth() {
+    return this._canvas.width / this.scaler;
+  }
+
+  get normalizedDisplayHeight() {
+    return this._canvas.height / this.scaler;
   }
 
   //* Load all sprites from autoload file
@@ -109,6 +118,16 @@ class DisplayDriver {
     this._ctx.rect(0, 0, this._canvas.width, this._canvas.height);
     this._ctx.stroke();
     this._ctx.closePath();
+  }
+
+  displayCheckpoints(checkpoints: CheckPoint[]) {
+    for (const point of checkpoints) {
+      this._ctx.fillStyle = "yellow";
+      this._ctx.beginPath();
+      this._ctx.fillRect(point.point.x * this.scaler, point.point.y * this.scaler, 2, 2);
+      this._ctx.fill();
+      this._ctx.closePath();
+    }
   }
 }
 

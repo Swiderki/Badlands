@@ -1,25 +1,32 @@
 import { Vec2D } from "@/types/physics";
-import { SVGCommand } from "@/types/track-driver";
+import { CheckPoint, SVGCommand } from "@/types/track-driver";
 import { Bezier } from "bezier-js";
 
 export function parseSVGPath(svgPath: string): SVGCommand[] {
-  const commands = svgPath.match(/[MLCQZ][^MLCQZ]*/g); // Extract path commands
+  const commands = svgPath.match(/[MLCQZVv][^MLCQZVv]*/g); // Include 'V' and 'v' in the regex
   const points: SVGCommand[] = [];
 
   if (!commands) return points;
 
+  let currentX = 0; // Initialize currentX
+  let currentY = 0; // Initialize currentY
+
   for (const command of commands) {
-    //* Extract command type and values
-    const type = command[0] as "M" | "L" | "C" | "Q" | "Z";
+    const type = command[0] as "M" | "L" | "C" | "Q" | "V" | "v" | "Z";
     const values = command.slice(1).trim().split(/[ ,]+/).map(Number);
 
-    //* gigant switch to handle different types of commands
     switch (type) {
-      case "M": //? Move to
-      case "L": //? Line to
-        points.push({ type, x: values[0], y: values[1] });
+      case "M": // Move to
+        currentX = values[0];
+        currentY = values[1];
+        points.push({ type, x: currentX, y: currentY });
         break;
-      case "C": //? Cubic Bezier curve
+      case "L": // Line to
+        currentX = values[0];
+        currentY = values[1];
+        points.push({ type, x: currentX, y: currentY });
+        break;
+      case "C": // Cubic Bezier curve
         points.push({
           type,
           cp1x: values[0],
@@ -29,8 +36,10 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
           x: values[4],
           y: values[5],
         });
+        currentX = values[4];
+        currentY = values[5];
         break;
-      case "Q": //? Quadratic Bezier curve
+      case "Q": // Quadratic Bezier curve
         points.push({
           type,
           cp1x: values[0],
@@ -38,8 +47,18 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
           x: values[2],
           y: values[3],
         });
+        currentX = values[2];
+        currentY = values[3];
         break;
-      case "Z": //? Close path
+      case "V": // Vertical line to (absolute)
+        currentY = values[0];
+        points.push({ type, x: currentX, y: currentY });
+        break;
+      case "v": // Vertical line to (relative)
+        currentY += values[0];
+        points.push({ type: "V", x: currentX, y: currentY });
+        break;
+      case "Z": // Close path
         points.push({ type });
         break;
     }
@@ -48,11 +67,12 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
   return points;
 }
 
-export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number): Vec2D[] {
-  const sampledPoints: Vec2D[] = [];
+export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number): CheckPoint[] {
+  const sampledPoints: CheckPoint[] = [];
 
   for (const command of commands) {
     if (command.type === "C") {
+      // Cubic Bezier curve
       const bezier = new Bezier(
         { x: command.cp1x, y: command.cp1y },
         { x: command.cp2x, y: command.cp2y },
@@ -60,21 +80,51 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
       );
       for (let t = 0; t <= 1; t += 1 / numPoints) {
         const { x, y } = bezier.get(t);
-        sampledPoints.push({ x, y });
+
+        // Tangent and curvature computation
+        const tangent = bezier.derivative(t);
+        const curvature = bezier.curvature(t).k;
+
+        sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
     } else if (command.type === "Q") {
+      // Quadratic Bezier curve
       const bezier = new Bezier(
         { x: command.cp1x, y: command.cp1y },
         { x: command.cp1x, y: command.cp1y },
-        { x: command.x, y: command.y },
         { x: command.x, y: command.y }
       );
       for (let t = 0; t <= 1; t += 1 / numPoints) {
         const { x, y } = bezier.get(t);
-        sampledPoints.push({ x, y });
+
+        // Tangent and curvature computation
+        const tangent = bezier.derivative(t);
+        const curvature = bezier.curvature(t).k;
+
+        sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
-    } else if (command.type === "L" || command.type === "M") {
-      sampledPoints.push({ x: command.x, y: command.y });
+    } else if (command.type === "L" || command.type === "M" || command.type === "V") {
+      // For straight lines, evenly interpolate the points
+      const startPoint: Vec2D = { x: command.x, y: command.y };
+
+      // Tangent is undefined for straight lines, but we can calculate it as a direction vector
+      const endPoint: Vec2D = { x: command.x, y: command.y };
+      const direction = { x: endPoint.x - startPoint.x, y: endPoint.y - startPoint.y };
+
+      // Curvature is zero for straight lines
+      const curvature = 0;
+
+      // Generate points between the start and end points
+      for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        const x = startPoint.x + direction.x * t;
+        const y = startPoint.y + direction.y * t;
+
+        // Tangent as the direction vector
+        const tangent: Vec2D = direction;
+
+        sampledPoints.push({ point: { x, y }, tangent, curvature });
+      }
     }
   }
 

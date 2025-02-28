@@ -72,6 +72,7 @@ class Game {
     }
 
     this.displayDriver.displayTrack(this.track);
+    this.track.displayCheckpoints(this.displayDriver);
   }
 
   private playerUpdate(deltaTime: number) {
