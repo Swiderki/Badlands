@@ -28,6 +28,8 @@ class DisplayDriver {
     }
 
     this._ctx = ctx;
+
+    DisplayDriver._instance = this;
   }
 
   static get currentInstance(): DisplayDriver | null {

@@ -1,6 +1,5 @@
 import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
-import { Vector } from "@/src/util/vec-util";
 
 class CollisionManager {
   scalingFactor: number;

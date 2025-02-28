@@ -29,25 +29,26 @@ class PhysicsDriver {
     if (!collisionPoint) {
       return;
     }
-    //! const displayDriver = DisplayDriver.currentInstance;
-    //! displayDriver?.drawForceVector(controller.position, controller.actualForce, "");
+    const displayDriver = DisplayDriver.currentInstance;
+    console.log(controller.centerPosition);
+    console.log(collisionPoint);
+    displayDriver?.drawForceVector(controller.centerPosition, controller.actualForce, "green");
 
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
-    const normalizedNormal = Vector.normalize(approachVector); 
+    const normalizedNormal = Vector.normalize(approachVector);
 
-    controller.actualForce = Vector.scale(controller.actualForce, 0); 
+    controller.actualForce = Vector.scale(controller.actualForce, 0);
 
     controller.position = Vector.add(controller.position, Vector.scale(normalizedNormal, 2));
 
-    const reflectionForce = Vector.scale(normalizedNormal, -1); 
+    const reflectionForce = Vector.scale(normalizedNormal, -1);
 
     controller.actualForce = Vector.add(controller.actualForce, reflectionForce);
-
 
     controller.setCurrentSprite();
     setTimeout(() => {
       this.isColliding = false;
-    }, 50); 
+    }, 50);
   }
 
   calculateActualForce(controller: PhysicsBasedController) {
