@@ -16,8 +16,8 @@ class PhysicsBasedController {
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
-  protected _maxSpeedForward: number = 400;
-  protected _maxSpeedBackwards: number = 200;
+  protected _maxSpeedForward: number = 200;
+  protected _maxSpeedBackwards: number = 100;
   protected _accelerationPowerForward: number = 15;
   protected _accelerationPowerBackwards: number = 8;
   protected _defaultAdhesionModifier: number = 1;
@@ -35,7 +35,7 @@ class PhysicsBasedController {
   constructor(sprite: Sprite) {
     this._sprite = sprite;
 
-    this.colliderHeight = 20; //sprite.config.spriteHeight;
+    this.colliderHeight = 30; //sprite.config.spriteHeight;
     this.colliderWidth = 14; //sprite.config.spriteWidth;
     this.setCurrentSprite();
   }

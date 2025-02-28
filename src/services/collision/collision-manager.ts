@@ -14,21 +14,29 @@ class CollisionManager {
     };
   }
 
-  public isCollidingWithTrack(corners: Vec2D[], trackCollider: number[][]): boolean {
-    return corners.some(({ x, y }) => {
+  public isCollidingWithTrack(corners: Vec2D[], trackCollider: number[][]): Vec2D | null {
+    // Iterujemy przez rogi i sprawdzamy, czy któryś z nich koliduje z torami
+    for (const { x, y } of corners) {
       const gridPos = this.getGridPosition({ x, y });
 
+      // Sprawdzamy, czy pozycja jest poza granicami
       if (
         gridPos.x < 0 ||
         gridPos.y < 0 ||
         gridPos.y >= trackCollider.length ||
         gridPos.x >= trackCollider[0].length
       ) {
-        return true; //* Out of bounds
+        return { x: gridPos.x, y: gridPos.y }; // Zwracamy obiekt z pozycją, jeśli jest poza granicami
       }
 
-      return trackCollider[gridPos.y][gridPos.x] === 1; //* 1 = Wall
-    });
+      // Sprawdzamy, czy na danym polu znajduje się ściana (np. 1)
+      if (trackCollider[gridPos.y][gridPos.x] !== 0) {
+        return { x: gridPos.x, y: gridPos.y }; // Zwracamy obiekt z pozycją, jeśli koliduje z murem
+      }
+    }
+
+    // Jeśli żadna kolizja nie miała miejsca, zwracamy null
+    return null;
   }
 }
 
