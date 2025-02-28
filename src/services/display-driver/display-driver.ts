@@ -5,6 +5,8 @@ import { Vec2D } from "@/types/physics";
 import { CheckPoint } from "@/types/track-driver";
 
 class DisplayDriver {
+  private static _instance: DisplayDriver;
+
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
   private spriteLoader: SpriteLoader;
@@ -25,6 +27,13 @@ class DisplayDriver {
     }
 
     this._ctx = ctx;
+  }
+
+  static get currentInstance(): DisplayDriver | null {
+    if (!DisplayDriver._instance) {
+      return null;
+    }
+    return DisplayDriver._instance;
   }
 
   setResolution(width: number, height: number) {
@@ -128,6 +137,16 @@ class DisplayDriver {
       this._ctx.fill();
       this._ctx.closePath();
     }
+  }
+
+  drawForceVector(position: Vec2D, force: Vec2D, color: string = "green") {
+    this._ctx.strokeStyle = color;
+    this._ctx.lineWidth = 2;
+    this._ctx.beginPath();
+    this._ctx.moveTo(position.x, position.y);
+    this._ctx.lineTo(position.x + force.x, position.y + force.y);
+    this._ctx.stroke();
+    this._ctx.closePath();
   }
 }
 
