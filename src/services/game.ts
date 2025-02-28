@@ -100,7 +100,7 @@ class Game {
 
     this.displayDriver.displayColliderCorners(
       playerCorners,
-      this.playerController.position,
+      this.playerController.centerPosition,
       this.playerController.angle
     );
 

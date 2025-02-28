@@ -30,23 +30,24 @@ class PhysicsDriver {
     }
 
     // Obliczanie wektora zderzenia
-    const approachVector = Vector.subtract(controller.position, collisionPoint as Vec2D);
+    const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector); // Normalizacja wektora zderzenia (pozycja -> kolizja)
 
     // Zatrzymanie ruchu w kierunku kolizji
     controller.actualForce = Vector.scale(controller.actualForce, 0); // Zatrzymanie prędkości w kierunku kolizji
 
-    // Minimalna korekta pozycji w celu uniknięcia dalszego wjeżdżania w ścianę
-    controller.position = Vector.add(controller.position, Vector.scale(normalizedNormal, -0.2));
+    controller.position = Vector.add(controller.position, Vector.scale(normalizedNormal, 2));
 
     // Możesz tutaj dodać odbicie w kierunku przeciwnym do normalnej powierzchni
     // Możemy odbić siłę, ale w taki sposób, aby zwolniła, np. używając odbicia z mniejszą siłą:
-    const reflectionForce = Vector.scale(normalizedNormal, -0.3); // Delikatne odbicie
+    const reflectionForce = Vector.scale(normalizedNormal, -1); // Delikatne odbicie
 
     // Zaktualizowanie siły w oparciu o odbicie
     controller.actualForce = Vector.add(controller.actualForce, reflectionForce);
 
     // Resetowanie flagi kolizji po krótkiej chwili, by umożliwić kolejne kolizje
+
+    controller.setCurrentSprite();
     setTimeout(() => {
       this.isColliding = false;
     }, 50); // Możesz dostosować czas w zależności od gry

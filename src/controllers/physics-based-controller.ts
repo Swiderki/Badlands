@@ -56,6 +56,8 @@ class PhysicsBasedController {
     this._velocity = velocity;
   }
 
+
+
   get acceleration() {
     return this._acceleration;
   }
@@ -126,6 +128,13 @@ class PhysicsBasedController {
 
   set currentAdhesionModifier(value: number) {
     this._currentAdhesionModifier = value;
+  }
+
+  get centerPosition(): Vec2D {
+    return {
+      x: this._position.x + this.colliderWidth / 2 + 30,
+      y: this._position.y + this.colliderHeight / 2 + 15,
+    };
   }
 
   resetToDefaultSpeedAndAcceleration(): void {
