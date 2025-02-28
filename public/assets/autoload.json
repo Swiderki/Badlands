@@ -17,7 +17,7 @@
   },
   {
     "name": "test-track-collider",
-    "src": "/assets/tracks/test-track-data.png",
+    "src": "/assets/tracks/test-track-data1.png",
     "config": {
       "spriteWidth": 320,
       "spriteHeight": 182

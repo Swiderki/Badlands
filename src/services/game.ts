@@ -104,9 +104,13 @@ class Game {
     );
 
     const trackCollider = this.track.colliderImage;
-    if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)) {
+    if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider) !== null) {
       this.displayDriver.displayCollisionEffect(); //* It's easier to
       //* Here add the code for collision handling
+      this.physicsDriver.handleCollision(
+        this.playerController,
+        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!
+      );
     }
   }
 }
