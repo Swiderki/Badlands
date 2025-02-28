@@ -16,6 +16,19 @@ class PhysicsBasedController {
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
+  protected _maxSpeedForward: number = 400;
+  protected _maxSpeedBackwards: number = 200;
+  protected _accelerationPowerForward: number = 15;
+  protected _accelerationPowerBackwards: number = 8;
+  protected _defaultAdhesionModifier: number = 1;
+  protected _mapAdhesion: number = 1;
+
+  protected _currentMaxSpeedForward: number = this._maxSpeedForward;
+  protected _currentMaxSpeedBackwards: number = this._maxSpeedBackwards;
+  protected _currentAccelerationPowerForward: number = this._accelerationPowerForward;
+  protected _currentAccelerationPowerBackwards: number = this._accelerationPowerBackwards;
+  protected _currentAdhesionModifier: number = this._defaultAdhesionModifier;
+
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
 
@@ -66,6 +79,71 @@ class PhysicsBasedController {
   set actualForce(force: Vec2D) {
     this._actualForce = force;
   }
+
+  get mapAdhesion() {
+    return this._mapAdhesion;
+  }
+
+  set mapAdhesion(n: number) {
+    this._mapAdhesion = n;
+  }
+
+  get currentMaxSpeedForward(): number {
+    return this._currentMaxSpeedForward;
+  }
+
+  set currentMaxSpeedForward(value: number) {
+    this._currentMaxSpeedForward = value;
+  }
+
+  get currentMaxSpeedBackwards(): number {
+    return this._currentMaxSpeedBackwards;
+  }
+
+  set currentMaxSpeedBackwards(value: number) {
+    this._currentMaxSpeedBackwards = value;
+  }
+
+  get currentAccelerationPowerForward(): number {
+    return this._currentAccelerationPowerForward;
+  }
+
+  set currentAccelerationPowerForward(value: number) {
+    this._currentAccelerationPowerForward = value;
+  }
+
+  get currentAccelerationPowerBackwards(): number {
+    return this._currentAccelerationPowerBackwards;
+  }
+
+  set currentAccelerationPowerBackwards(value: number) {
+    this._currentAccelerationPowerBackwards = value;
+  }
+
+  get currentAdhesionModifier(): number {
+    return this._currentAdhesionModifier;
+  }
+
+  set currentAdhesionModifier(value: number) {
+    this._currentAdhesionModifier = value;
+  }
+
+  resetToDefaultSpeedAndAcceleration(): void {
+    this._currentMaxSpeedForward = this._maxSpeedForward;
+    this._currentMaxSpeedBackwards = this._maxSpeedBackwards;
+    this._currentAccelerationPowerForward = this._accelerationPowerForward;
+    this._currentAccelerationPowerBackwards = this._accelerationPowerBackwards;
+  }
+
+  resetToDefaultAdhesionModifier(): void {
+    this._currentAdhesionModifier = this._defaultAdhesionModifier;
+  }
+
+  accelerateForward(): void {
+    this.applyForce(this.currentMaxSpeedForward);
+  }
+
+  brake(): void {}
 
   applyForce(magnitude: number) {
     this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);

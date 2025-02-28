@@ -22,18 +22,24 @@ class PhysicsDriver {
 
   calculateActualForce(controller: PhysicsBasedController) {
     controller.actualForce = Vector.add(controller.actualForce, controller.acceleration);
-    controller.actualForce = Vector.maxLenght(controller.actualForce, 400); // predkosc maksymalna powinna byc zczytywana z obietku autka, ktorego max predosc bedzie sie zmieniać np. przez nitro
+    /* sprawdzanie
+      gdy sie klika w to sprawdza zeby nie bylo ponad max speed
+      gyd sie kliwa s to zeby nie bylo ponad max sped backwards
+      to są moje notatki prosze ich nie usuwac
+    */
     controller.actualForce = PhysicsUtils.normalizeForceToAngle(
       controller.actualForce,
       controller.angle,
-      0.5
+      0.3
     );
     controller.acceleration = { x: 0, y: 0 };
   }
 
   calculateFriction(controller: PhysicsBasedController) {
-    const differenceInAngle = (Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180;
-    const noFrictionValue = 0.6;
+    const differenceInAngle =
+      Math.floor(((Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180) * 100) /
+      100;
+    const noFrictionValue = 0;
     const frictionAmount =
       Math.round(
         Math.max(0, Math.sin(differenceInAngle * (3.14 + 2 * noFrictionValue) - noFrictionValue)) * 100
@@ -41,8 +47,13 @@ class PhysicsDriver {
     // bardzo zabawne obliczenia
     // powyższy komentarz należy usunąć w finalnej wersji projektu
 
-    const mapAdesion = 0.8; // ta wartosc powinna pochodzić z mapy, ale to jeszcze nie zostało zaimplementowane
-    const frictionFactor = Math.round((1 - mapAdesion * frictionAmount * 0.1) * 1000) / 1000;
+    const frictionFactor =
+      Math.round(
+        (0.995 - controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.1) * 1000
+      ) / 1000;
+    //console.log(differenceInAngle);
+
+    //console.log(frictionFactor);
 
     return frictionFactor;
   }
