@@ -119,6 +119,13 @@ class DisplayDriver {
     this._ctx.lineTo(corners[0].x, corners[0].y);
     this._ctx.stroke();
     this._ctx.closePath();
+
+    // Display the center of the car and the direction
+    this._ctx.fillStyle = "blue";
+    this._ctx.beginPath();
+    this._ctx.arc(position.x, position.y, 2, 0, 2 * Math.PI);
+    this._ctx.fill();
+    this._ctx.closePath();
   }
 
   displayCollisionEffect() {
