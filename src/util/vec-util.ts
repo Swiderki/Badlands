@@ -7,7 +7,7 @@ export namespace Vector {
   }
 
   export function scale(v: Vec2D, scalar: number): Vec2D {
-    return { x: v.x * scalar, y: v.y * scalar };
+    return { x: Math.floor(v.x * 1000 * scalar) / 1000, y: Math.floor(v.y * 1000 * scalar) / 1000 };
   }
 
   export function add(v1: Vec2D, v2: Vec2D): Vec2D {
@@ -28,5 +28,25 @@ export namespace Vector {
 
   export function distance(v1: Vec2D, v2: Vec2D): number {
     return Math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2);
+  }
+
+  export function angle(v: Vec2D): number {
+    return Math.atan2(v.y, v.x) * (180 / Math.PI);
+  }
+
+  export function generateVectorFromAngle(magnitude: number, angle: number): Vec2D {
+    const radianAngle = (angle * Math.PI) / 180;
+    return {
+      x: magnitude * Math.cos(radianAngle),
+      y: magnitude * Math.sin(radianAngle),
+    };
+  }
+
+  export function maxLenght(v: Vec2D, maxLenght: number): Vec2D {
+    let vector = v;
+    if (length(v) > maxLenght) {
+      vector = generateVectorFromAngle(maxLenght, angle(v));
+    }
+    return vector;
   }
 }

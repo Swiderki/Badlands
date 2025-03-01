@@ -6,5 +6,29 @@
       "spriteWidth": 32,
       "spriteHeight": 32
     }
+  },
+  {
+    "name": "test-track",
+    "src": "/assets/tracks/test-track.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "test-track-collider",
+    "src": "/assets/tracks/test-track-data1.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "peugeot",
+    "src": "/assets/sprites/spritesheet1.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
   }
 ]
