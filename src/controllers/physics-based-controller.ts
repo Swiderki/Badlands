@@ -16,8 +16,8 @@ class PhysicsBasedController {
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
-  protected _maxSpeedForward: number = 200;
-  protected _maxSpeedBackwards: number = 100;
+  protected _maxSpeedForward: number = 400;
+  protected _maxSpeedBackwards: number = 250;
   protected _accelerationPowerForward: number = 15;
   protected _accelerationPowerBackwards: number = 8;
   protected _defaultAdhesionModifier: number = 1;
@@ -55,8 +55,6 @@ class PhysicsBasedController {
   set velocity(velocity: Vec2D) {
     this._velocity = velocity;
   }
-
-
 
   get acceleration() {
     return this._acceleration;
@@ -149,13 +147,15 @@ class PhysicsBasedController {
   }
 
   accelerateForward(): void {
-    this.applyForce(this.currentMaxSpeedForward);
+    this.applyForce(this.currentAccelerationPowerForward);
   }
 
   brake(): void {}
 
   applyForce(magnitude: number) {
-    this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
+    if (Vector.length(this.actualForce) < this.currentMaxSpeedForward) {
+      this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
+    }
   }
 
   rotate(angle: number) {

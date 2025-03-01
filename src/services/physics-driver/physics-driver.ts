@@ -30,8 +30,8 @@ class PhysicsDriver {
       return;
     }
     const displayDriver = DisplayDriver.currentInstance;
-    console.log(controller.centerPosition);
-    console.log(collisionPoint);
+    //console.log(controller.centerPosition);
+    //console.log(collisionPoint);
     displayDriver?.drawForceVector(controller.centerPosition, controller.actualForce, "green");
 
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
@@ -56,7 +56,7 @@ class PhysicsDriver {
     controller.actualForce = PhysicsUtils.normalizeForceToAngle(
       controller.actualForce,
       controller.angle,
-      0.3
+      0.1
     );
     controller.acceleration = { x: 0, y: 0 };
   }
@@ -73,7 +73,7 @@ class PhysicsDriver {
 
     const frictionFactor =
       Math.round(
-        (0.995 - controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.1) * 1000
+        (0.998 - controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.05) * 1000
       ) / 1000;
 
     return frictionFactor;

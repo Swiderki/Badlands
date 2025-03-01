@@ -5,7 +5,7 @@ import { StartPosition } from "@/types/track-driver";
 class PlayerController extends PhysicsBasedController {
   private _playerInput: { [key: string]: boolean } = {};
   private _lastRotation: number = 0;
-  private _rotationCooldown: number = 0.04;
+  private _rotationCooldown: number = 0.02;
   private _lastAcceleration: number = 0;
   private _accelerationCooldown: number = 0.2;
   private _lastBrake: number = 0;
@@ -40,16 +40,16 @@ class PlayerController extends PhysicsBasedController {
     //* This one is just for testing purposes
     // console.log(deltaTime);
     // console.log(this._lastRotation);
-    
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
 
-    if (
+    /*if (
       (this.getInput("ArrowUp") || this.getInput("w")) &&
       this._lastAcceleration >= this._accelerationCooldown
-    ) {
+    )*/
+    if (this.getInput("ArrowUp") || this.getInput("w")) {
       this.accelerateForward();
       this._lastAcceleration = 0;
     }
