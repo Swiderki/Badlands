@@ -11,7 +11,7 @@ export function getCarCorners(position: Vec2D, width: number, height: number, an
   //* Center the position of the car
   //* So here we have a problem with out center point of the car
   //* We need to add some offset to the position of the car
-  //* That's why we have +9 and +5
+  //* That's why we have +30 and +15
   //* It's probably worth investigating why we need this offset
   const cx = position.x + halfHeight + 30;
   const cy = position.y + halfWidth + 15;

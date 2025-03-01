@@ -30,8 +30,8 @@ class PhysicsDriver {
       return;
     }
     const displayDriver = DisplayDriver.currentInstance;
-    console.log(controller.centerPosition);
-    console.log(collisionPoint);
+    // console.log(controller.centerPosition);
+    // console.log(collisionPoint);
     displayDriver?.drawForceVector(controller.centerPosition, controller.actualForce, "green");
 
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
