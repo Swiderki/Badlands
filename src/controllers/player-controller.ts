@@ -55,15 +55,16 @@ class PlayerController extends PhysicsBasedController {
     }
 
     if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(6);
+      this.turning(1);
       this._lastRotation = 0;
     }
 
     if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(-6);
+      this.turning(-1);
       this._lastRotation = 0;
     }
-    if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
+    //if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
+    if (this.getInput("ArrowDown") || this.getInput("s")) {
       this.brake();
       this._lastBrake = 0;
     }
