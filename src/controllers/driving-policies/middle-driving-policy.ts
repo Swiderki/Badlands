@@ -23,7 +23,7 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy{
         let distance = Math.hypot(target.x - car_position.x, target.y - car_position.y);
 
         //* If car is close enough to the checkpoint, move to the next one
-        while (distance < 10) {
+        while (distance < 5) {
             this._visitedCheckpoint = (this._visitedCheckpoint + 1) % this._trackPath.sampledPoints.length;
 
             target = this._trackPath.sampledPoints[this._visitedCheckpoint].point;
