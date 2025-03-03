@@ -3,6 +3,7 @@ import BaseDrivingPolicy from "./base-driving-policy";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util"
 
+//* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy{
@@ -34,7 +35,10 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy{
         const target_angle = PhysicsUtils.normalizeAngle(Math.atan2(target.y - car_position.y, target.x - car_position.x) * (180 / Math.PI));
     
         //* Compute the shortest angular difference
-        let angle_diff = target_angle - current_rotation;
+        const angle_diff = target_angle - current_rotation;
+
+        //* If the angle is close enough to the target, we can accelerate the car
+        const acceleration = Math.abs(angle_diff) < 5; 
     
         const max_rotation = 6;
         var rotation = 0;
@@ -42,9 +46,7 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy{
         //* Rotate in the correct direction
         if(angle_diff < 0) rotation = Math.max(angle_diff, -max_rotation);
         else rotation = Math.min(angle_diff, max_rotation);
-    
-        //* If the angle is close enough to the target, we can accelerate the car
-        const acceleration = Math.abs(angle_diff) < 5; 
+
     
         return { acceleration, rotation, brake: false };
     }

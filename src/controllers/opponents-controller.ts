@@ -16,7 +16,7 @@ class OpponentController extends PhysicsBasedController {
   constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
     super(sprite);
 
-    // Temporary, bacause he cant deal with greater values
+    //* Temporary, bacause opponent for now can't deal with greater values
     this._currentMaxSpeedForward = 50;
 
     this.setPosition(startPosition.position);
@@ -31,7 +31,7 @@ class OpponentController extends PhysicsBasedController {
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
 
-    //* Offset for x and y +30 and +15 is added for the same reason like in collision-util.ts
+    //* Offset for x and y +30 and +15 is added for the same reason like in @/src/util/collision-util.ts
     const action = this._drivingPolicy.getAction({x: this.position.x + this.colliderWidth/2 + 30, y: this.position.y + this.colliderHeight/2 + 15}, this.angle);
 
     if (action.acceleration && this._lastAcceleration >= this._accelerationCooldown) {
