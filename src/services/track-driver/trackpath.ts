@@ -24,8 +24,8 @@ export class TrackPath {
     const offsetX = (canvasWidth - width) / 2 + pathOffset.x;
     const offsetY = (canvasHeight - height) / 2 + pathOffset.y;
 
-    console.log(width, height);
-    console.log(offsetX, offsetY);
+    // console.log(width, height);
+    // console.log(offsetX, offsetY);
 
     // Loop through all sampled points and update the x and y coordinates
     for (const checkpoint of this.sampledPoints) {

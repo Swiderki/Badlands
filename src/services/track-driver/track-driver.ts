@@ -55,6 +55,10 @@ class Track {
     return this._colliderImage;
   }
 
+  get checkPointPath(): TrackPath | null {
+    return this._checkPointPath;
+  }
+
   displayCheckpoints(displayDriver: DisplayDriver) {
     if (!this._checkPointPath) return;
 
