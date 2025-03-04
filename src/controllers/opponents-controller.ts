@@ -11,22 +11,21 @@ class OpponentController extends PhysicsBasedController {
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.04;
 
-  private _drivingPolicy: DrivingPolicyBase
+  private _drivingPolicy: DrivingPolicyBase;
 
   constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
     super(sprite);
-
-    //* Temporary, bacause opponent for now can't deal with greater values
-    this._currentMaxSpeedForward = 50;
+    
+    // Temporary, bacause he cant deal with greater values
+    this._currentMaxSpeedForward = 10;
 
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
     this.setCurrentSprite();
-    this._drivingPolicy = drivingPolicy
+    this._drivingPolicy = drivingPolicy;
   }
 
   override update(deltaTime: number) {
-
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;

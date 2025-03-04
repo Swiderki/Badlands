@@ -66,7 +66,12 @@ export class TrackPath {
       pathOffset
     );
     trackPath.reverse();
+    trackPath.reduce(10);
     return trackPath;
+  }
+
+  reduce(numPoints: number) {
+    this.sampledPoints = this.sampledPoints.filter((_, i) => i % numPoints === 0);
   }
 
   reverse() {
