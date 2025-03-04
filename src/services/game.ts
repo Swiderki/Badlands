@@ -6,6 +6,7 @@ import Track from "./track-driver/track-driver";
 import TrackLoader from "./track-driver/track-loader";
 import { getCarCorners } from "../util/collision-util";
 import PhysicsBasedController from "../controllers/physics-based-controller";
+import { Vector } from "../util/vec-util";
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
@@ -97,6 +98,7 @@ class Game {
 
     this.botController?.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
+    this.physicsDriver.updateController(this.botController, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
     this.displayDriver.drawSprite(this.botController!.displayData);
   }
@@ -149,7 +151,13 @@ class Game {
     };
 
     if (this.collisionManager.isCollidingWithAnotherObject(playerCollider, botCollider)) {
-      console.log(123);
+      const averageVector = Vector.scale(
+        Vector.add(this.playerController.actualForce, this.botController.actualForce),
+        0.5
+      );
+      this.playerController.actualForce = averageVector;
+      this.botController.actualForce = averageVector;
+      console.log(averageVector);
     }
 
     const trackCollider = this.track.colliderImage;
@@ -160,7 +168,6 @@ class Game {
         this.playerController,
         this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
         trackCollider
-
       );
     }
   }
