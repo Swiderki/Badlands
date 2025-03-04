@@ -5,6 +5,7 @@ import PhysicsDriver from "./physics-driver/physics-driver";
 import Track from "./track-driver/track-driver";
 import TrackLoader from "./track-driver/track-loader";
 import { getCarCorners } from "../util/collision-util";
+import PhysicsBasedController from "../controllers/physics-based-controller";
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
@@ -17,6 +18,7 @@ class Game {
   private _penultimateRenderTime: number = 0;
 
   private playerController: PlayerController | null = null; //* In the there will be Player Controller class
+  private botController: PhysicsBasedController | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
@@ -36,7 +38,16 @@ class Game {
     if (!playerSprite) {
       throw new Error("Failed to get sprite");
     }
+
     const playerStartingPositon = this.track.startPositions[0];
+
+    const botPosition = this.track.startPositions[1];
+    const botSprite = this.displayDriver.getSprite("peugeot");
+    if (!botSprite) {
+      throw new Error("Failed to get sprite");
+    }
+
+    this.botController = new PhysicsBasedController(botSprite, botPosition);
     this.playerController = new PlayerController(playerSprite, playerStartingPositon);
 
     //* Start the game loop
@@ -83,8 +94,11 @@ class Game {
     }
 
     this.playerController.update(deltaTime);
+
+    this.botController?.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
+    this.displayDriver.drawSprite(this.botController!.displayData);
   }
 
   private collisionUpdate() {
@@ -106,13 +120,47 @@ class Game {
       this.playerController.angle
     );
 
+    const botCorners = getCarCorners(
+      this.botController!.displayData.position,
+      this.botController!.colliderHeight,
+      this.botController!.colliderWidth,
+      this.botController!.angle
+    );
+
+    this.displayDriver.displayColliderCorners(
+      botCorners,
+      this.botController!.centerPosition,
+      this.botController!.angle
+    );
+
+    const playerCollider = {
+      x: this.playerController.centerPosition.x,
+      y: this.playerController.centerPosition.y,
+      width: this.playerController.colliderWidth,
+      height: this.playerController.colliderHeight,
+      angle: this.playerController.angle,
+    };
+    const botCollider = {
+      x: this.botController!.centerPosition.x,
+      y: this.botController!.centerPosition.y,
+      width: this.botController!.colliderWidth,
+      height: this.botController!.colliderHeight,
+      angle: this.botController!.angle,
+    };
+
+    if (this.collisionManager.isCollidingWithAnotherObject(playerCollider, botCollider)) {
+      console.log(123);
+    }
+
     const trackCollider = this.track.colliderImage;
     if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider) !== null) {
       this.displayDriver.displayCollisionEffect(); //* It's easier to
       //* Here add the code for collision handling
       this.physicsDriver.handleCollision(
         this.playerController,
-        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!
+        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
+        trackCollider
+
       );
     }
   }

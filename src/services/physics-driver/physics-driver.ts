@@ -25,25 +25,28 @@ class PhysicsDriver {
     controller.position = newPosition;
   }
 
-  handleCollision(controller: PhysicsBasedController, collisionPoint: Vec2D | boolean) {
+  handleCollision(
+    controller: PhysicsBasedController,
+    collisionPoint: Vec2D | boolean,
+    trackCollider: number[][]
+  ) {
     if (!collisionPoint) {
       return;
     }
     const displayDriver = DisplayDriver.currentInstance;
-    console.log(controller.centerPosition);
     console.log(collisionPoint);
-    displayDriver?.drawForceVector(controller.centerPosition, controller.actualForce, "green");
+    displayDriver?.drawLineBetweenVectors(controller.centerPosition, collisionPoint as Vec2D, "green");
 
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
 
-    controller.actualForce = Vector.scale(controller.actualForce, 0);
+    controller.actualForce = Vector.scale(controller.actualForce, 0.2);
 
-    controller.position = Vector.add(controller.position, Vector.scale(normalizedNormal, 2));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
-    const reflectionForce = Vector.scale(normalizedNormal, -1);
+    // const reflectionForce = Vector.scale(normalizedNormal, -1);
 
-    controller.actualForce = Vector.add(controller.actualForce, reflectionForce);
+    // controller.actualForce = Vector.add(controller.actualForce, reflectionForce);
 
     controller.setCurrentSprite();
     setTimeout(() => {

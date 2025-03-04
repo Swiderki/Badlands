@@ -12,10 +12,8 @@ class PlayerController extends PhysicsBasedController {
   private _brakeCooldown: number = 0.04;
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
-    super(sprite);
+    super(sprite, startPosition);
 
-    this.setPosition(startPosition.position);
-    this.angle = startPosition.angle;
     this.setCurrentSprite();
 
     this._addInputListeners();
@@ -40,7 +38,6 @@ class PlayerController extends PhysicsBasedController {
     //* This one is just for testing purposes
     // console.log(deltaTime);
     // console.log(this._lastRotation);
-    
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
@@ -55,12 +52,12 @@ class PlayerController extends PhysicsBasedController {
     }
 
     if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(6);
+      this.rotate(7);
       this._lastRotation = 0;
     }
 
     if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(-6);
+      this.rotate(-7);
       this._lastRotation = 0;
     }
     if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {

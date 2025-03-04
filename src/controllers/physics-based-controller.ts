@@ -2,6 +2,7 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
+import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -16,10 +17,10 @@ class PhysicsBasedController {
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
-  protected _maxSpeedForward: number = 200;
-  protected _maxSpeedBackwards: number = 100;
-  protected _accelerationPowerForward: number = 15;
-  protected _accelerationPowerBackwards: number = 8;
+  protected _maxSpeedForward: number = 120;
+  protected _maxSpeedBackwards: number = 60;
+  protected _accelerationPowerForward: number = 7;
+  protected _accelerationPowerBackwards: number = 3;
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 1;
 
@@ -32,9 +33,10 @@ class PhysicsBasedController {
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, startPosition: StartPosition) {
     this._sprite = sprite;
-
+    this.setPosition(startPosition.position);
+    this.angle = startPosition.angle;
     this.colliderHeight = 30; //sprite.config.spriteHeight;
     this.colliderWidth = 14; //sprite.config.spriteWidth;
     this.setCurrentSprite();
@@ -55,8 +57,6 @@ class PhysicsBasedController {
   set velocity(velocity: Vec2D) {
     this._velocity = velocity;
   }
-
-
 
   get acceleration() {
     return this._acceleration;
