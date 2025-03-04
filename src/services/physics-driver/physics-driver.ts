@@ -23,6 +23,7 @@ class PhysicsDriver {
 
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
+    //controller.enterNitroMode()
   }
 
   handleCollision(controller: PhysicsBasedController, collisionPoint: Vec2D | boolean) {
@@ -56,7 +57,7 @@ class PhysicsDriver {
     controller.actualForce = PhysicsUtils.normalizeForceToAngle(
       controller.actualForce,
       controller.angle,
-      0.3
+      0.05
     );
     controller.acceleration = { x: 0, y: 0 };
   }
@@ -73,9 +74,12 @@ class PhysicsDriver {
 
     const frictionFactor =
       Math.round(
-        (0.995 - controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.1) * 1000
+        (0.998 -
+          controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 -
+          controller.brakingForce) *
+          1000
       ) / 1000;
-
+    controller.brakingForce = 0;
     return frictionFactor;
   }
 }

@@ -1,6 +1,8 @@
 import { TrackPath } from "@/src/services/track-driver/trackpath";
 import { Vec2D, Action } from "@/types/physics";
 
+//* Base class for driving policies - classes that are responsible for decision making in opponents
+
 abstract class BaseDrivingPolicy{
     protected _trackPath: TrackPath
     protected _scaling_factor: number
