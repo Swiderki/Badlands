@@ -173,6 +173,16 @@ class DisplayDriver {
     });
   }
 
+  drawPoint(point: Vec2D, size: number, color: string) {
+    this.topQueue.push(() => {
+      this._ctx.fillStyle = color;
+      this._ctx.beginPath();
+      this._ctx.arc(point.x, point.y, size, 0, 2 * Math.PI);
+      this._ctx.fill();
+      this._ctx.closePath();
+    });
+  }
+
   performDrawCalls() {
     this.topQueue.forEach((call) => {
       call();

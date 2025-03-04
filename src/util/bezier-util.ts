@@ -129,6 +129,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
         sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
     } else if (command.type === "Z") {
+      continue;
+    }
       // draw points between the last point and the first point
       const startPoint: Vec2D = sampledPoints[sampledPoints.length - 1].point;
       const endPoint: Vec2D = sampledPoints[2 * numPoints].point;
