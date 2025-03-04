@@ -17,7 +17,7 @@ export namespace PhysicsUtils {
 
   export function linearRegression(samples: Vec2D[]): [number, number] {
       //* This function performs a linear regression
-      //* (finds best fitting line throught give list of Vec2D type points)
+      //* (finds best fitting line throught given list of Vec2D type points)
 
       //* It returns the slope and the y-intercept (in y=ax+b form; it returns a and b)
 
