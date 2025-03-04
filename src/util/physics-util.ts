@@ -18,6 +18,9 @@ export namespace PhysicsUtils {
   export function linearRegression(samples: Vec2D[]): [number, number] {
       //* This function performs a linear regression
       //* (finds best fitting line throught give list of Vec2D type points)
+
+      //* It returns the slope and the y-intercept (in y=ax+b form; it returns a and b)
+
       const n = samples.length;
       if (n < 2) {
           throw new Error("You need to pass at least two different points inside of the linearRegression list parameter.");
@@ -31,9 +34,11 @@ export namespace PhysicsUtils {
           sumXY += sample.x * sample.y;
       }
   
-      // Obliczanie współczynników a i b
       const denominator = (n * sumXX - sumX ** 2);
       if (denominator === 0) {
+        //! here we handle the case of a vertical line
+        //! make this if statement return something that will tell you that the line is vertical, 
+        //! so you can handle it in the calling function in a proper way
           throw new Error("The fitting line is vertical.");
       }
   
