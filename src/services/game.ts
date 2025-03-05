@@ -98,7 +98,7 @@ class Game {
 
     this.botController?.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
-    this.physicsDriver.updateController(this.botController, deltaTime);
+    this.physicsDriver.updateController(this.botController!, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
     this.displayDriver.drawSprite(this.botController!.displayData);
   }
@@ -152,11 +152,11 @@ class Game {
 
     if (this.collisionManager.isCollidingWithAnotherObject(playerCollider, botCollider)) {
       const averageVector = Vector.scale(
-        Vector.add(this.playerController.actualForce, this.botController.actualForce),
+        Vector.add(this.playerController.actualForce, this.botController!.actualForce),
         0.5
       );
       this.playerController.actualForce = averageVector;
-      this.botController.actualForce = averageVector;
+      this.botController!.actualForce = averageVector;
       console.log(averageVector);
     }
 
