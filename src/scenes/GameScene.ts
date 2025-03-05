@@ -5,11 +5,19 @@ import OpponentController from "../controllers/opponents-controller";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
 import Scene from "./Scene";
+import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
 import { TrackPath } from "../services/track-driver/trackpath";
+import { Vec2D } from "@/types/physics";
+import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
+
+interface Obstacle {
+  sprite: Sprite;
+  position: Vec2D;
+}
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
@@ -18,6 +26,7 @@ class GameScene extends Scene {
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
+  private obstacles: Obstacle[] = [];
 
   constructor(displayDriver: DisplayDriver) {
     super();
@@ -34,6 +43,7 @@ class GameScene extends Scene {
       this.track.checkPointPath!,
       this.displayDriver.scaler
     );
+    await this.loadObstacles();
   }
 
   private async loadPlayer(startPosition: StartPosition) {
@@ -58,11 +68,24 @@ class GameScene extends Scene {
     );
   }
 
+  private async loadObstacles() {
+    const obstacleSprite = await this.displayDriver.getSprite("hole");
+    if (!obstacleSprite) {
+      throw new Error("Failed to load obstacle sprite");
+    }
+
+    // Add multiple obstacles with different positions
+    this.obstacles.push({ sprite: obstacleSprite, position: { x: 150, y: 150 } });
+    this.obstacles.push({ sprite: obstacleSprite, position: { x: 350, y: 300 } });
+    this.obstacles.push({ sprite: obstacleSprite, position: { x: 800, y: 280 } });
+  }
+
   update(deltaTime: number) {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
+    this.obstacleUpdate();
   }
 
   render(_ctx: CanvasRenderingContext2D) {
@@ -126,6 +149,49 @@ class GameScene extends Scene {
         this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!
       );
     }
+  }
+
+  private obstacleUpdate() {
+    if (!this.playerController) {
+      return;
+    }
+
+    this.obstacles.forEach((obstacle) => {
+      this.displayDriver.drawSprite({
+        sprite: obstacle.sprite,
+        position: obstacle.position,
+        currentSprite: 0,
+      });
+
+      const playerCorners = getCarCorners(
+        this.playerController!.displayData.position,
+        this.playerController!.colliderHeight,
+        this.playerController!.colliderWidth,
+        this.playerController!.angle
+      );
+
+      if (this.isCollidingWithObstacle(playerCorners, obstacle.position, obstacle.sprite)) {
+        this.playerController!.actualForce = Vector.scale(this.playerController!.actualForce, 0.5);
+      }
+    });
+  }
+
+  private isCollidingWithObstacle(
+    corners: Vec2D[],
+    obstaclePosition: Vec2D,
+    obstacleSprite: Sprite
+  ): boolean {
+    for (const corner of corners) {
+      if (
+        corner.x >= obstaclePosition.x &&
+        corner.x <= obstaclePosition.x + obstacleSprite.config.spriteWidth &&
+        corner.y >= obstaclePosition.y &&
+        corner.y <= obstaclePosition.y + obstacleSprite.config.spriteHeight
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
