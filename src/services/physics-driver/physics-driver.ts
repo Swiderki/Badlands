@@ -17,24 +17,24 @@ class PhysicsDriver {
       return; // Jeśli kolizja miała miejsce, nie przetwarzaj dalszej fizyki
     }
 
-    console.log(
-      PhysicsUtils.linearRegression([
-        { x: 1, y: 2 },
-        { x: 1, y: 3 },
-      ])
-    );
-    console.log(
-      PhysicsUtils.linearRegression([
-        { x: 1000, y: 2000 },
-        { x: 1001, y: 2001 },
-      ])
-    );
-    console.log(
-      PhysicsUtils.linearRegression([
-        { x: 0, y: 0 },
-        { x: 1000000, y: 1000000 },
-      ])
-    );
+    // console.log(
+    //   PhysicsUtils.linearRegression([
+    //     { x: 1, y: 2 },
+    //     { x: 1, y: 3 },
+    //   ])
+    // );
+    // console.log(
+    //   PhysicsUtils.linearRegression([
+    //     { x: 1000, y: 2000 },
+    //     { x: 1001, y: 2001 },
+    //   ])
+    // );
+    // console.log(
+    //   PhysicsUtils.linearRegression([
+    //     { x: 0, y: 0 },
+    //     { x: 1000000, y: 1000000 },
+    //   ])
+    // );
 
     //* This is a simple physics loop
     this.calculateActualForce(controller);
@@ -65,11 +65,13 @@ class PhysicsDriver {
     const pattern = 1;
     for (let dx = -pattern; dx <= pattern; dx++) {
       for (let dy = -pattern; dy <= pattern; dy++) {
-        if (trackCollider[gridY + dx] && trackCollider[gridY + dx][gridX + dy] === 1) {
-          points.push({ x: (gridX + dx) * 3, y: (gridY + dy) * 3 });
+        if (trackCollider[gridY + dy] && trackCollider[gridY + dy][gridX + dx] === 1) {
+          points.push({ x: (gridX + dx) * displayDriver!.scaler, y: (gridY + dy) * displayDriver!.scaler });
         }
       }
     }
+
+    for (let p=0; p<points.length-1; p++) displayDriver?.drawLineBetweenVectors(points[p], points[p+1], "green");
 
     const x = PhysicsUtils.linearRegression(points);
 

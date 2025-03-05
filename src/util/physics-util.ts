@@ -52,7 +52,7 @@ export namespace PhysicsUtils {
     // console.log("VarianceX:", varianceX, "VarianceY:", varianceY);
 
     const denominator = n * sumXX - sumX ** 2;
-    if (denominator === 0) {
+    if (denominator === 0 || (varianceY > varianceX && (n * sumXY - sumX * sumY) === 0)) {
       //! here we handle the case of a vertical line
       //! make this if statement return something that will tell you that the line is vertical,
       //! so you can handle it in the calling function in a proper way
