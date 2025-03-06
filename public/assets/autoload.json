@@ -30,5 +30,13 @@
       "spriteWidth": 80,
       "spriteHeight": 80
     }
+  },
+  {
+    "name": "hole",
+    "src": "/assets/obstacles/hole.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
   }
 ]
