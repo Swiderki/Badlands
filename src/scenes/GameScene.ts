@@ -146,7 +146,8 @@ class GameScene extends Scene {
       this.displayDriver.displayCollisionEffect();
       this.physicsDriver.handleCollision(
         this.playerController,
-        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!
+        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
+        trackCollider
       );
     }
   }
