@@ -27,7 +27,7 @@ class GameScene extends Scene {
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
   private obstacles: Obstacle[] = [];
-
+  
   constructor(displayDriver: DisplayDriver) {
     super();
     this.displayDriver = displayDriver;

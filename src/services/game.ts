@@ -2,17 +2,6 @@ import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import Scene from "../scenes/Scene";
-import PhysicsDriver from "./physics-driver/physics-driver";
-import Track from "./track-driver/track-driver";
-import TrackLoader from "./track-driver/track-loader";
-import { StartPosition } from "@/types/track-driver";
-import { getCarCorners } from "../util/collision-util";
-
-import PhysicsBasedController from "../controllers/physics-based-controller";
-import { Vector } from "../util/vec-util";
-
-import { TrackPath } from "./track-driver/trackpath";
-
 
 class Game {
   //* Drivers
@@ -21,9 +10,12 @@ class Game {
   //* Used to keep track of time
   private _lastRenderTime: number = 0;
   private _penultimateRenderTime: number = 0;
-  
+
   private currentScene: Scene;
 
+  static instance: Game;
+
+  deltaTime: number = 0;
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
@@ -33,13 +25,18 @@ class Game {
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
+  static getInstance(): Game {
+    if (!Game.instance) {
+      throw new Error("Game instance not initialized");
+    }
+    return Game.instance;
+  }
   async start() {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
     await this.displayDriver.autoLoadSprites();
     await this.startGameScene();
-
 
     //* Start the game loop
     this._update();
@@ -63,7 +60,6 @@ class Game {
   private startMainMenuScene() {
     this.currentScene = new MainMenuScene();
     this.currentScene.init();
-
   }
 
   //* This method is called every frame, but it should be free of any game logic
@@ -72,9 +68,9 @@ class Game {
   //! For any game logic check out the update method
   private _update() {
     this.displayDriver.clear();
-    const deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
+    this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
 
-    this.currentScene.update(deltaTime);
+    this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
 
     requestAnimationFrame((renderTime) => {
