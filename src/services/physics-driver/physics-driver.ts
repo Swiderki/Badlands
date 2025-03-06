@@ -14,27 +14,10 @@ class PhysicsDriver {
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
     if (this.isColliding) {
-      return; // Jeśli kolizja miała miejsce, nie przetwarzaj dalszej fizyki
+      return; 
     }
 
-    // console.log(
-    //   PhysicsUtils.linearRegression([
-    //     { x: 1, y: 2 },
-    //     { x: 1, y: 3 },
-    //   ])
-    // );
-    // console.log(
-    //   PhysicsUtils.linearRegression([
-    //     { x: 1000, y: 2000 },
-    //     { x: 1001, y: 2001 },
-    //   ])
-    // );
-    // console.log(
-    //   PhysicsUtils.linearRegression([
-    //     { x: 0, y: 0 },
-    //     { x: 1000000, y: 1000000 },
-    //   ])
-    // );
+
 
     //* This is a simple physics loop
     this.calculateActualForce(controller);
@@ -53,8 +36,7 @@ class PhysicsDriver {
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
 
-    // 🌟 Zachowujemy część prędkości zamiast resetować ją do 0
-    const SPEED_LOSS = 0.8; // Zmieniaj ten współczynnik, żeby regulować tłumienie
+    const SPEED_LOSS = 0.8;
     controller.actualForce = Vector.scale(controller.actualForce, SPEED_LOSS);
 
     //? Miejsce zderzenia w tablicy trackCollider
@@ -65,17 +47,18 @@ class PhysicsDriver {
     const pattern = 1;
     for (let dx = -pattern; dx <= pattern; dx++) {
       for (let dy = -pattern; dy <= pattern; dy++) {
+        if (dy === 0 && dx === 0) continue;
         if (trackCollider[gridY + dy] && trackCollider[gridY + dy][gridX + dx] === 1) {
           points.push({ x: (gridX + dx) * displayDriver!.scaler, y: (gridY + dy) * displayDriver!.scaler });
         }
       }
     }
 
-    for (let p=0; p<points.length-1; p++) displayDriver?.drawLineBetweenVectors(points[p], points[p+1], "green");
+    for (let p = 0; p < points.length - 1; p++)
+      displayDriver?.drawLineBetweenVectors(points[p], points[p + 1], "green");
 
     const x = PhysicsUtils.linearRegression(points);
 
-    console.log(x);
     let normal: Vec2D;
 
     if (x[0] === Infinity) {
@@ -84,34 +67,45 @@ class PhysicsDriver {
       const pointB = { x: xValue, y: 1000 };
       displayDriver?.drawLineBetweenVectors(pointA, pointB, "blue");
 
-      // Ściana pionowa => normalna idzie w poziomie
       normal = { x: 1, y: 0 };
     } else {
       const pointA = { x: 0, y: x[1] };
       const pointB = { x: 1000, y: x[0] * 1000 + x[1] };
       displayDriver?.drawLineBetweenVectors(pointA, pointB, "blue");
 
-      // Normalna to wektor prostopadły do bandy (-a, 1) i normalizacja
       normal = Vector.normalize({ x: -x[0], y: 1 });
     }
 
-    // 🔥 **Odbijanie wektora prędkości od bandy**
+    //? Odwrocenie normlanej jesli jest5 zle skierowana (nie wiem czemu ale śmiga :) )
+    if (Vector.dot(normal, approachVector) > 0) {
+      normal = Vector.scale(normal, -1);
+    }
+
     const dotProduct = Vector.dot(controller.actualForce, normal);
     const reflection = Vector.subtract(controller.actualForce, Vector.scale(normal, 2 * dotProduct));
 
-    // Zachowanie części prędkości po odbiciu
     controller.actualForce = Vector.scale(reflection, SPEED_LOSS);
 
-    // 🌀 **Dodanie rotacji samochodu w zależności od kąta uderzenia**
     const impactAngle = Math.atan2(controller.actualForce.y, controller.actualForce.x);
     const normalAngle = Math.atan2(normal.y, normal.x);
-    const angleDifference = ((impactAngle - normalAngle) * 180) / Math.PI;
+    const angleDifference = Math.atan2(
+      Math.sin(impactAngle - normalAngle),
+      Math.cos(impactAngle - normalAngle)
+    );
+    // console.log(
+    //   "impactAngle:",
+    //   impactAngle,
+    //   "normalAngle:",
+    //   normalAngle,
+    //   "angleDifference:",
+    //   angleDifference
+    // );
+    // console.log("actualForce przed odbiciem:", controller.actualForce);
+    // console.log("normal vector:", normal);
 
-    // Rotacja auta zależna od kąta odbicia
-    controller.rotate(angleDifference * 0.1); // Możesz dostroić ten mnożnik dla lepszego efektu
+    controller.rotate(angleDifference * 5); 
 
-    // Odsuń trochę auto od ściany, aby uniknąć zapętlenia kolizji
-    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 3)));
 
     controller.setCurrentSprite();
     setTimeout(() => {
