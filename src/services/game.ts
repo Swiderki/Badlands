@@ -29,7 +29,6 @@ class Game {
 
   private opponentControllersList: OpponentController[] = [];
 
-
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
     this.physicsDriver = new PhysicsDriver();
@@ -45,8 +44,13 @@ class Game {
 
     //* In the future there will be separate function to do all the loading, as for now it's here
     this.loadPlayer(this.track.startPositions[0]);
-    this.loadOpponents(this.track.startPositions.slice(1), this.track.checkPointPath!, this.displayDriver.scaler);
-    
+    console.log(this.track.startPositions[0]);
+    this.loadOpponents(
+      this.track.startPositions.slice(1),
+      this.track.checkPointPath!,
+      this.displayDriver.scaler
+    );
+
     //* Start the game loop
     this._update();
   }
@@ -65,7 +69,13 @@ class Game {
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }
-    this.opponentControllersList.push(new OpponentController(opponentSprite, startPositions[0], new MiddleDrivingPolicy(checkPointPath, scaler)));
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[0],
+        new MiddleDrivingPolicy(checkPointPath, scaler)
+      )
+    );
   }
 
   //* This method is called every frame, but it should be free of any game logic
@@ -90,6 +100,7 @@ class Game {
     this.playerUpdate(deltaTime);
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
+    console.log(this.playerController?.position);
 
     this.displayDriver.performDrawCalls();
   }
@@ -110,11 +121,8 @@ class Game {
 
     this.playerController.update(deltaTime);
 
-    this.botController?.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
-    this.physicsDriver.updateController(this.botController!, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
-    this.displayDriver.drawSprite(this.botController!.displayData);
   }
 
   private opponentsUpdate(deltaTime: number) {
@@ -122,12 +130,11 @@ class Game {
       return;
     }
 
-    this.opponentControllersList.forEach(opponent => {
+    this.opponentControllersList.forEach((opponent) => {
       opponent.update(deltaTime);
       this.physicsDriver.updateController(opponent, deltaTime);
       this.displayDriver.drawSprite(opponent.displayData);
     });
-    
   }
 
   private collisionUpdate() {
@@ -148,7 +155,6 @@ class Game {
       this.playerController.centerPosition,
       this.playerController.angle
     );
-
 
     //* === Temporary =======================================================================
 

@@ -14,10 +14,8 @@ class PhysicsDriver {
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
     if (this.isColliding) {
-      return; 
+      return;
     }
-
-
 
     //* This is a simple physics loop
     this.calculateActualForce(controller);
@@ -33,7 +31,6 @@ class PhysicsDriver {
       return;
     }
     const displayDriver = DisplayDriver.currentInstance;
-
 
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
@@ -105,9 +102,9 @@ class PhysicsDriver {
     // console.log("actualForce przed odbiciem:", controller.actualForce);
     // console.log("normal vector:", normal);
 
-    controller.rotate(angleDifference * 5); 
+    controller.rotate(angleDifference * 5);
 
-    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 3)));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 1)));
 
     controller.setCurrentSprite();
     setTimeout(() => {

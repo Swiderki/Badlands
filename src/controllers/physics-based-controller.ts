@@ -35,10 +35,9 @@ class PhysicsBasedController {
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
 
-  constructor(sprite: Sprite, startPosition: StartPosition) {
+  constructor(sprite: Sprite) {
     this._sprite = sprite;
-    this.setPosition(startPosition.position);
-    this.angle = startPosition.angle;
+
     this.colliderHeight = 30; //sprite.config.spriteHeight;
     this.colliderWidth = 14; //sprite.config.spriteWidth;
     this.setCurrentSprite();
@@ -169,7 +168,7 @@ class PhysicsBasedController {
       this.actualForce = { x: 0, y: 0 };
     }
     let diff = Math.abs(Vector.angle(this.actualForce) - this.angle) % 360;
-    if (diff > 90 || Vector.length(this.actualForce) == 0) {
+    if (diff > 90 || Vector.length(this.actualForce) === 0) {
       if (Vector.length(this.actualForce) < this.currentMaxSpeedBackwards) {
         this.applyForce(-1 * this.currentAccelerationPowerBackwards);
       }
