@@ -13,6 +13,7 @@ import { TrackPath } from "../services/track-driver/trackpath";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
+import { UIService } from "../services/ui-service/ui-service";
 
 interface Obstacle {
   sprite: Sprite;
@@ -26,12 +27,14 @@ class GameScene extends Scene {
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
+  private UiService: UIService;
   private obstacles: Obstacle[] = [];
-  
+
   constructor(displayDriver: DisplayDriver) {
     super();
     this.displayDriver = displayDriver;
     this.physicsDriver = new PhysicsDriver();
+    this.UiService = UIService.getInstance();
     this.collisionManager = new CollisionManager(this.displayDriver.scaler);
   }
 

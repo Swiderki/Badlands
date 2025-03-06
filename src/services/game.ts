@@ -31,6 +31,7 @@ class Game {
     }
     return Game.instance;
   }
+
   async start() {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();

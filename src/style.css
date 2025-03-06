@@ -1,3 +1,19 @@
+/* Remove antialiasing*/
+img,
+#game-canvas {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}
+
+img {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
 body {
   background-color: #111;
   font-family: Arial, sans-serif;
@@ -9,4 +25,25 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
+}
+
+#app {
+  scale: 1.2;
+}
+
+#game-scene {
+  position: relative;
+  isolation: isolate;
+}
+
+.speed-meter__wrapper {
+  position: absolute;
+  width: 60%;
+  margin-inline: auto;
+  transform: translate(-50%, -70%);
+  left: 50%;
+}
+
+.speed-meter__wrapper img {
+  width: 100%;
 }
