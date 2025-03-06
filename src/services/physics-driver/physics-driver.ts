@@ -19,6 +19,7 @@ class PhysicsDriver {
 
     //* This is a simple physics loop
     this.calculateActualForce(controller, deltaTime);
+    // tutaj trzeba też dodać delta time ale ja to zrobie staszek
     controller.actualForce = Vector.scale(controller.actualForce, this.calculateFriction(controller));
 
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
