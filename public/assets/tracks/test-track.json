@@ -2,7 +2,7 @@
   "traction": 0.5,
   "bonuses": [],
   "startPositions": [
-    { "x": 0, "y": 290, "angle": 90 },
+    { "x": 50, "y": 290, "angle": 90 },
     { "x": 80, "y": 290, "angle": 270 },
     { "x": 110, "y": 290, "angle": 270 },
     { "x": 140, "y": 290, "angle": 270 },

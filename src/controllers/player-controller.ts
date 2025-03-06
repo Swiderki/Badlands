@@ -13,9 +13,9 @@ class PlayerController extends PhysicsBasedController {
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
-
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
+
     this.setCurrentSprite();
 
     this._addInputListeners();

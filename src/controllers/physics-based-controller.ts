@@ -2,6 +2,7 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
+import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -21,6 +22,7 @@ class PhysicsBasedController {
   protected _maxSpeedBackwards: number = 250;
   protected _accelerationPowerForward: number = 12;
   protected _accelerationPowerBackwards: number = 8;
+
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 1;
 
@@ -166,7 +168,7 @@ class PhysicsBasedController {
       this.actualForce = { x: 0, y: 0 };
     }
     let diff = Math.abs(Vector.angle(this.actualForce) - this.angle) % 360;
-    if (diff > 90 || Vector.length(this.actualForce) == 0) {
+    if (diff > 90 || Vector.length(this.actualForce) === 0) {
       if (Vector.length(this.actualForce) < this.currentMaxSpeedBackwards) {
         this.applyForce(-1 * this.currentAccelerationPowerBackwards);
       }

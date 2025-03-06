@@ -2,6 +2,17 @@ import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import Scene from "../scenes/Scene";
+import PhysicsDriver from "./physics-driver/physics-driver";
+import Track from "./track-driver/track-driver";
+import TrackLoader from "./track-driver/track-loader";
+import { StartPosition } from "@/types/track-driver";
+import { getCarCorners } from "../util/collision-util";
+
+import PhysicsBasedController from "../controllers/physics-based-controller";
+import { Vector } from "../util/vec-util";
+
+import { TrackPath } from "./track-driver/trackpath";
+
 
 class Game {
   //* Drivers
@@ -10,8 +21,9 @@ class Game {
   //* Used to keep track of time
   private _lastRenderTime: number = 0;
   private _penultimateRenderTime: number = 0;
-
+  
   private currentScene: Scene;
+
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
@@ -26,8 +38,8 @@ class Game {
     this.displayDriver.clear();
 
     await this.displayDriver.autoLoadSprites();
-
     await this.startGameScene();
+
 
     //* Start the game loop
     this._update();
@@ -51,6 +63,7 @@ class Game {
   private startMainMenuScene() {
     this.currentScene = new MainMenuScene();
     this.currentScene.init();
+
   }
 
   //* This method is called every frame, but it should be free of any game logic
