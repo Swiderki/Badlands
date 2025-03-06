@@ -1,12 +1,19 @@
 import PlayerController from "../controllers/player-controller";
+import OpponentController from "../controllers/opponents-controller";
+import MiddleDrivingPolicy from "../controllers/driving-policies/middle-driving-policy";
 import CollisionManager from "./collision/collision-manager";
 import DisplayDriver from "./display-driver/display-driver";
 import PhysicsDriver from "./physics-driver/physics-driver";
 import Track from "./track-driver/track-driver";
 import TrackLoader from "./track-driver/track-loader";
+import { StartPosition } from "@/types/track-driver";
 import { getCarCorners } from "../util/collision-util";
+
 import PhysicsBasedController from "../controllers/physics-based-controller";
 import { Vector } from "../util/vec-util";
+
+import { TrackPath } from "./track-driver/trackpath";
+
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
@@ -19,7 +26,9 @@ class Game {
   private _penultimateRenderTime: number = 0;
 
   private playerController: PlayerController | null = null; //* In the there will be Player Controller class
-  private botController: PhysicsBasedController | null = null;
+
+  private opponentControllersList: OpponentController[] = [];
+
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
@@ -35,24 +44,28 @@ class Game {
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
 
     //* In the future there will be separate function to do all the loading, as for now it's here
-    const playerSprite = this.displayDriver.getSprite("peugeot");
-    if (!playerSprite) {
-      throw new Error("Failed to get sprite");
-    }
-
-    const playerStartingPositon = this.track.startPositions[0];
-
-    const botPosition = this.track.startPositions[1];
-    const botSprite = this.displayDriver.getSprite("peugeot");
-    if (!botSprite) {
-      throw new Error("Failed to get sprite");
-    }
-
-    this.botController = new PhysicsBasedController(botSprite, botPosition);
-    this.playerController = new PlayerController(playerSprite, playerStartingPositon);
-
+    this.loadPlayer(this.track.startPositions[0]);
+    this.loadOpponents(this.track.startPositions.slice(1), this.track.checkPointPath!, this.displayDriver.scaler);
+    
     //* Start the game loop
     this._update();
+  }
+
+  private async loadPlayer(startPosition: StartPosition) {
+    const playerSprite = this.displayDriver.getSprite("peugeot");
+    if (!playerSprite) {
+      throw new Error("Failed to get player sprite");
+    }
+
+    this.playerController = new PlayerController(playerSprite, startPosition);
+  }
+
+  private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
+    const opponentSprite = this.displayDriver.getSprite("peugeot");
+    if (!opponentSprite) {
+      throw new Error("Failed to get opponent sprite");
+    }
+    this.opponentControllersList.push(new OpponentController(opponentSprite, startPositions[0], new MiddleDrivingPolicy(checkPointPath, scaler)));
   }
 
   //* This method is called every frame, but it should be free of any game logic
@@ -75,6 +88,7 @@ class Game {
   update(deltaTime: number) {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
+    this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
 
     this.displayDriver.performDrawCalls();
@@ -103,6 +117,19 @@ class Game {
     this.displayDriver.drawSprite(this.botController!.displayData);
   }
 
+  private opponentsUpdate(deltaTime: number) {
+    if (this.opponentControllersList.length === 0) {
+      return;
+    }
+
+    this.opponentControllersList.forEach(opponent => {
+      opponent.update(deltaTime);
+      this.physicsDriver.updateController(opponent, deltaTime);
+      this.displayDriver.drawSprite(opponent.displayData);
+    });
+    
+  }
+
   private collisionUpdate() {
     if (!this.track || !this.track.colliderImage || !this.playerController) {
       return;
@@ -122,43 +149,23 @@ class Game {
       this.playerController.angle
     );
 
-    const botCorners = getCarCorners(
-      this.botController!.displayData.position,
-      this.botController!.colliderHeight,
-      this.botController!.colliderWidth,
-      this.botController!.angle
+
+    //* === Temporary =======================================================================
+
+    const opponentCorners = getCarCorners(
+      this.opponentControllersList[0].displayData.position,
+      this.opponentControllersList[0].colliderHeight,
+      this.opponentControllersList[0].colliderWidth,
+      this.opponentControllersList[0].angle
     );
 
     this.displayDriver.displayColliderCorners(
-      botCorners,
-      this.botController!.centerPosition,
-      this.botController!.angle
+      opponentCorners,
+      this.opponentControllersList[0].centerPosition,
+      this.opponentControllersList[0].angle
     );
 
-    const playerCollider = {
-      x: this.playerController.centerPosition.x,
-      y: this.playerController.centerPosition.y,
-      width: this.playerController.colliderWidth,
-      height: this.playerController.colliderHeight,
-      angle: this.playerController.angle,
-    };
-    const botCollider = {
-      x: this.botController!.centerPosition.x,
-      y: this.botController!.centerPosition.y,
-      width: this.botController!.colliderWidth,
-      height: this.botController!.colliderHeight,
-      angle: this.botController!.angle,
-    };
-
-    if (this.collisionManager.isCollidingWithAnotherObject(playerCollider, botCollider)) {
-      const averageVector = Vector.scale(
-        Vector.add(this.playerController.actualForce, this.botController!.actualForce),
-        0.5
-      );
-      this.playerController.actualForce = averageVector;
-      this.botController!.actualForce = averageVector;
-      console.log(averageVector);
-    }
+    //* =====================================================================================
 
     const trackCollider = this.track.colliderImage;
     if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider) !== null) {

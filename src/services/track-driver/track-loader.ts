@@ -29,9 +29,9 @@ class TrackLoader {
           data.colliderImage
         );
 
-        const pathOffset = data.pathOffset
+        const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
-        
+
         return new Track(
           data.bonuses,
           data.traction,
@@ -40,10 +40,10 @@ class TrackLoader {
           colliderImageData,
           checkPointPath
         );
-      })
-      .catch((error) => {
-        throw new Error(`Failed to load track: ${error}`);
       });
+    // .catch((error) => {
+    //   throw new Error(`Failed to load track: ${error}`);
+    // });
   }
 
   static extractColliderFromImage(displayDriver: DisplayDriver, spriteName: string): Promise<number[][]> {

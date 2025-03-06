@@ -14,13 +14,15 @@ class PhysicsBasedController {
   protected _velocity: Vec2D = { x: 0, y: 0 };
   protected _acceleration: Vec2D = { x: 0, y: 0 };
   protected _angle: number = 0;
+  protected _brakingForce: number = 0;
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
-  protected _maxSpeedForward: number = 120;
-  protected _maxSpeedBackwards: number = 60;
-  protected _accelerationPowerForward: number = 7;
-  protected _accelerationPowerBackwards: number = 3;
+  protected _maxSpeedForward: number = 400;
+  protected _maxSpeedBackwards: number = 250;
+  protected _accelerationPowerForward: number = 12;
+  protected _accelerationPowerBackwards: number = 8;
+
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 1;
 
@@ -72,6 +74,14 @@ class PhysicsBasedController {
 
   set angle(angle: number) {
     this._angle = angle;
+  }
+
+  get brakingForce() {
+    return this._brakingForce;
+  }
+
+  set brakingForce(brakingForce: number) {
+    this._brakingForce = brakingForce;
   }
 
   get actualForce() {
@@ -149,13 +159,46 @@ class PhysicsBasedController {
   }
 
   accelerateForward(): void {
-    this.applyForce(this.currentMaxSpeedForward);
+    if (Vector.length(this.actualForce) < this.currentMaxSpeedForward) {
+      this.applyForce(this.currentAccelerationPowerForward);
+    }
   }
 
-  brake(): void {}
+  brake(): void {
+    if (Vector.length(this.actualForce) < 0.05) {
+      this.actualForce = { x: 0, y: 0 };
+    }
+    let diff = Math.abs(Vector.angle(this.actualForce) - this.angle) % 360;
+    if (diff > 90 || Vector.length(this.actualForce) == 0) {
+      if (Vector.length(this.actualForce) < this.currentMaxSpeedBackwards) {
+        this.applyForce(-1 * this.currentAccelerationPowerBackwards);
+      }
+    } else {
+      this.brakingForce = 0.05;
+    }
+  }
 
   applyForce(magnitude: number) {
     this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
+  }
+
+  enterNitroMode() {
+    const nitroModifier = 1.5;
+    this.currentMaxSpeedForward = this._maxSpeedForward * nitroModifier;
+    this.currentMaxSpeedBackwards = this._maxSpeedBackwards * nitroModifier;
+    this.currentAccelerationPowerForward = this._accelerationPowerForward * nitroModifier;
+    this.currentAccelerationPowerBackwards = this._accelerationPowerBackwards * nitroModifier;
+    // aby wyłączyć nitro służy funkcja resetToDefaultSpeedAndAcceleration()
+  }
+
+  turning(value: number) {
+    const turningThreshold = 20;
+    if (Vector.length(this.actualForce) > turningThreshold) {
+      this.rotate(
+        (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
+          (this.currentMaxSpeedForward * 2)
+      );
+    }
   }
 
   rotate(angle: number) {
@@ -169,7 +212,7 @@ class PhysicsBasedController {
 
   setCurrentSprite() {
     this._currentSprite =
-      Math.floor(spriteCount - (((this._angle + 270) % 360) / 360) * spriteCount) % spriteCount;
+      Math.round(spriteCount - (((this._angle + 270) % 360) / 360) * spriteCount) % spriteCount;
   }
 
   get displayData(): DisplayData {

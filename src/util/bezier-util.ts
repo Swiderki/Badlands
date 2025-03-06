@@ -85,6 +85,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
 
         // Tangent and curvature computation
         const tangent = bezier.derivative(t);
+        //* Type error in libary plis ignore
+        //@ts-expect-error
         const curvature = bezier.curvature(t).k;
 
         sampledPoints.push({ point: { x, y }, tangent, curvature });
@@ -102,6 +104,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
 
         // Tangent and curvature computation
         const tangent = bezier.derivative(t);
+        //* Type error in libary plis ignore
+        //@ts-expect-error
         const curvature = bezier.curvature(t).k;
 
         sampledPoints.push({ point: { x, y }, tangent, curvature });
@@ -129,6 +133,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
         sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
     } else if (command.type === "Z") {
+      continue;
+
       // draw points between the last point and the first point
       const startPoint: Vec2D = sampledPoints[sampledPoints.length - 1].point;
       const endPoint: Vec2D = sampledPoints[2 * numPoints].point;
@@ -144,6 +150,5 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
       }
     }
   }
-
   return sampledPoints;
 }
