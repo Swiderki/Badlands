@@ -8,7 +8,12 @@ import Track from "./track-driver/track-driver";
 import TrackLoader from "./track-driver/track-loader";
 import { StartPosition } from "@/types/track-driver";
 import { getCarCorners } from "../util/collision-util";
+
+import PhysicsBasedController from "../controllers/physics-based-controller";
+import { Vector } from "../util/vec-util";
+
 import { TrackPath } from "./track-driver/trackpath";
+
 class Game {
   //* Drivers
   displayDriver: DisplayDriver;
@@ -21,7 +26,9 @@ class Game {
   private _penultimateRenderTime: number = 0;
 
   private playerController: PlayerController | null = null; //* In the there will be Player Controller class
+
   private opponentControllersList: OpponentController[] = [];
+
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
@@ -49,6 +56,7 @@ class Game {
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
     }
+
     this.playerController = new PlayerController(playerSprite, startPosition);
   }
 
@@ -101,8 +109,12 @@ class Game {
     }
 
     this.playerController.update(deltaTime);
+
+    this.botController?.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
+    this.physicsDriver.updateController(this.botController!, deltaTime);
     this.displayDriver.drawSprite(this.playerController.displayData);
+    this.displayDriver.drawSprite(this.botController!.displayData);
   }
 
   private opponentsUpdate(deltaTime: number) {
@@ -137,6 +149,7 @@ class Game {
       this.playerController.angle
     );
 
+
     //* === Temporary =======================================================================
 
     const opponentCorners = getCarCorners(
@@ -160,7 +173,8 @@ class Game {
       //* Here add the code for collision handling
       this.physicsDriver.handleCollision(
         this.playerController,
-        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!
+        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
+        trackCollider
       );
     }
   }

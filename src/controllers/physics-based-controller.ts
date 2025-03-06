@@ -2,6 +2,7 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
+import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -21,6 +22,7 @@ class PhysicsBasedController {
   protected _maxSpeedBackwards: number = 250;
   protected _accelerationPowerForward: number = 12;
   protected _accelerationPowerBackwards: number = 8;
+
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 1;
 
@@ -33,9 +35,10 @@ class PhysicsBasedController {
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, startPosition: StartPosition) {
     this._sprite = sprite;
-
+    this.setPosition(startPosition.position);
+    this.angle = startPosition.angle;
     this.colliderHeight = 30; //sprite.config.spriteHeight;
     this.colliderWidth = 14; //sprite.config.spriteWidth;
     this.setCurrentSprite();
