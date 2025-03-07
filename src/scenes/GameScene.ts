@@ -30,6 +30,8 @@ class GameScene extends Scene {
   private UiService: UIService;
   private obstacles: Obstacle[] = [];
 
+  //* Element ref
+  sceneRef: HTMLElement | null = null;
   constructor(displayDriver: DisplayDriver) {
     super();
     this.displayDriver = displayDriver;
@@ -39,6 +41,12 @@ class GameScene extends Scene {
   }
 
   async init() {
+    this.sceneRef = document.querySelector("#start-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "block";
+
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
@@ -47,6 +55,21 @@ class GameScene extends Scene {
       this.displayDriver.scaler
     );
     await this.loadObstacles();
+  }
+
+  override onMount() {
+    this.sceneRef = document.querySelector("#start-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "block";
+  }
+  override onDisMount() {
+    this.sceneRef = document.querySelector("#start-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "none";
   }
 
   private async loadPlayer(startPosition: StartPosition) {
@@ -72,7 +95,7 @@ class GameScene extends Scene {
   }
 
   private async loadObstacles() {
-    const obstacleSprite = await this.displayDriver.getSprite("hole");
+    const obstacleSprite = this.displayDriver.getSprite("hole");
     if (!obstacleSprite) {
       throw new Error("Failed to load obstacle sprite");
     }

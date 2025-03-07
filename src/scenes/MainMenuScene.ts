@@ -15,6 +15,9 @@ class MainMenuScene extends Scene {
     ctx.font = "30px Arial";
     ctx.fillText("Main Menu", 100, 100);
   }
+
+  override onMount() {}
+  override onDisMount() {}
 }
 
 export default MainMenuScene;

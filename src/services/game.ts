@@ -2,6 +2,7 @@ import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import Scene from "../scenes/Scene";
+import { StartScene } from "../scenes/StartScene";
 
 class Game {
   //* Drivers
@@ -11,17 +12,30 @@ class Game {
   private _lastRenderTime: number = 0;
   private _penultimateRenderTime: number = 0;
 
-  private currentScene: Scene;
+  private _currentScene: Scene | null = null;
 
   static instance: Game;
 
   deltaTime: number = 0;
 
+  get currentScene() {
+    if (!this._currentScene) {
+      throw new Error("Current scene not initialized");
+    }
+    return this._currentScene;
+  }
+
+  set currentScene(scene: Scene) {
+    if (this._currentScene) this._currentScene.onDisMount();
+    this._currentScene = scene;
+
+    this._currentScene.onMount();
+  }
+
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
-    this.currentScene = new MainMenuScene();
+    this.currentScene = new StartScene();
     this.currentScene.init();
-
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -53,7 +67,7 @@ class Game {
     }
   }
 
-  private async startGameScene() {
+  async startGameScene() {
     this.currentScene = new GameScene(this.displayDriver);
     await this.currentScene.init();
   }
