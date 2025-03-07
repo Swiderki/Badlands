@@ -191,7 +191,7 @@ class PhysicsBasedController {
   }
 
   turning(value: number) {
-    const turningThreshold = 20;
+    const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
         (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
@@ -201,6 +201,8 @@ class PhysicsBasedController {
   }
 
   rotate(angle: number) {
+    // bedzie dzialać jak będzie delta time driver
+    //this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * deltaTime * 60);
     this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
     this.setCurrentSprite();
   }
