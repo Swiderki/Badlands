@@ -89,6 +89,7 @@ class GameScene extends Scene {
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
     this.obstacleUpdate();
+    this.uiUpdate();
   }
 
   render(_ctx: CanvasRenderingContext2D) {
@@ -196,6 +197,18 @@ class GameScene extends Scene {
       }
     }
     return false;
+  }
+
+  private uiUpdate() {
+    if (!this.playerController) {
+      return;
+    }
+
+    const t =
+      (Vector.length(this.playerController.actualForce) / this.playerController.currentMaxSpeedForward) * 270;
+    this.UiService.setSpeedMeterValue(t);
+
+    this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
   }
 }
 

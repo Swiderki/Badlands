@@ -28,7 +28,7 @@ body {
 }
 
 #app {
-  scale: 1.2;
+  scale: 0.8;
 }
 
 #game-scene {
@@ -44,6 +44,34 @@ body {
   left: 50%;
 }
 
+.speed-meter__inner {
+  width: 100%;
+  position: relative;
+}
+
 .speed-meter__wrapper img {
   width: 100%;
+}
+
+.acc-tip,
+.speed-tip {
+  position: absolute;
+  height: 25%;
+  width: 4px;
+  top: 50%;
+  transform-origin: top center;
+  background-color: #f00;
+  transition: transform 0.1s linear;
+}
+
+.acc-tip {
+  --acc-rotation: 0deg;
+  left: 31%;
+  transform: translate(-50%, -0%) rotate(calc(var(--acc-rotation) - 60deg));
+}
+
+.speed-tip {
+  --speed-rotation: 0deg;
+  left: 69%;
+  transform: translate(-50%, -0%) rotate(calc(var(--speed-rotation) - 60deg));
 }
