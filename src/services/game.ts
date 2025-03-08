@@ -22,6 +22,7 @@ class Game {
     this.currentScene = new MainMenuScene();
     this.currentScene.init();
 
+    Game.instance = this;
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -31,6 +32,7 @@ class Game {
     }
     return Game.instance;
   }
+
   async start() {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
@@ -69,7 +71,6 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
-
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
 
