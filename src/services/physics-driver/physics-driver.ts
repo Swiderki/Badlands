@@ -129,6 +129,11 @@ class PhysicsDriver {
   }
 
   calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
+    let deltatimeMultiplicator = 1;
+    if (deltaTime != 0) {
+      deltatimeMultiplicator = 1 / (60 * deltaTime);
+    }
+
     const differenceInAngle =
       Math.floor(((Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180) * 100) /
       100;
@@ -141,8 +146,12 @@ class PhysicsDriver {
     const frictionFactor =
       Math.round(
         (0.998 -
-          controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 * deltaTime -
-          controller.brakingForce * deltaTime) *
+          controller.mapAdhesion *
+            controller.currentAdhesionModifier *
+            frictionAmount *
+            0.03 *
+            deltatimeMultiplicator -
+          controller.brakingForce * deltatimeMultiplicator) *
           1000
       ) / 1000;
     controller.brakingForce = 0;

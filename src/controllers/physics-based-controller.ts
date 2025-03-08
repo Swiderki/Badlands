@@ -192,8 +192,6 @@ class PhysicsBasedController {
   }
 
   turning(value: number) {
-    console.log("skret");
-
     const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
