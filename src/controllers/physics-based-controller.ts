@@ -2,6 +2,7 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
+import { getDeltaTime } from "../util/delta-time";
 import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
@@ -191,7 +192,9 @@ class PhysicsBasedController {
   }
 
   turning(value: number) {
-    const turningThreshold = 10;
+    console.log("skret");
+
+    const turningThreshold = 0;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
         (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
@@ -201,8 +204,8 @@ class PhysicsBasedController {
   }
 
   rotate(angle: number) {
-    // bedzie dzialać jak będzie delta time driver
-    //this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * deltaTime * 60);
+    // gdy ktoś naprawi getDeltaTime() niech usunie ten komentarz i zamieni linijke bez getDeltaTime() * 60 na tą z getDeltaTime() * 60
+    //this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * getDeltaTime() * 60);
     this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
     this.setCurrentSprite();
   }
