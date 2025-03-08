@@ -41,7 +41,7 @@ class GameScene extends Scene {
   }
 
   async init() {
-    this.sceneRef = document.querySelector("#start-scene");
+    this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }
@@ -58,14 +58,14 @@ class GameScene extends Scene {
   }
 
   override onMount() {
-    this.sceneRef = document.querySelector("#start-scene");
+    this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
   }
   override onDisMount() {
-    this.sceneRef = document.querySelector("#start-scene");
+    this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }

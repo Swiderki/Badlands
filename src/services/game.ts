@@ -27,6 +27,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
+    console.log(scene);
     this._currentScene = scene;
 
     this._currentScene.onMount();
@@ -36,6 +37,8 @@ class Game {
     this.displayDriver = new DisplayDriver(canvas);
     this.currentScene = new StartScene();
     this.currentScene.init();
+
+    Game.instance = this;
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -51,7 +54,6 @@ class Game {
     this.displayDriver.clear();
 
     await this.displayDriver.autoLoadSprites();
-    await this.startGameScene();
 
     //* Start the game loop
     this._update();

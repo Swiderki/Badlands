@@ -114,8 +114,6 @@ class PhysicsDriver {
   }
 
   calculateActualForce(controller: PhysicsBasedController, deltaTime: number) {
-    console.log(deltaTime);
-
     controller.actualForce = Vector.add(
       controller.actualForce,
       Vector.scale(controller.acceleration, deltaTime * 60)

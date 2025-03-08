@@ -3,12 +3,13 @@ import Game from "@/src/services/game";
 
 export class StartScene extends Scene {
   private sceneRef: HTMLElement | null = null;
+
   override init(): void | Promise<void> {
     this.sceneRef = document.querySelector("#start-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }
-    this.sceneRef.style.display = "flex";
+    this.sceneRef.style.display = "block";
 
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
     playBtnRef?.addEventListener("click", () => {
@@ -26,10 +27,10 @@ export class StartScene extends Scene {
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }
-    this.sceneRef.style.display = "flex";
+    this.sceneRef.style.display = "block";
   }
+
   override onDisMount() {
-    this.sceneRef = document.querySelector("#start-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }

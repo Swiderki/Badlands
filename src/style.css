@@ -91,6 +91,10 @@ body {
   font-optical-sizing: auto;
 }
 
+.scene.hidden {
+  display: none !important;
+}
+
 #start-scene .inner {
   width: 100%;
   height: 100%;
