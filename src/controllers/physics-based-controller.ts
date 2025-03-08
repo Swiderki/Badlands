@@ -194,7 +194,7 @@ class PhysicsBasedController {
   turning(value: number) {
     console.log("skret");
 
-    const turningThreshold = 0;
+    const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
         (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
@@ -204,9 +204,7 @@ class PhysicsBasedController {
   }
 
   rotate(angle: number) {
-    // gdy ktoś naprawi getDeltaTime() niech usunie ten komentarz i zamieni linijke bez getDeltaTime() * 60 na tą z getDeltaTime() * 60
-    //this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * getDeltaTime() * 60);
-    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
+    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * getDeltaTime() * 60);
     this.setCurrentSprite();
   }
 
