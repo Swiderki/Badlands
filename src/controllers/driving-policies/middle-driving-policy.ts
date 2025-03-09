@@ -36,25 +36,29 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
       distance = Math.hypot(target.x - car_position.x, target.y - car_position.y);
     }
 
+    const checkpoint = this._trackPath.sampledPoints[this._visitedCheckpoint];
+
     //* Compute the angle to target checkpoint
     const target_angle = PhysicsUtils.normalizeAngle(
       Math.atan2(target.y - car_position.y, target.x - car_position.x) * (180 / Math.PI)
     );
 
     //* Compute the shortest angular difference
-    let angle_diff = target_angle - current_rotation;
+    const angle_diff = target_angle - current_rotation;
+    const angle_diff_corrected =
+      angle_diff > 180 ? angle_diff - 360 : angle_diff < -180 ? angle_diff + 360 : angle_diff;
 
-    const max_rotation = 6;
-    var rotation = 0;
+    const max_rotation = 12;
+    let rotation = 0;
 
     //* Rotate in the correct direction
-    if (angle_diff < 0) rotation = Math.max(angle_diff, -max_rotation);
-    else rotation = Math.min(angle_diff, max_rotation);
+    if (angle_diff_corrected < 0) rotation = Math.max(angle_diff_corrected, -max_rotation);
+    else rotation = Math.min(angle_diff_corrected, max_rotation);
 
     //* If the angle is close enough to the target, we can accelerate the car
-    const acceleration = Math.abs(angle_diff) < 5;
-
-    return { acceleration, rotation, brake: false };
+    const acceleration = Math.abs(checkpoint.curvature) < 0.6;
+    console.log(acceleration);
+    return { acceleration, rotation, brake: false, accelerationPower: checkpoint.curvature };
   }
 }
 
