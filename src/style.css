@@ -224,3 +224,45 @@ h1 {
   justify-content: space-between;
   margin-right: 10px;
 }
+
+#selection-scene .option {
+  cursor: pointer;
+}
+
+.scoreboard__wrapper {
+  z-index: 10;
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #ddd;
+  padding: 0.7rem;
+  background-color: #3339;
+  font-family: "Pixelify Sans", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.scoreboard__wrapper ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1px solid #ddd;
+  text-align: right;
+}
+
+.scoreboard__wrapper ul li .highlight {
+  font-weight: bold;
+  color: #fff;
+  margin-left: 0.3rem;
+}
+.scoreboard__wrapper ul li {
+  margin-bottom: 0.5rem;
+}
+.scoreboard__wrapper h3 {
+  margin: 0;
+}
+.scoreboard__wrapper h3 .highlight {
+  color: #3acf61;
+  margin-left: 0.5rem;
+}
