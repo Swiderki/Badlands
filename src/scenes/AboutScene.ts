@@ -1,11 +1,12 @@
 import Scene from "./Scene";
 import Game from "@/src/services/game";
+import { StartScene } from "./StartScene";
 
-export class StartScene extends Scene {
+export class AboutScene extends Scene {
   private sceneRef: HTMLElement | null = null;
 
   override init(): void | Promise<void> {
-    this.sceneRef = document.querySelector("#start-scene");
+    this.sceneRef = document.querySelector("#about-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }
@@ -15,13 +16,7 @@ export class StartScene extends Scene {
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
       // Game.getInstance().startGameScene();
-      Game.getInstance().startSelectionScene();
-    });
-    const aboutBtnRef = this.sceneRef.querySelector("button:nth-of-type(2)");
-    aboutBtnRef?.addEventListener("click", () => {
-      if (!Game.getInstance()) return;
-      // Game.getInstance().startGameScene();
-      Game.getInstance().startAboutScene();
+      Game.getInstance().startStartScene();
     });
   }
 
@@ -30,7 +25,7 @@ export class StartScene extends Scene {
   override render(ctx: CanvasRenderingContext2D): void {}
 
   override onMount() {
-    this.sceneRef = document.querySelector("#start-scene");
+    this.sceneRef = document.querySelector("#about-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
     }

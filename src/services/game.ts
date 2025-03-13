@@ -1,8 +1,10 @@
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
+import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
 import { StartScene } from "../scenes/StartScene";
+import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
 
 class Game {
@@ -61,7 +63,9 @@ class Game {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Escape") {
+    if (event.key === "p") {
+      this.startResultScene();
+
       if (this.currentScene instanceof MainMenuScene) {
         //TODO Implement ingame menu
         // this.startGameScene();
@@ -84,6 +88,21 @@ class Game {
 
   private startMainMenuScene() {
     this.currentScene = new MainMenuScene();
+    this.currentScene.init();
+  }
+
+  private startResultScene() {
+    this.currentScene = new ResultScene();
+    this.currentScene.init();
+  }
+
+  async startAboutScene() {
+    this.currentScene = new AboutScene();
+    this.currentScene.init();
+  }
+
+  async startStartScene() {
+    this.currentScene = new StartScene();
     this.currentScene.init();
   }
 
