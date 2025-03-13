@@ -5,6 +5,10 @@ export class UIService {
   private speedMeterRef: HTMLElement | null;
   private _accTipRef: HTMLElement | null = null;
   private _speedTipRef: HTMLElement | null = null;
+  private _scoreboardRef: HTMLElement | null = null;
+  private _scoreboardListRef: HTMLElement | null = null;
+
+  lapCount: number = 3;
 
   private get accTipRef(): HTMLElement {
     if (!this.speedMeterRef) {
@@ -32,8 +36,25 @@ export class UIService {
     return this._speedTipRef;
   }
 
+  private createLapHTML(num: number): HTMLLIElement {
+    const lapHTML = document.createElement("li");
+    lapHTML.id = `lap-${num}`;
+    lapHTML.innerHTML = `Lap ${num}  <span class="highlight">00:00</span>`;
+    return lapHTML;
+  }
+
+  generateScoreboard() {
+    if (!this._scoreboardRef || !this._scoreboardListRef) {
+      throw new Error("Scoreboard not initialized");
+    }
+    for (let i = 1; i <= this.lapCount; i++) {
+      this._scoreboardListRef.appendChild(this.createLapHTML(i));
+    }
+  }
   private constructor() {
     this.speedMeterRef = document.querySelector(".speed-meter__inner");
+    this._scoreboardRef = document.querySelector(".scoreboard__wrapper");
+    this._scoreboardListRef = document.querySelector(".scoreboard__wrapper ul");
     this.setAccMeterValue(0);
     this.setSpeedMeterValue(0);
   }

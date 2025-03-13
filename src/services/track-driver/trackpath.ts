@@ -12,6 +12,11 @@ export class TrackPath {
     this._processCheckpoints(numPoints);
   }
 
+  getDistanceToPoint(pos: Vec2D, pointId: number) {
+    const { x, y } = this.sampledPoints[pointId].point;
+    return Math.sqrt((x - pos.x) ** 2 + (y - pos.y) ** 2);
+  }
+
   private _processCheckpoints(numPoints: number) {
     this.sampledPoints = getEvenlySpacedPoints(parseSVGPath(this.path), numPoints);
   }

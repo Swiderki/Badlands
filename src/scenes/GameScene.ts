@@ -14,6 +14,7 @@ import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
+import { Scoreboard } from "../services/scoreboard/scoreboard";
 
 interface Obstacle {
   sprite: Sprite;
@@ -28,6 +29,7 @@ class GameScene extends Scene {
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
+  private scoreboard: Scoreboard = Scoreboard.instance;
   private obstacles: Obstacle[] = [];
 
   //* Element ref
@@ -48,6 +50,7 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "block";
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
+    this.UiService.generateScoreboard();
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
@@ -64,6 +67,7 @@ class GameScene extends Scene {
     }
     this.sceneRef.style.display = "block";
   }
+
   override onDisMount() {
     this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
@@ -232,6 +236,21 @@ class GameScene extends Scene {
     this.UiService.setSpeedMeterValue(t);
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
+  }
+
+  private scoreUpdate() {
+    if (!this.playerController || !this.track || !this.track.checkPointPath) {
+      return;
+    }
+
+    const distanceToNextCheckpoint = this.track.checkPointPath.getDistanceToPoint(
+      this.playerController.position,
+      this.scoreboard.currentCheckpoint
+    );
+
+    if (distanceToNextCheckpoint < 10) {
+      this.scoreboard.currentCheckpoint++;
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 {
   "traction": 0.5,
+  "lapCount": 3,
   "bonuses": [],
   "startPositions": [
     { "x": 50, "y": 290, "angle": 90 },
