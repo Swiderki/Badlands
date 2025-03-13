@@ -24,8 +24,48 @@
     }
   },
   {
-    "name": "peugeot",
-    "src": "/assets/sprites/spritesheet1.png",
+    "name": "peugeot_black",
+    "src": "/assets/sprites/peugeot_black.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "peugeot_blue",
+    "src": "/assets/sprites/peugeot_blue.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "peugeot_green",
+    "src": "/assets/sprites/peugeot_green.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "peugeot_pink",
+    "src": "/assets/sprites/peugeot_pink.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "peugeot_white",
+    "src": "/assets/sprites/peugeot_white.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "peugeot_yellow",
+    "src": "/assets/sprites/peugeot_yellow.png",
     "config": {
       "spriteWidth": 80,
       "spriteHeight": 80

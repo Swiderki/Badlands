@@ -29,11 +29,17 @@ class GameScene extends Scene {
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private obstacles: Obstacle[] = [];
+  private playerCar: string;
+  private playerColor: string;
+  private map: string;
 
   //* Element ref
   sceneRef: HTMLElement | null = null;
-  constructor(displayDriver: DisplayDriver) {
+  constructor(displayDriver: DisplayDriver, car: string, color: string, map: string) {
     super();
+    this.playerCar = car;
+    this.playerColor = color;
+    this.map = map;
     this.displayDriver = displayDriver;
     this.physicsDriver = new PhysicsDriver();
     this.UiService = UIService.getInstance();
@@ -73,7 +79,9 @@ class GameScene extends Scene {
   }
 
   private async loadPlayer(startPosition: StartPosition) {
-    const playerSprite = this.displayDriver.getSprite("peugeot");
+    const spriteName = `${this.playerCar}_${this.playerColor}`;
+    console.log(spriteName);
+    const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
     }
@@ -81,7 +89,7 @@ class GameScene extends Scene {
   }
 
   private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
-    const opponentSprite = this.displayDriver.getSprite("peugeot");
+    const opponentSprite = this.displayDriver.getSprite("peugeot_blue");
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }

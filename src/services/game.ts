@@ -63,15 +63,17 @@ class Game {
   private handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Escape") {
       if (this.currentScene instanceof MainMenuScene) {
-        this.startGameScene();
-      } else {
-        this.startMainMenuScene();
+        //TODO Implement ingame menu
+        // this.startGameScene();
+        // this.currentScene = this.
+      } else if (this.currentScene instanceof GameScene) {
+        // this.startMainMenuScene();
       }
     }
   }
 
-  async startGameScene() {
-    this.currentScene = new GameScene(this.displayDriver);
+  async startGameScene(car: string, color: string, map: string) {
+    this.currentScene = new GameScene(this.displayDriver, car, color, map);
     await this.currentScene.init();
   }
 

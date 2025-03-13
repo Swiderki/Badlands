@@ -3,9 +3,9 @@ import Game from "@/src/services/game";
 
 export class SelectionScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private selectedMap: string = "Desert";
-  private selectedCar: string = "Sport";
-  private selectedColor: string = "Red";
+  private selectedMap: string = "desert";
+  private selectedCar: string = "peugeot";
+  private selectedColor: string = "pink";
 
   override init(): void | Promise<void> {
     this.sceneRef = document.querySelector("#selection-scene");
@@ -42,7 +42,7 @@ export class SelectionScene extends Scene {
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
-      Game.getInstance().startGameScene();
+      Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
     });
   }
 
