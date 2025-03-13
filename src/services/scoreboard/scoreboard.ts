@@ -1,9 +1,9 @@
 export class Scoreboard {
   static _instance: Scoreboard | null = null;
   private currentPlayerStartTime: Date | null = null;
-  private lapTimeList: (Date | null)[] = [];
-  currentLap: number = 0;
-  currentCheckpoint: number = 0;
+  private lapTimeList: (Date | null)[] = [null, null, null];
+  _currentLap: number = 1;
+  currentCheckpoint: number = 1;
 
   static get instance(): Scoreboard {
     if (!Scoreboard._instance) {
@@ -21,12 +21,23 @@ export class Scoreboard {
     return now.getTime() - this.currentPlayerStartTime.getTime();
   }
 
+  get currentLap(): number {
+    return this._currentLap;
+  }
+
+  set currentLap(lap: number) {
+    document.querySelector(`#lap-${this._currentLap}`)?.classList.remove("current");
+    document.querySelector(`#lap-${lap}`)?.classList.add("current");
+    this._currentLap = lap;
+  }
+
   get currentLapTime(): number {
     const now = new Date();
-    const lastLapTime = this.lapTimeList[this.currentLap] === null ? this.lapTimeList[this.currentLap] : now;
+    let lastLapTime = this.lapTimeList[this.currentLap - 1];
+
     if (!lastLapTime) {
-      this.lapTimeList[this.currentLap] = now;
-      return 0;
+      lastLapTime = now;
+      this.lapTimeList[this.currentLap - 1] = lastLapTime;
     }
 
     return now.getTime() - lastLapTime.getTime();

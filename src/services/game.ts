@@ -91,7 +91,7 @@ class Game {
     this.currentScene.init();
   }
 
-  private startResultScene() {
+  startResultScene() {
     this.currentScene = new ResultScene();
     this.currentScene.init();
   }

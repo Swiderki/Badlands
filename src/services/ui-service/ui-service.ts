@@ -1,3 +1,5 @@
+import { Scoreboard } from "../scoreboard/scoreboard";
+
 export class UIService {
   private static instance: UIService;
 
@@ -6,6 +8,7 @@ export class UIService {
   private _accTipRef: HTMLElement | null = null;
   private _speedTipRef: HTMLElement | null = null;
   private _scoreboardRef: HTMLElement | null = null;
+  private _scoreboardTotalTimeRef: HTMLElement | null = null;
   private _scoreboardListRef: HTMLElement | null = null;
 
   lapCount: number = 3;
@@ -47,6 +50,8 @@ export class UIService {
     if (!this._scoreboardRef || !this._scoreboardListRef) {
       throw new Error("Scoreboard not initialized");
     }
+    this._scoreboardListRef.innerHTML = "";
+
     for (let i = 1; i <= this.lapCount; i++) {
       this._scoreboardListRef.appendChild(this.createLapHTML(i));
     }
@@ -55,6 +60,7 @@ export class UIService {
     this.speedMeterRef = document.querySelector(".speed-meter__inner");
     this._scoreboardRef = document.querySelector(".scoreboard__wrapper");
     this._scoreboardListRef = document.querySelector(".scoreboard__wrapper ul");
+    this._scoreboardTotalTimeRef = document.querySelector(".scoreboard__wrapper h3 .highlight");
     this.setAccMeterValue(0);
     this.setSpeedMeterValue(0);
   }
@@ -67,12 +73,33 @@ export class UIService {
     return UIService.instance;
   }
 
+  //* Time is passed in ms
+  setCurrentTime(time: number) {
+    if (!this._scoreboardTotalTimeRef) {
+      throw new Error("Scoreboard not initialized");
+    }
+    const minutes = Math.floor(time / 60000);
+    const seconds = ((time % 60000) / 1000).toFixed(0);
+    const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
+    this._scoreboardTotalTimeRef.innerHTML = currentTime;
+  }
+
+  setCurrentLapTime(time: number) {
+    if (!this._scoreboardListRef) {
+      throw new Error("Scoreboard not initialized");
+    }
+    const minutes = Math.floor(time / 60000);
+    const seconds = ((time % 60000) / 1000).toFixed(0);
+    const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
+    this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap} span`)!.innerHTML =
+      currentTime;
+  }
+
   setAccMeterValue(value: number) {
     this.accTipRef.style.setProperty("--acc-rotation", `${value}deg`);
   }
 
   setSpeedMeterValue(value: number) {
-    console.log(`Setting speed meter value to ${value}`);
     this.speedTipRef.style.setProperty("--speed-rotation", `${value.toPrecision(2)}deg`);
   }
 }

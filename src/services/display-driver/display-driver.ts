@@ -148,7 +148,7 @@ class DisplayDriver {
     for (const point of checkpoints) {
       this._ctx.fillStyle = "yellow";
       this._ctx.beginPath();
-      this._ctx.fillRect(point.point.x * this.scaler, point.point.y * this.scaler, 2, 2);
+      this._ctx.fillRect(point.point.x, point.point.y, 2, 2);
       this._ctx.fill();
       this._ctx.closePath();
     }

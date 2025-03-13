@@ -9,12 +9,13 @@ import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
-import { TrackPath } from "../services/track-driver/trackpath";
+import { TrackPath } from "../services/track-driver/track-path";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
+import Game from "../services/game";
 
 interface Obstacle {
   sprite: Sprite;
@@ -57,6 +58,7 @@ class GameScene extends Scene {
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
     this.UiService.generateScoreboard();
+    this.scoreboard.currentLap = 1;
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
@@ -124,6 +126,7 @@ class GameScene extends Scene {
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
     this.obstacleUpdate();
+    this.scoreUpdate();
     this.uiUpdate();
   }
 
@@ -250,14 +253,32 @@ class GameScene extends Scene {
     if (!this.playerController || !this.track || !this.track.checkPointPath) {
       return;
     }
-
     const distanceToNextCheckpoint = this.track.checkPointPath.getDistanceToPoint(
-      this.playerController.position,
+      this.playerController.centerPosition,
       this.scoreboard.currentCheckpoint
     );
 
-    if (distanceToNextCheckpoint < 10) {
+    if (
+      (distanceToNextCheckpoint < 30 &&
+        this.scoreboard.currentCheckpoint !== this.track.checkPointPath.sampledPoints.length) ||
+      (distanceToNextCheckpoint < 2 &&
+        this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) ||
+      isNaN(distanceToNextCheckpoint)
+    ) {
       this.scoreboard.currentCheckpoint++;
+    }
+
+    this.UiService.setCurrentTime(this.scoreboard.currentTime);
+    console.log(this.scoreboard.currentLapTime);
+    this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
+
+    if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {
+      this.scoreboard.currentLap++;
+      this.scoreboard.currentCheckpoint = 1;
+    }
+
+    if (this.scoreboard.currentLap === this.UiService.lapCount) {
+      Game.instance.startResultScene();
     }
   }
 }

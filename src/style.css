@@ -234,9 +234,9 @@ h1 {
   position: absolute;
   right: 0;
   top: 0;
-  color: #ddd;
   padding: 0.7rem;
   background-color: #3339;
+  color: #aaa;
   font-family: "Pixelify Sans", sans-serif;
   display: flex;
   flex-direction: column;
@@ -247,18 +247,28 @@ h1 {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  margin-bottom: 1px solid #ddd;
+  margin-bottom: 1px solid #aaa;
   text-align: right;
 }
 
 .scoreboard__wrapper ul li .highlight {
   font-weight: bold;
-  color: #fff;
   margin-left: 0.3rem;
 }
+
+.scoreboard__wrapper ul li.current .highlight {
+  color: #fff;
+}
+
 .scoreboard__wrapper ul li {
   margin-bottom: 0.5rem;
 }
+
+.scoreboard__wrapper ul li.current {
+  font-size: 1.05rem;
+  color: #fff;
+}
+
 .scoreboard__wrapper h3 {
   margin: 0;
 }
