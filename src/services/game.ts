@@ -3,6 +3,7 @@ import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import Scene from "../scenes/Scene";
 import { StartScene } from "../scenes/StartScene";
+import { SelectionScene } from "../scenes/SelectionScene";
 
 class Game {
   //* Drivers
@@ -71,6 +72,11 @@ class Game {
 
   async startGameScene() {
     this.currentScene = new GameScene(this.displayDriver);
+    await this.currentScene.init();
+  }
+
+  async startSelectionScene() {
+    this.currentScene = new SelectionScene();
     await this.currentScene.init();
   }
 

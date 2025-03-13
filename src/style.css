@@ -36,7 +36,8 @@ body {
   scale: 0.8;
 }
 
-#game-scene {
+#game-scene,
+#selection-scene {
   position: relative;
   isolation: isolate;
 }
@@ -105,11 +106,23 @@ body {
   gap: 5px;
 }
 
-#start-scene button:first-of-type {
+#selection-scene .inner {
+  width: 100%;
+  height: 100%;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#start-scene button:first-of-type,
+#selection-scene button:first-of-type {
   margin-top: auto;
 }
 
-#start-scene button {
+#start-scene button,
+#selection-scene button {
   background-color: transparent;
   color: #fff;
   border: none;
@@ -122,14 +135,30 @@ body {
   outline: none;
 }
 
-#start-scene h1 {
+#start-scene h1,
+#selection-scene h2 {
   margin: 0;
+}
+
+#selection-scene h2 {
+  font-size: 17px;
 }
 
 h1 {
   margin: 0;
 }
 
-#game-scene {
+#game-scene,
+#selection-scene {
   display: none;
+}
+
+.options {
+  display: flex;
+  gap: 20px;
+}
+
+#selection-scene .selected {
+  box-sizing: border-box;
+  outline: 1px solid #fff;
 }

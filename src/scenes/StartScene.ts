@@ -14,7 +14,8 @@ export class StartScene extends Scene {
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
-      Game.getInstance().startGameScene();
+      // Game.getInstance().startGameScene();
+      Game.getInstance().startSelectionScene();
     });
   }
 
