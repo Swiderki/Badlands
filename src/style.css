@@ -106,7 +106,10 @@ body {
   gap: 5px;
 }
 
-#selection-scene .inner {
+#selection-scene .inner,
+#result-scene .inner,
+#about-scene .inner,
+#game-scene .inner {
   width: 100%;
   height: 100%;
   padding-left: 5px;
@@ -117,12 +120,16 @@ body {
 }
 
 #start-scene button:first-of-type,
-#selection-scene button:first-of-type {
+#selection-scene button:first-of-type,
+#result-scene button:first-of-type,
+#about-scene button:first-of-type {
   margin-top: auto;
 }
 
 #start-scene button,
-#selection-scene button {
+#selection-scene button,
+#result-scene button,
+#about-scene button {
   background-color: transparent;
   color: #fff;
   border: none;
@@ -136,11 +143,15 @@ body {
 }
 
 #start-scene h1,
-#selection-scene h2 {
+#selection-scene h2,
+#result-scene h2,
+#about-scene h2 {
   margin: 0;
 }
 
-#selection-scene h2 {
+#selection-scene h2,
+#result-scene h2,
+#about-scene h2 {
   font-size: 17px;
 }
 
@@ -149,7 +160,9 @@ h1 {
 }
 
 #game-scene,
-#selection-scene {
+#selection-scene,
+#result-scene,
+#about-scene {
   display: none;
 }
 
@@ -163,44 +176,51 @@ h1 {
   outline: 1px solid #fff;
 }
 
-#selection-scene .option {
-  cursor: pointer;
-}
-
-.scoreboard__wrapper {
-  z-index: 10;
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: #ddd;
-  padding: 0.7rem;
-  background-color: #3339;
-  font-family: "Pixelify Sans", sans-serif;
+.winner-section {
+  text-align: center;
+  margin-bottom: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   display: flex;
+  justify-content: center;
   flex-direction: column;
-  align-items: flex-end;
+  font-size: 10px;
+  align-items: center;
 }
 
-.scoreboard__wrapper ul {
-  list-style-type: none;
-  margin: 0;
+.winner-section img {
+  height: 30px;
+  width: 70px;
+}
+.race-results,
+.player-history {
+  margin-top: 10px;
+}
+.race-results ul,
+.player-history ul {
+  list-style: none;
   padding: 0;
-  margin-bottom: 1px solid #ddd;
-  text-align: right;
+}
+.race-results li,
+.player-history li {
+  padding: 2px 0;
 }
 
-.scoreboard__wrapper ul li .highlight {
-  font-weight: bold;
-  color: #fff;
-  margin-left: 0.3rem;
+#result-scene h3 {
+  font-size: 13px;
 }
-.scoreboard__wrapper ul li {
-  margin-bottom: 0.5rem;
+
+#result-scene li {
+  font-size: 9px;
 }
-.scoreboard__wrapper h3 {
+
+#result-scene * {
   margin: 0;
 }
-.scoreboard__wrapper h3 .highlight {
-  color: #3acf61;
-  margin-left: 0.5rem;
+
+#result-scene .wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 10px;
 }

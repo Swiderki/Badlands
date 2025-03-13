@@ -41,29 +41,74 @@
         <div class="inner">
           <h2>Choose Your Map</h2>
           <div class="options">
-            <div class="option selected" data-map="Desert">Desert</div>
-            <div class="option" data-map="City">City</div>
-            <div class="option" data-map="Forest">Forest</div>
+            <div class="option selected" data-map="desert">Desert</div>
+            <div class="option" data-map="city">City</div>
+            <div class="option" data-map="forest">Forest</div>
           </div>
 
           <h2>Choose Your Car</h2>
           <div class="options">
-            <div class="option selected" data-car="Sport">Sport</div>
-            <div class="option" data-car="Truck">Truck</div>
-            <div class="option" data-car="Offroad">Offroad</div>
+            <div class="option selected" data-car="peugeot">Peugeot</div>
           </div>
 
           <h2>Color</h2>
           <div class="options">
-            <div class="option selected" data-color="red">Red</div>
+            <div class="option selected" data-color="pink">Pink</div>
             <div class="option" data-color="green">Green</div>
             <div class="option" data-color="blue">Blue</div>
+            <div class="option" data-color="yellow">Yellow</div>
+            <div class="option" data-color="black">Black</div>
+            <!-- <div class="option" data-color="white">white</div> -->
+
           </div>
 
           <button id="play-btn">Play</button>
         </div>
       </div>
-    </div>
+      <div id="about-scene" class="scene">
+        <div class="inner">
+          <h2>About</h2>
+          <p>
+            Zloziemie is a simple racing game where you can choose your map, car
+            and color. The goal is to reach the finish line as fast as possible.
+
+          </p>
+          <button>Back</button>
+        </div>
+      </div>
+      <div id="result-scene" class="scene">
+        <div class="inner">
+          <div class="winner-section">
+            <h2>Winner!</h2>
+            <img src="/public/assets/car.png" alt="">
+            <p><strong>Place:</strong> 1st</p>
+            <p><strong>Time:</strong> 7.3 sec</p>
+          </div>
+          <div class="wrapper">
+            <div class="race-results">
+              <h3>Race Results</h3>
+              <ul>
+                <li>1st - Player 1 - 7.3 sec</li>
+                <li>2nd - Player 2 - 9.4 sec</li>
+                <li>3rd - Player 3 - 12.0 sec</li>
+              </ul>
+            </div>
+            
+            <!-- Historia wyników gracza -->
+            <div class="player-history">
+              <h3>Player History</h3>
+              <ul>
+                <li>1: 8.1 sec</li>
+                <li>2: 7.3 sec</li>
+                <li>3: 9.2 sec</li>
+              </ul>
+            </div>
+          </div>
+
+          
+          <button>Back</button>
+        </div>
+      </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
