@@ -1,7 +1,7 @@
 import BonusBase from "@/src/services/bonus/bonus-base";
 import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
-import { TrackPath } from "./trackpath";
+import { TrackPath } from "./track-path";
 import DisplayDriver from "../display-driver/display-driver";
 
 class Track {

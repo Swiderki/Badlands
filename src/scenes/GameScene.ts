@@ -9,10 +9,13 @@ import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
-import { TrackPath } from "../services/track-driver/trackpath";
+import { TrackPath } from "../services/track-driver/track-path";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
+import { UIService } from "../services/ui-service/ui-service";
+import { Scoreboard } from "../services/scoreboard/scoreboard";
+import Game from "../services/game";
 
 interface Obstacle {
   sprite: Sprite;
@@ -26,17 +29,36 @@ class GameScene extends Scene {
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
+  private UiService: UIService;
+  private scoreboard: Scoreboard = Scoreboard.instance;
   private obstacles: Obstacle[] = [];
-  
-  constructor(displayDriver: DisplayDriver) {
+  private playerCar: string;
+  private playerColor: string;
+  private map: string;
+
+  //* Element ref
+  sceneRef: HTMLElement | null = null;
+  constructor(displayDriver: DisplayDriver, car: string, color: string, map: string) {
     super();
+    this.playerCar = car;
+    this.playerColor = color;
+    this.map = map;
     this.displayDriver = displayDriver;
     this.physicsDriver = new PhysicsDriver();
+    this.UiService = UIService.getInstance();
     this.collisionManager = new CollisionManager(this.displayDriver.scaler);
   }
 
   async init() {
+    this.sceneRef = document.querySelector("#game-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "block";
+
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
+    this.UiService.generateScoreboard();
+    this.scoreboard.currentLap = 1;
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
@@ -46,8 +68,26 @@ class GameScene extends Scene {
     await this.loadObstacles();
   }
 
+  override onMount() {
+    this.sceneRef = document.querySelector("#game-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "block";
+  }
+
+  override onDisMount() {
+    this.sceneRef = document.querySelector("#game-scene");
+    if (!this.sceneRef) {
+      throw Error("Start scene not initialized");
+    }
+    this.sceneRef.style.display = "none";
+  }
+
   private async loadPlayer(startPosition: StartPosition) {
-    const playerSprite = this.displayDriver.getSprite("peugeot");
+    const spriteName = `${this.playerCar}_${this.playerColor}`;
+    console.log(spriteName);
+    const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
     }
@@ -55,7 +95,7 @@ class GameScene extends Scene {
   }
 
   private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
-    const opponentSprite = this.displayDriver.getSprite("peugeot");
+    const opponentSprite = this.displayDriver.getSprite("peugeot_blue");
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }
@@ -69,7 +109,7 @@ class GameScene extends Scene {
   }
 
   private async loadObstacles() {
-    const obstacleSprite = await this.displayDriver.getSprite("hole");
+    const obstacleSprite = this.displayDriver.getSprite("hole");
     if (!obstacleSprite) {
       throw new Error("Failed to load obstacle sprite");
     }
@@ -86,6 +126,8 @@ class GameScene extends Scene {
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
     this.obstacleUpdate();
+    this.scoreUpdate();
+    this.uiUpdate();
   }
 
   render(_ctx: CanvasRenderingContext2D) {
@@ -193,6 +235,51 @@ class GameScene extends Scene {
       }
     }
     return false;
+  }
+
+  private uiUpdate() {
+    if (!this.playerController) {
+      return;
+    }
+
+    const t =
+      (Vector.length(this.playerController.actualForce) / this.playerController.currentMaxSpeedForward) * 270;
+    this.UiService.setSpeedMeterValue(t);
+
+    this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
+  }
+
+  private scoreUpdate() {
+    if (!this.playerController || !this.track || !this.track.checkPointPath) {
+      return;
+    }
+    const distanceToNextCheckpoint = this.track.checkPointPath.getDistanceToPoint(
+      this.playerController.centerPosition,
+      this.scoreboard.currentCheckpoint
+    );
+
+    if (
+      (distanceToNextCheckpoint < 30 &&
+        this.scoreboard.currentCheckpoint !== this.track.checkPointPath.sampledPoints.length) ||
+      (distanceToNextCheckpoint < 2 &&
+        this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) ||
+      isNaN(distanceToNextCheckpoint)
+    ) {
+      this.scoreboard.currentCheckpoint++;
+    }
+
+    this.UiService.setCurrentTime(this.scoreboard.currentTime);
+    console.log(this.scoreboard.currentLapTime);
+    this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
+
+    if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {
+      this.scoreboard.currentLap++;
+      this.scoreboard.currentCheckpoint = 1;
+    }
+
+    if (this.scoreboard.currentLap === this.UiService.lapCount) {
+      Game.instance.startResultScene();
+    }
   }
 }
 

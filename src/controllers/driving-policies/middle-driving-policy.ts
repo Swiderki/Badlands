@@ -1,4 +1,4 @@
-import { TrackPath } from "@/src/services/track-driver/trackpath";
+import { TrackPath } from "@/src/services/track-driver/track-path";
 import BaseDrivingPolicy from "./base-driving-policy";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
@@ -42,10 +42,10 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     );
 
     //* Compute the shortest angular difference
-    let angle_diff = target_angle - current_rotation;
+    const angle_diff = target_angle - current_rotation;
 
     const max_rotation = 6;
-    var rotation = 0;
+    let rotation = 0;
 
     //* Rotate in the correct direction
     if (angle_diff < 0) rotation = Math.max(angle_diff, -max_rotation);

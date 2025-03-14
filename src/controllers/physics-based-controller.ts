@@ -168,7 +168,7 @@ class PhysicsBasedController {
     if (Vector.length(this.actualForce) < 0.05) {
       this.actualForce = { x: 0, y: 0 };
     }
-    let diff = Math.abs(Vector.angle(this.actualForce) - this.angle) % 360;
+    const diff = Math.abs(Vector.angle(this.actualForce) - this.angle) % 360;
     if (diff > 90 || Vector.length(this.actualForce) === 0) {
       if (Vector.length(this.actualForce) < this.currentMaxSpeedBackwards) {
         this.applyForce(-1 * this.currentAccelerationPowerBackwards);

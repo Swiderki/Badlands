@@ -4,7 +4,7 @@ import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
 import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
-import { TrackPath } from "./trackpath";
+import { TrackPath } from "./track-path";
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
@@ -31,7 +31,8 @@ class TrackLoader {
 
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
-
+        checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: 0 } });
+        console.log(checkPointPath.sampledPoints);
         return new Track(
           data.bonuses,
           data.traction,

@@ -1,7 +1,7 @@
 import Game from "./services/game";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("app") as HTMLCanvasElement;
+  const canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
   if (!canvas) {
     throw new Error("Failed to get app element");
   }

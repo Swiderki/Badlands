@@ -1,7 +1,11 @@
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
+import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
+import { StartScene } from "../scenes/StartScene";
+import { AboutScene } from "../scenes/AboutScene";
+import { SelectionScene } from "../scenes/SelectionScene";
 
 class Game {
   //* Drivers
@@ -11,15 +15,30 @@ class Game {
   private _lastRenderTime: number = 0;
   private _penultimateRenderTime: number = 0;
 
-  private currentScene: Scene;
+  private _currentScene: Scene | null = null;
 
   static instance: Game;
 
   deltaTime: number = 0;
 
+  get currentScene() {
+    if (!this._currentScene) {
+      throw new Error("Current scene not initialized");
+    }
+    return this._currentScene;
+  }
+
+  set currentScene(scene: Scene) {
+    if (this._currentScene) this._currentScene.onDisMount();
+    console.log(scene);
+    this._currentScene = scene;
+
+    this._currentScene.onMount();
+  }
+
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
-    this.currentScene = new MainMenuScene();
+    this.currentScene = new StartScene();
     this.currentScene.init();
 
     Game.instance = this;
@@ -38,29 +57,52 @@ class Game {
     this.displayDriver.clear();
 
     await this.displayDriver.autoLoadSprites();
-    await this.startGameScene();
 
     //* Start the game loop
     this._update();
   }
 
   private handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Escape") {
+    if (event.key === "p") {
+      this.startResultScene();
+
       if (this.currentScene instanceof MainMenuScene) {
-        this.startGameScene();
-      } else {
-        this.startMainMenuScene();
+        //TODO Implement ingame menu
+        // this.startGameScene();
+        // this.currentScene = this.
+      } else if (this.currentScene instanceof GameScene) {
+        // this.startMainMenuScene();
       }
     }
   }
 
-  private async startGameScene() {
-    this.currentScene = new GameScene(this.displayDriver);
+  async startGameScene(car: string, color: string, map: string) {
+    this.currentScene = new GameScene(this.displayDriver, car, color, map);
+    await this.currentScene.init();
+  }
+
+  async startSelectionScene() {
+    this.currentScene = new SelectionScene();
     await this.currentScene.init();
   }
 
   private startMainMenuScene() {
     this.currentScene = new MainMenuScene();
+    this.currentScene.init();
+  }
+
+  startResultScene() {
+    this.currentScene = new ResultScene();
+    this.currentScene.init();
+  }
+
+  async startAboutScene() {
+    this.currentScene = new AboutScene();
+    this.currentScene.init();
+  }
+
+  async startStartScene() {
+    this.currentScene = new StartScene();
     this.currentScene.init();
   }
 
