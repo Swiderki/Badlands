@@ -1,4 +1,4 @@
-import { Sprite, SpriteArray } from "@/types/display-driver";
+import { Color, Sprite, SpriteArray } from "@/types/display-driver";
 import DisplayDriver from "../display-driver/display-driver";
 import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
@@ -74,6 +74,7 @@ class TrackLoader {
       const height = image.height;
 
       const colliderData: number[][] = [];
+      const debug: Color[] = [];
 
       for (let y = 0; y < height; y++) {
         const row: number[] = [];
@@ -83,12 +84,14 @@ class TrackLoader {
           const g = data[index + 1];
           const b = data[index + 2];
           const a = data[index + 3];
+          debug.push({ r, g, b, a });
 
           row.push(mapPixelToCollisionType(r, g, b, a));
         }
         colliderData.push(row);
       }
 
+      console.log(debug);
       resolve(colliderData);
     });
   }

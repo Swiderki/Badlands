@@ -113,7 +113,6 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
-
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
 

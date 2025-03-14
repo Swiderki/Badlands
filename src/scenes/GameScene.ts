@@ -158,11 +158,11 @@ class GameScene extends Scene {
       return;
     }
 
-    this.opponentControllersList.forEach((opponent) => {
+    for (const opponent of this.opponentControllersList) {
       opponent.update(deltaTime);
       this.physicsDriver.updateController(opponent, deltaTime);
       this.displayDriver.drawSprite(opponent.displayData);
-    });
+    }
   }
 
   private collisionUpdate() {

@@ -19,8 +19,10 @@ class PhysicsDriver {
 
     //* This is a simple physics loop
     this.calculateActualForce(controller, deltaTime);
-    // tutaj trzeba też dodać delta time ale ja to zrobie staszek
-    controller.actualForce = Vector.scale(controller.actualForce, this.calculateFriction(controller));
+    controller.actualForce = Vector.scale(
+      controller.actualForce,
+      this.calculateFriction(controller, deltaTime)
+    );
 
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
@@ -126,7 +128,12 @@ class PhysicsDriver {
     controller.acceleration = { x: 0, y: 0 };
   }
 
-  calculateFriction(controller: PhysicsBasedController) {
+  calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
+    let deltatimeMultiplicator = 1;
+    if (deltaTime != 0) {
+      deltatimeMultiplicator = 1 / (60 * deltaTime);
+    }
+
     const differenceInAngle =
       Math.floor(((Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180) * 100) /
       100;
@@ -139,8 +146,12 @@ class PhysicsDriver {
     const frictionFactor =
       Math.round(
         (0.998 -
-          controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 -
-          controller.brakingForce) *
+          controller.mapAdhesion *
+            controller.currentAdhesionModifier *
+            frictionAmount *
+            0.03 *
+            deltatimeMultiplicator -
+          controller.brakingForce * deltatimeMultiplicator) *
           1000
       ) / 1000;
     controller.brakingForce = 0;
