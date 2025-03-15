@@ -1,10 +1,10 @@
 import PlayerController from "@/src/controllers/player-controller";
-import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
 import { Perks } from "@/src/util/effects-utils";
 import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import PerkObject from "./perk-object";
 
-export default class BoostPerk extends EffectObject {
+export default class BoostPerk extends PerkObject {
   constructor(position: Vec2D) {
     super(position, Perks.BOOST_STAR);
   }

@@ -1,6 +1,7 @@
 import BananaPeelObstacle from "../services/effect/obstacle/banana-peel-obstacle";
 import BoostPerk from "../services/effect/perk/boost-perk";
 import EffectObject from "../services/effect/effect-object";
+import PerkObject from "../services/effect/perk/perk-object";
 import PotholeObstacle from "../services/effect/obstacle/pothole-obstacle";
 import PuddleObstacle from "../services/effect/obstacle/puddle-obstacle";
 import Track from "../services/track-driver/track-driver";
@@ -18,7 +19,7 @@ export enum Perks {
 
 export type EffectSprites = Obstacles | Perks;
 
-const getEffectObjectByName = (name: EffectSprites): typeof PotholeObstacle => {
+const getEffectObjectByName = (name: EffectSprites) => {
   switch (name) {
     case Obstacles.POTHOLE:
       return PotholeObstacle;
@@ -33,12 +34,16 @@ const getEffectObjectByName = (name: EffectSprites): typeof PotholeObstacle => {
   }
 };
 
-const getRandomObstacleSprite = (): EffectSprites => {
+const getRandomObstacleSprite = (): Obstacles => {
   const effects = Object.values(Obstacles);
   return effects[Math.floor(Math.random() * effects.length)];
 };
 
-// TODO: check if position is on track
+const getRandomPerkSprite = (): Perks => {
+  const effects = Object.values(Perks);
+  return effects[Math.floor(Math.random() * effects.length)];
+};
+
 const getRandomPosition = (): Vec2D => {
   const sampledPoints = Track.currentInstance?.checkPointPath?.sampledPoints;
   if (!sampledPoints) {
@@ -47,11 +52,20 @@ const getRandomPosition = (): Vec2D => {
   return sampledPoints[Math.floor(Math.random() * sampledPoints.length)].point;
 };
 
-export const getRandomObstacle = (n: number): EffectObject[] => {
+export const getRandomObstacles = (n: number): EffectObject[] => {
   return [...Array(n)].map(() => {
     const position = getRandomPosition();
     const sprite = getRandomObstacleSprite();
     const RandomEffectObject = getEffectObjectByName(sprite);
     return new RandomEffectObject(position);
+  });
+};
+
+export const getRandomPerks = (n: number): PerkObject[] => {
+  return [...Array(n)].map(() => {
+    const position = getRandomPosition();
+    const sprite = getRandomPerkSprite();
+    const RandomEffectObject = getEffectObjectByName(sprite);
+    return new RandomEffectObject(position) as PerkObject; //* "as" is used because switch statement already filters this as PerkObject
   });
 };

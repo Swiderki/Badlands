@@ -6,7 +6,7 @@ import { Vec2D } from "@/types/physics";
 
 /** This is a class representing physical object on the truck like pothole, puddle etc. */
 export default class EffectObject {
-  private isColliding: boolean = false;
+  protected isColliding: boolean = false;
   readonly collision: CollisionObject;
   readonly position: Vec2D;
   readonly sprite: Sprite;

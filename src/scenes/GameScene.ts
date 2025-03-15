@@ -17,7 +17,7 @@ import { UIService } from "../services/ui-service/ui-service";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Game from "../services/game";
 import EffectObject from "../services/effect/effect-object";
-import { getRandomObstacle } from "../util/effects-utils";
+import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { CollisionObject } from "@/types/collision";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 
@@ -109,9 +109,23 @@ class GameScene extends Scene {
   }
 
   private async loadEffectObjects() {
-    const randomEffectObjects = getRandomObstacle(3);
-    console.log(randomEffectObjects);
-    this.effectObject.push(...randomEffectObjects);
+    const randomObstacles = getRandomObstacles(3);
+    this.effectObject.push(...randomObstacles);
+
+    const addPerk = () => {
+      const randomPerks = getRandomPerks(1);
+      randomPerks.forEach((perk) => {
+        const index = this.effectObject.length;
+        perk._onEnter = () => {
+          console.log("_onEnter");
+          delete this.effectObject[index];
+          addPerk();
+        };
+        this.effectObject.push(perk);
+      });
+    };
+
+    addPerk();
   }
 
   update(deltaTime: number) {
