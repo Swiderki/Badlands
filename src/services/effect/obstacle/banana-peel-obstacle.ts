@@ -1,0 +1,29 @@
+import PlayerController from "@/src/controllers/player-controller";
+import EffectObject from "../effect-object";
+import { Vec2D } from "@/types/physics";
+import { Obstacles } from "@/src/util/effects-utils";
+import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+
+export default class BananaPeelObstacle extends EffectObject {
+  constructor(position: Vec2D) {
+    super(position, Obstacles.BANANA_PEEL);
+  }
+
+  override onEnter() {
+    const playerController = PlayerController.currentInstance;
+    const timedEffectDriver = TimedEffectDriver.currentInstance;
+    if (!playerController || !timedEffectDriver) return;
+
+    // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
+    const effect: TimedEffect = {
+      startTimestamp: Date.now(),
+      duration: 700,
+      finish() {},
+      update() {
+        playerController.rotate(-2);
+      },
+    };
+
+    timedEffectDriver.addEffect("slip", effect);
+  }
+}

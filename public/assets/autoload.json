@@ -72,8 +72,32 @@
     }
   },
   {
-    "name": "hole",
-    "src": "/assets/obstacles/hole.png",
+    "name": "pothole",
+    "src": "/assets/effect_objects/pothole.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "puddle",
+    "src": "/assets/effect_objects/puddle.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "banana_peel",
+    "src": "/assets/effect_objects/banana_peel.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "boost_star",
+    "src": "/assets/effect_objects/boost_star.png",
     "config": {
       "spriteWidth": 24,
       "spriteHeight": 24

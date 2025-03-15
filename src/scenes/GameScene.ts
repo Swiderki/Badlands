@@ -16,11 +16,10 @@ import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Game from "../services/game";
-
-interface Obstacle {
-  sprite: Sprite;
-  position: Vec2D;
-}
+import EffectObject from "../services/effect/effect-object";
+import { getRandomObstacle } from "../util/effects-utils";
+import { CollisionObject } from "@/types/collision";
+import TimedEffectDriver from "../services/effect/timed-effect-driver";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
@@ -31,7 +30,8 @@ class GameScene extends Scene {
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  private obstacles: Obstacle[] = [];
+  private effectObject: EffectObject[] = [];
+  private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
   private map: string;
@@ -65,7 +65,7 @@ class GameScene extends Scene {
       this.track.checkPointPath!,
       this.displayDriver.scaler
     );
-    await this.loadObstacles();
+    await this.loadEffectObjects();
   }
 
   override onMount() {
@@ -108,16 +108,10 @@ class GameScene extends Scene {
     );
   }
 
-  private async loadObstacles() {
-    const obstacleSprite = this.displayDriver.getSprite("hole");
-    if (!obstacleSprite) {
-      throw new Error("Failed to load obstacle sprite");
-    }
-
-    // Add multiple obstacles with different positions
-    this.obstacles.push({ sprite: obstacleSprite, position: { x: 150, y: 150 } });
-    this.obstacles.push({ sprite: obstacleSprite, position: { x: 350, y: 300 } });
-    this.obstacles.push({ sprite: obstacleSprite, position: { x: 800, y: 280 } });
+  private async loadEffectObjects() {
+    const randomEffectObjects = getRandomObstacle(3);
+    console.log(randomEffectObjects);
+    this.effectObject.push(...randomEffectObjects);
   }
 
   update(deltaTime: number) {
@@ -125,7 +119,7 @@ class GameScene extends Scene {
     this.playerUpdate(deltaTime);
     this.opponentsUpdate(deltaTime);
     this.collisionUpdate();
-    this.obstacleUpdate();
+    this.effectUpdate();
     this.scoreUpdate();
     this.uiUpdate();
   }
@@ -150,6 +144,23 @@ class GameScene extends Scene {
 
     this.playerController.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
+    //! DEV: Draw player has boost effect
+    if (this.timedEffectDriver.effects) {
+      this.displayDriver.ctx.rect(
+        this.playerController.displayData.position.x,
+        this.playerController.displayData.position.y,
+        10,
+        10
+      );
+      if (this.timedEffectDriver.hasEffect("boost")) {
+        this.displayDriver.ctx.fillStyle = "green";
+      } else if (this.timedEffectDriver.hasEffect("slip")) {
+        this.displayDriver.ctx.fillStyle = "yellow";
+      } else if (this.timedEffectDriver.hasEffect("damaged")) {
+        this.displayDriver.ctx.fillStyle = "red";
+      }
+      this.displayDriver.ctx.fill();
+    }
     this.displayDriver.drawSprite(this.playerController.displayData);
   }
 
@@ -194,12 +205,12 @@ class GameScene extends Scene {
     }
   }
 
-  private obstacleUpdate() {
+  private effectUpdate() {
     if (!this.playerController) {
       return;
     }
 
-    this.obstacles.forEach((obstacle) => {
+    this.effectObject.forEach((obstacle) => {
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,
@@ -213,28 +224,14 @@ class GameScene extends Scene {
         this.playerController!.angle
       );
 
-      if (this.isCollidingWithObstacle(playerCorners, obstacle.position, obstacle.sprite)) {
-        this.playerController!.actualForce = Vector.scale(this.playerController!.actualForce, 0.5);
-      }
-    });
-  }
+      const isColliding = this.collisionManager.isCollidingWithAnotherObject(
+        playerCorners,
+        obstacle.collision
+      );
 
-  private isCollidingWithObstacle(
-    corners: Vec2D[],
-    obstaclePosition: Vec2D,
-    obstacleSprite: Sprite
-  ): boolean {
-    for (const corner of corners) {
-      if (
-        corner.x >= obstaclePosition.x &&
-        corner.x <= obstaclePosition.x + obstacleSprite.config.spriteWidth &&
-        corner.y >= obstaclePosition.y &&
-        corner.y <= obstaclePosition.y + obstacleSprite.config.spriteHeight
-      ) {
-        return true;
-      }
-    }
-    return false;
+      obstacle._update(isColliding);
+    });
+    this.timedEffectDriver.update();
   }
 
   private uiUpdate() {
@@ -269,7 +266,7 @@ class GameScene extends Scene {
     }
 
     this.UiService.setCurrentTime(this.scoreboard.currentTime);
-    console.log(this.scoreboard.currentLapTime);
+    // console.log(this.scoreboard.currentLapTime);
     this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
 
     if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {

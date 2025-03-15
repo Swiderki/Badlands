@@ -1,6 +1,7 @@
-import { Vector } from "@/src/util/vec-util";
-import { Vec2D } from "@/types/physics";
 import { CollisionObject } from "@/types/collision";
+import { Vec2D } from "@/types/physics";
+import { Vector } from "@/src/util/vec-util";
+import { getCarCorners } from "@/src/util/collision-util";
 
 class CollisionManager {
   scalingFactor: number;
@@ -46,8 +47,10 @@ class CollisionManager {
     return Vector.scale(v, this.scalingFactor);
   }
 
-  public isCollidingWithAnotherObject(object1: CollisionObject, object2: CollisionObject): boolean {
-    const corners1 = this.getRotatedCorners(object1);
+  public isCollidingWithAnotherObject(object1: CollisionObject, object2: CollisionObject): boolean;
+  public isCollidingWithAnotherObject(carCorners: Vec2D[], object2: CollisionObject): boolean;
+  public isCollidingWithAnotherObject(object1: CollisionObject | Vec2D[], object2: CollisionObject): boolean {
+    const corners1 = Array.isArray(object1) ? object1 : this.getRotatedCorners(object1);
     const corners2 = this.getRotatedCorners(object2);
 
     const axes = [...this.getAxes(corners1), ...this.getAxes(corners2)];
