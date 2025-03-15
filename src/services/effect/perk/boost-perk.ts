@@ -15,7 +15,7 @@ export default class BoostPerk extends PerkObject {
     if (!playerController || !timedEffectDriver) return;
 
     playerController.currentAccelerationPowerForward *= 2;
-    playerController.currentAccelerationPowerForward *= 2;
+    playerController.currentAccelerationPowerBackwards *= 2;
 
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
