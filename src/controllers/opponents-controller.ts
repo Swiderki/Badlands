@@ -7,7 +7,7 @@ class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.04;
   private _lastAcceleration: number = 0;
-  private _accelerationCooldown: number = 0.2;
+  private _accelerationCooldown: number = 0.1;
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.04;
 
@@ -15,9 +15,9 @@ class OpponentController extends PhysicsBasedController {
 
   constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
     super(sprite);
-    
+
     // Temporary, bacause he cant deal with greater values
-    this._currentMaxSpeedForward = 10;
+    this._currentMaxSpeedForward = 60;
 
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
@@ -31,7 +31,10 @@ class OpponentController extends PhysicsBasedController {
     this._lastBrake += deltaTime;
 
     //* Offset for x and y +30 and +15 is added for the same reason like in @/src/util/collision-util.ts
-    const action = this._drivingPolicy.getAction({x: this.position.x + this.colliderWidth/2 + 30, y: this.position.y + this.colliderHeight/2 + 15}, this.angle);
+    const action = this._drivingPolicy.getAction(
+      { x: this.position.x + this.colliderWidth / 2 + 30, y: this.position.y + this.colliderHeight / 2 + 15 },
+      this.angle
+    );
 
     if (action.acceleration && this._lastAcceleration >= this._accelerationCooldown) {
       this.accelerateForward();

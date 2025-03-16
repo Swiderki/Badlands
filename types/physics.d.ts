@@ -7,4 +7,5 @@ export type Action = {
   acceleration: boolean;
   rotation: number;
   brake: boolean;
-}
+  accelerationPower: number;
+};
