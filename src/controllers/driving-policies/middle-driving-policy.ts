@@ -1,4 +1,4 @@
-import { TrackPath } from "@/src/services/track-driver/trackpath";
+import { TrackPath } from "@/src/services/track-driver/track-path";
 import BaseDrivingPolicy from "./base-driving-policy";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
@@ -45,6 +45,7 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
 
     //* Compute the shortest angular difference
     const angle_diff = target_angle - current_rotation;
+
     const angle_diff_corrected =
       angle_diff > 180 ? angle_diff - 360 : angle_diff < -180 ? angle_diff + 360 : angle_diff;
 

@@ -1,10 +1,10 @@
-import { Sprite, SpriteArray } from "@/types/display-driver";
+import { Color, Sprite, SpriteArray } from "@/types/display-driver";
 import DisplayDriver from "../display-driver/display-driver";
 import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
 import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
-import { TrackPath } from "./trackpath";
+import { TrackPath } from "./track-path";
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
@@ -31,6 +31,9 @@ class TrackLoader {
 
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
+      
+        checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: 0 } });
+        console.log(checkPointPath.sampledPoints);
 
         return new Track(
           data.bonuses,
@@ -73,6 +76,7 @@ class TrackLoader {
       const height = image.height;
 
       const colliderData: number[][] = [];
+      const debug: Color[] = [];
 
       for (let y = 0; y < height; y++) {
         const row: number[] = [];
@@ -82,12 +86,14 @@ class TrackLoader {
           const g = data[index + 1];
           const b = data[index + 2];
           const a = data[index + 3];
+          debug.push({ r, g, b, a });
 
           row.push(mapPixelToCollisionType(r, g, b, a));
         }
         colliderData.push(row);
       }
 
+      console.log(debug);
       resolve(colliderData);
     });
   }

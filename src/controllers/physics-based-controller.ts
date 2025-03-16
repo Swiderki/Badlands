@@ -2,6 +2,8 @@ import { DisplayData, Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
+import { getDeltaTime } from "../util/delta-time";
+import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -21,6 +23,7 @@ class PhysicsBasedController {
   protected _maxSpeedBackwards: number = 250;
   protected _accelerationPowerForward: number = 12;
   protected _accelerationPowerBackwards: number = 8;
+
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 1;
 
@@ -189,7 +192,7 @@ class PhysicsBasedController {
   }
 
   turning(value: number) {
-    const turningThreshold = 20;
+    const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
         (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
@@ -199,7 +202,7 @@ class PhysicsBasedController {
   }
 
   rotate(angle: number) {
-    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle);
+    this._angle = PhysicsUtils.normalizeAngle(this._angle + angle * getDeltaTime() * 60);
     this.setCurrentSprite();
   }
 

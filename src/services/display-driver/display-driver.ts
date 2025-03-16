@@ -1,8 +1,9 @@
 import { DisplayData, DrawCall, SpriteData } from "@/types/display-driver";
+
+import { CheckPoint } from "@/types/track-driver";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
-import { CheckPoint } from "@/types/track-driver";
 
 class DisplayDriver {
   private static _instance: DisplayDriver;
@@ -37,6 +38,10 @@ class DisplayDriver {
       return null;
     }
     return DisplayDriver._instance;
+  }
+
+  get ctx() {
+    return this._ctx;
   }
 
   setResolution(width: number, height: number) {
@@ -143,7 +148,7 @@ class DisplayDriver {
     for (const point of checkpoints) {
       this._ctx.fillStyle = "yellow";
       this._ctx.beginPath();
-      this._ctx.fillRect(point.point.x * this.scaler, point.point.y * this.scaler, 2, 2);
+      this._ctx.fillRect(point.point.x, point.point.y, 2, 2);
       this._ctx.fill();
       this._ctx.closePath();
     }

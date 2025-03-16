@@ -24,3 +24,10 @@ export type DisplayData = {
 export type DrawCall = () => void;
 
 export type SpriteArray = number[][];
+
+export type Color = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};

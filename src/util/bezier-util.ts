@@ -85,6 +85,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
 
         // Tangent and curvature computation
         const tangent = bezier.derivative(t);
+        //* Type error in libary plis ignore
+        // this one is need because of error in library types @ts-expect-error
         const curvature = bezier.curvature(t).k;
 
         sampledPoints.push({ point: { x, y }, tangent, curvature });
@@ -102,6 +104,8 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
 
         // Tangent and curvature computation
         const tangent = bezier.derivative(t);
+        //* Type error in libary plis ignore
+        // this one is need because of error in library types @ts-expect-error
         const curvature = bezier.curvature(t).k;
 
         sampledPoints.push({ point: { x, y }, tangent, curvature });

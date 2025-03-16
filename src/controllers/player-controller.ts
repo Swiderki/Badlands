@@ -3,6 +3,7 @@ import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 
 class PlayerController extends PhysicsBasedController {
+  private static _instance: PlayerController;
   private _playerInput: { [key: string]: boolean } = {};
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.02;
@@ -13,12 +14,20 @@ class PlayerController extends PhysicsBasedController {
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
-
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
+
     this.setCurrentSprite();
 
     this._addInputListeners();
+    PlayerController._instance = this;
+  }
+
+  static get currentInstance(): PlayerController | null {
+    if (!PlayerController._instance) {
+      return null;
+    }
+    return PlayerController._instance;
   }
 
   private _addInputListeners() {
