@@ -38,7 +38,7 @@ class PhysicsDriver {
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
 
-    const SPEED_LOSS = 0.8;
+    const SPEED_LOSS = 0.7;
     controller.actualForce = Vector.scale(controller.actualForce, SPEED_LOSS);
 
     //? Miejsce zderzenia w tablicy trackCollider
@@ -105,9 +105,9 @@ class PhysicsDriver {
     // console.log("actualForce przed odbiciem:", controller.actualForce);
     // console.log("normal vector:", normal);
 
-    controller.rotate(angleDifference * 5);
+    controller.rotate(angleDifference * 3);
 
-    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 1)));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
     controller.setCurrentSprite();
     setTimeout(() => {
