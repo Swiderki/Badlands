@@ -14,14 +14,16 @@ export default class OilSpillObstacle extends EffectObject {
     const timedEffectDriver = TimedEffectDriver.currentInstance;
     if (!playerController || !timedEffectDriver) return;
 
+    playerController.currentAdhesionModifier *= 0.002;
+
     // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
       duration: 700,
-      finish() {},
-      update() {
-        playerController.rotate(2);
+      finish() {
+        playerController.resetToDefaultAdhesionModifier();
       },
+      update() {},
     };
 
     timedEffectDriver.addEffect("slip", effect);

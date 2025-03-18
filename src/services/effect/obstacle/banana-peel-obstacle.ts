@@ -14,7 +14,11 @@ export default class BananaPeelObstacle extends EffectObject {
     const timedEffectDriver = TimedEffectDriver.currentInstance;
     if (!playerController || !timedEffectDriver) return;
 
+    // playerController.currentAdhesionModifier *= 0.002;
+
+
     // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
+    // TODO: Zostawiłbym w bananie ten smieszny skręt bo to w sumie pasuje do komizmu skórki od banana
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
       duration: 700,

@@ -57,7 +57,7 @@ export class ResultScene extends Scene {
       const topResults = this.playerResults
         .map((result) => parseInt(result))
         .sort((a, b) => a - b)
-        .slice(0, 5);
+        .slice(0, 3);
 
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");

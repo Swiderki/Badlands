@@ -130,7 +130,7 @@ class PhysicsDriver {
 
   calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
     let deltatimeMultiplicator = 1;
-    if (deltaTime != 0) {
+    if (deltaTime !== 0) {
       deltatimeMultiplicator = 1 / (60 * deltaTime);
     }
 

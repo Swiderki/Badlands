@@ -16,19 +16,19 @@ export default class SpikesObstacle extends EffectObject {
 
     playerController.actualForce.x *= 0.2;
     playerController.actualForce.y *= 0.2;
-
+    playerController.currentMaxSpeedForward *= 0.2;
     playerController.currentAccelerationPowerForward *= 0.7;
 
     setTimeout(() => {
       playerController.actualForce.x *= 0.1;
       playerController.actualForce.y *= 0.1;
-    }, 100);
+    }, 200);
 
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
       duration: Infinity,
       finish() {
-        playerController.resetToDefaultSpeedAndAcceleration();
+        // playerController.resetToDefaultSpeedAndAcceleration();
       },
       update() {},
     };

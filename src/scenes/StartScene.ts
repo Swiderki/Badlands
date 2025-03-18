@@ -11,13 +11,13 @@ export class StartScene extends Scene {
     }
     this.sceneRef.style.display = "block";
 
-    const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
+    const playBtnRef = this.sceneRef.querySelector("button:nth-of-type(2)");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
       // Game.getInstance().startGameScene();
       Game.getInstance().startSelectionScene();
     });
-    const aboutBtnRef = this.sceneRef.querySelector("button:nth-of-type(2)");
+    const aboutBtnRef = this.sceneRef.querySelector("button:first-of-type");
     aboutBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
       // Game.getInstance().startGameScene();
