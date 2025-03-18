@@ -30,7 +30,7 @@ class GameScene extends Scene {
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  private effectObject: EffectObject[] = [];
+  private effectObjects: EffectObject[] = [];
   private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
@@ -109,19 +109,19 @@ class GameScene extends Scene {
   }
 
   private async loadEffectObjects() {
-    const randomObstacles = getRandomObstacles(3);
-    this.effectObject.push(...randomObstacles);
+    const randomObstacles = getRandomObstacles(3, this.effectObjects);
+    this.effectObjects.push(...randomObstacles);
 
     const addPerk = () => {
-      const randomPerks = getRandomPerks(1);
+      const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
-        const index = this.effectObject.length;
+        const index = this.effectObjects.length;
         perk._onEnter = () => {
           console.log("_onEnter");
-          delete this.effectObject[index];
+          delete this.effectObjects[index];
           addPerk();
         };
-        this.effectObject.push(perk);
+        this.effectObjects.push(perk);
       });
     };
 
@@ -224,7 +224,7 @@ class GameScene extends Scene {
       return;
     }
 
-    this.effectObject.forEach((obstacle) => {
+    this.effectObjects.forEach((obstacle) => {
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,
