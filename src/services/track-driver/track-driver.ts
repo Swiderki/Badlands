@@ -14,7 +14,8 @@ class Track {
   private _startPositions: StartPosition[];
 
   //* Layers for rendering (e.g., bridges above cars, track below cars) - list of paths to png files
-  private _layers: Array<Sprite | null>;
+  private _fgLayers: Array<Sprite | null>;
+  private _bgLayers: Array<Sprite | null>;
 
   //* Collider 2d array (value under each record is defining where cars can/can't go)
   private _colliderImage: number[][];
@@ -27,14 +28,16 @@ class Track {
     bonuses: BonusBase[],
     traction: number,
     startPositions: StartPosition[],
-    layers: Array<Sprite | null>,
+    fgLayers: Array<Sprite | null>,
+    bgLayers: Array<Sprite | null>,
     colliderImage: number[][],
     checkPointPath: TrackPath
   ) {
     this._bonuses = bonuses;
     this._traction = traction;
     this._startPositions = startPositions;
-    this._layers = layers;
+    this._fgLayers = fgLayers;
+    this._bgLayers = bgLayers;
     this._colliderImage = colliderImage;
     this._checkPointPath = checkPointPath;
     Track._instance = this;
@@ -50,8 +53,12 @@ class Track {
     return this._startPositions;
   }
 
-  get layers(): Array<Sprite | null> {
-    return this._layers;
+  get fgLayers(): Array<Sprite | null> {
+    return this._fgLayers;
+  }
+
+  get bgLayers(): Array<Sprite | null> {
+    return this._bgLayers;
   }
 
   get colliderImage(): number[][] {

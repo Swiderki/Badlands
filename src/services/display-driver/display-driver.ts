@@ -99,12 +99,28 @@ class DisplayDriver {
   }
 
   displayTrack(track: Track) {
-    for (const layer of track.layers) {
+    for (const layer of track.bgLayers) {
       if (!layer) {
         continue;
       }
       //* Here we use direct draw 'cause this happens every frame and nedd to be as quick as possible
       //* Since that's the case allocating usless SpriteData object would be a waste of resources(memory & compute power)
+      this._ctx.drawImage(
+        layer.image,
+        0,
+        0,
+        layer.config.spriteWidth * this.scaler,
+        layer.config.spriteHeight * this.scaler
+      );
+    }
+  }
+
+  displayTrackFgLayers(track: Track) {
+    for (const layer of track.fgLayers) {
+      console.log(layer);
+      if (!layer) {
+        continue;
+      }
       this._ctx.drawImage(
         layer.image,
         0,
