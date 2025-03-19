@@ -152,7 +152,12 @@ class GameScene extends Scene {
       });
     });
     this.renderPlayer();
+    this.opponentControllersList.forEach((opponent) => {
+      this.displayDriver.drawSprite(opponent.displayData);
+    });
+
     this.displayDriver.displayTrackFgLayers(this.track);
+    this.track.displayCheckpoints(this.displayDriver);
     this.displayDriver.performDrawCalls();
   }
 
@@ -184,8 +189,6 @@ class GameScene extends Scene {
     if (this.track === null) {
       return;
     }
-
-    this.track.displayCheckpoints(this.displayDriver);
   }
 
   private playerUpdate(deltaTime: number) {
@@ -205,7 +208,6 @@ class GameScene extends Scene {
     for (const opponent of this.opponentControllersList) {
       opponent.update(deltaTime);
       this.physicsDriver.updateController(opponent, deltaTime);
-      this.displayDriver.drawSprite(opponent.displayData);
     }
   }
 
