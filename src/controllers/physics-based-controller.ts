@@ -4,6 +4,7 @@ import { PhysicsUtils } from "../util/physics-util";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
 import { StartPosition } from "@/types/track-driver";
+import { CollisionObject } from "@/types/collision";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -227,6 +228,16 @@ class PhysicsBasedController {
   }
 
   update(deltaTime: number) {}
+
+  get collision(): CollisionObject {
+    return {
+      x: this.position.x + this.colliderWidth / 2 + 30,
+      y: this.position.y + this.colliderHeight / 2 + 15,
+      width: this.colliderWidth,
+      height: this.colliderHeight,
+      angle: this.angle,
+    };
+  }
 }
 
 export default PhysicsBasedController;

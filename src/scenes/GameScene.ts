@@ -212,6 +212,11 @@ class GameScene extends Scene {
   }
 
   private collisionUpdate() {
+    this.handleTrackCollisions();
+    this.handleControllerCollisions();
+  }
+
+  private handleTrackCollisions() {
     if (!this.track || !this.track.colliderImage || !this.playerController) {
       return;
     }
@@ -237,6 +242,52 @@ class GameScene extends Scene {
         this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
         trackCollider
       );
+    }
+
+    this.opponentControllersList.forEach((opponent) => {
+      const opponentCorners = getCarCorners(
+        opponent.displayData.position,
+        opponent.colliderHeight,
+        opponent.colliderWidth,
+        opponent.angle
+      );
+
+      if (this.collisionManager.isCollidingWithTrack(opponentCorners, trackCollider) !== null) {
+        this.physicsDriver.handleCollision(
+          opponent,
+          this.collisionManager.isCollidingWithTrack(opponentCorners, trackCollider)!,
+          trackCollider
+        );
+      }
+    });
+  }
+
+  private handleControllerCollisions() {
+    if (!this.playerController) {
+      return;
+    }
+
+    //* Take note that if we check all collisions of the opponents we dont need to bother with player collisions
+    for (const opponent of this.opponentControllersList) {
+      //* Handle player enemy collisions
+      if (
+        this.collisionManager.isCollidingWithAnotherObject(
+          this.playerController.collision,
+          opponent.collision
+        )
+      ) {
+        this.physicsDriver.handleCollisionBetweenControllers(this.playerController, opponent);
+      }
+
+      //* Handle enemy enemy collisions
+      this.opponentControllersList.forEach((opponent2) => {
+        if (opponent === opponent2) {
+          return;
+        }
+        if (this.collisionManager.isCollidingWithAnotherObject(opponent.collision, opponent2.collision)) {
+          this.physicsDriver.handleCollisionBetweenControllers(opponent, opponent2);
+        }
+      });
     }
   }
 

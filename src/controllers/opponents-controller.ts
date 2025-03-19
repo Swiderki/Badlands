@@ -3,6 +3,7 @@ import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
+import { CollisionObject } from "@/types/collision";
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
@@ -14,8 +15,7 @@ class OpponentController extends PhysicsBasedController {
 
   private _drivingPolicy: DrivingPolicyBase;
 
-  currentLap = 0
-  ;
+  currentLap = 0;
 
   constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
     super(sprite);
