@@ -14,12 +14,7 @@ abstract class BaseDrivingPolicy {
     this._scaling_factor = scaling_factor;
   }
 
-  abstract getAction(
-    current_position: Vec2D,
-    current_rotation: number,
-    actualForce: Vec2D,
-    maxSpeed: number
-  ): Action;
+  abstract getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action;
 }
 
 export default BaseDrivingPolicy;

@@ -47,8 +47,7 @@ class CollisionManager {
     return Vector.scale(v, this.scalingFactor);
   }
 
-  public isCollidingWithAnotherObject(object1: CollisionObject, object2: CollisionObject): boolean;
-  public isCollidingWithAnotherObject(carCorners: Vec2D[], object2: CollisionObject): boolean;
+
   public isCollidingWithAnotherObject(object1: CollisionObject | Vec2D[], object2: CollisionObject): boolean {
     const corners1 = Array.isArray(object1) ? object1 : this.getRotatedCorners(object1);
     const corners2 = this.getRotatedCorners(object2);

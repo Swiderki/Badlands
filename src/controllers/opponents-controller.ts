@@ -35,7 +35,6 @@ class OpponentController extends PhysicsBasedController {
       { x: this.position.x + this.colliderWidth / 2 + 30, y: this.position.y + this.colliderHeight / 2 + 15 },
       this.angle,
       this.actualForce,
-      this._currentMaxSpeedForward
     );
 
     if (action.acceleration && this._lastAcceleration >= this._accelerationCooldown) {
