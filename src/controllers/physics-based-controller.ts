@@ -1,9 +1,11 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
-import { Vec2D } from "@/types/physics";
+
 import { PhysicsUtils } from "../util/physics-util";
+import { StartPosition } from "@/types/track-driver";
+import TimedEffectDriver from "../services/effect/timed-effect-driver";
+import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
-import { StartPosition } from "@/types/track-driver";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -34,6 +36,8 @@ class PhysicsBasedController {
 
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
+
+  timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;

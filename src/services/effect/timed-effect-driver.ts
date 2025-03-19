@@ -11,19 +11,19 @@ type EffectType = "boost" | "slip" | "damaged"; // | "slow" | "freeze" // TODO: 
 
 /** This is a class managing time effect like a weaker grip after driving into banana peel, boost after collecting a boost-star etc. */
 export default class TimedEffectDriver {
-  private static _instance: TimedEffectDriver;
+  // private static _instance: TimedEffectDriver;
   private _effects: Map<EffectType, TimedEffect> = new Map();
 
-  constructor() {
-    TimedEffectDriver._instance = this;
-  }
+  // constructor() {
+  //   TimedEffectDriver._instance = this;
+  // }
 
-  static get currentInstance(): TimedEffectDriver | null {
-    if (!TimedEffectDriver._instance) {
-      return null;
-    }
-    return TimedEffectDriver._instance;
-  }
+  // static get currentInstance(): TimedEffectDriver | null {
+  //   if (!TimedEffectDriver._instance) {
+  //     return null;
+  //   }
+  //   return TimedEffectDriver._instance;
+  // }
 
   update() {
     this._effects.forEach((effect, type) => {
