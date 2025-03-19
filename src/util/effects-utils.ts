@@ -4,13 +4,17 @@ import EffectObject from "../services/effect/effect-object";
 import PerkObject from "../services/effect/perk/perk-object";
 import PotholeObstacle from "../services/effect/obstacle/pothole-obstacle";
 import PuddleObstacle from "../services/effect/obstacle/puddle-obstacle";
+import SpikesObstacle from "../services/effect/obstacle/spikes-obstacle";
 import Track from "../services/track-driver/track-driver";
+import OilSpillObstacle from "../services/effect/obstacle/oil-spill-obstacle";
 import { Vec2D } from "@/types/physics";
 
 export enum Obstacles {
   POTHOLE = "pothole",
   PUDDLE = "puddle",
   BANANA_PEEL = "banana_peel",
+  SPIKES = "spikes",
+  OIL_SPILL = "oil_spill",
 }
 
 export enum Perks {
@@ -29,6 +33,10 @@ const getEffectObjectByName = (name: EffectSprites) => {
       return BananaPeelObstacle;
     case Perks.BOOST_STAR:
       return BoostPerk;
+    case Obstacles.SPIKES:
+      return SpikesObstacle;
+    case Obstacles.OIL_SPILL:
+      return OilSpillObstacle;
     default:
       throw new Error("effect not found");
   }

@@ -276,3 +276,45 @@ h1 {
   color: #3acf61;
   margin-left: 0.5rem;
 }
+
+.dialog {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.dialog__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dialog button {
+  width: fit-content !important;
+}
+
+.dialog input {
+  border: 1px solid black;
+  border-radius: 0;
+  font-family: "Pixelify Sans", sans-serif;
+}
+
+.dialog input:focus {
+  outline: none;
+}
+
+.btn_wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+#start-scene {
+  position: relative;
+}

@@ -142,7 +142,15 @@ class GameScene extends Scene {
     if (this.displayDriver === null || this.track === null) {
       return;
     }
+
     this.displayDriver.displayTrack(this.track);
+    this.effectObjects.forEach((obstacle) => {
+      this.displayDriver.drawSprite({
+        sprite: obstacle.sprite,
+        position: obstacle.position,
+        currentSprite: 0,
+      });
+    });
     this.renderPlayer();
     this.displayDriver.displayTrackFgLayers(this.track);
     this.displayDriver.performDrawCalls();
@@ -236,12 +244,6 @@ class GameScene extends Scene {
     }
 
     this.effectObjects.forEach((obstacle) => {
-      this.displayDriver.drawSprite({
-        sprite: obstacle.sprite,
-        position: obstacle.position,
-        currentSprite: 0,
-      });
-
       const playerCorners = getCarCorners(
         this.playerController!.displayData.position,
         this.playerController!.colliderHeight,
@@ -300,16 +302,8 @@ class GameScene extends Scene {
     }
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
-      const playerResults = localStorage.getItem("playerResults");
-
-      if (playerResults) {
-        const results = JSON.parse(playerResults);
-        results.push(this.scoreboard.currentTime);
-        localStorage.setItem("playerResults", JSON.stringify(results));
-        console.log(results);
-      } else {
-        localStorage.setItem("playerResults", JSON.stringify([this.scoreboard.currentTime]));
-      }
+      const nickname = Game.instance.nickname;
+      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
 
       Game.instance.startResultScene();
     }
