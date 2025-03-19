@@ -30,7 +30,7 @@ class GameScene extends Scene {
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  private effectObject: EffectObject[] = [];
+  private effectObjects: EffectObject[] = [];
   private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
@@ -56,7 +56,7 @@ class GameScene extends Scene {
     }
     this.sceneRef.style.display = "block";
 
-    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
+    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 1;
     await this.loadPlayer(this.track.startPositions[0]);
@@ -109,19 +109,19 @@ class GameScene extends Scene {
   }
 
   private async loadEffectObjects() {
-    const randomObstacles = getRandomObstacles(3);
-    this.effectObject.push(...randomObstacles);
+    const randomObstacles = getRandomObstacles(3, this.effectObjects);
+    this.effectObjects.push(...randomObstacles);
 
     const addPerk = () => {
-      const randomPerks = getRandomPerks(1);
+      const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
-        const index = this.effectObject.length;
+        const index = this.effectObjects.length;
         perk._onEnter = () => {
           console.log("_onEnter");
-          delete this.effectObject[index];
+          delete this.effectObjects[index];
           addPerk();
         };
-        this.effectObject.push(perk);
+        this.effectObjects.push(perk);
       });
     };
 
@@ -139,25 +139,27 @@ class GameScene extends Scene {
   }
 
   render(_ctx: CanvasRenderingContext2D) {
-    this.displayDriver.performDrawCalls();
-  }
-
-  private trackUpdate() {
-    if (this.track === null) {
+    if (this.displayDriver === null || this.track === null) {
       return;
     }
 
     this.displayDriver.displayTrack(this.track);
-    this.track.displayCheckpoints(this.displayDriver);
+    this.effectObjects.forEach((obstacle) => {
+      this.displayDriver.drawSprite({
+        sprite: obstacle.sprite,
+        position: obstacle.position,
+        currentSprite: 0,
+      });
+    });
+    this.renderPlayer();
+    this.displayDriver.displayTrackFgLayers(this.track);
+    this.displayDriver.performDrawCalls();
   }
 
-  private playerUpdate(deltaTime: number) {
-    if (!this.playerController || !this.playerController.displayData) {
+  renderPlayer() {
+    if (!this.playerController) {
       return;
     }
-
-    this.playerController.update(deltaTime);
-    this.physicsDriver.updateController(this.playerController, deltaTime);
     //! DEV: Draw player has boost effect
     if (this.timedEffectDriver.effects) {
       this.displayDriver.ctx.rect(
@@ -176,6 +178,23 @@ class GameScene extends Scene {
       this.displayDriver.ctx.fill();
     }
     this.displayDriver.drawSprite(this.playerController.displayData);
+  }
+
+  private trackUpdate() {
+    if (this.track === null) {
+      return;
+    }
+
+    this.track.displayCheckpoints(this.displayDriver);
+  }
+
+  private playerUpdate(deltaTime: number) {
+    if (!this.playerController || !this.playerController.displayData) {
+      return;
+    }
+
+    this.playerController.update(deltaTime);
+    this.physicsDriver.updateController(this.playerController, deltaTime);
   }
 
   private opponentsUpdate(deltaTime: number) {
@@ -224,13 +243,7 @@ class GameScene extends Scene {
       return;
     }
 
-    this.effectObject.forEach((obstacle) => {
-      this.displayDriver.drawSprite({
-        sprite: obstacle.sprite,
-        position: obstacle.position,
-        currentSprite: 0,
-      });
-
+    this.effectObjects.forEach((obstacle) => {
       const playerCorners = getCarCorners(
         this.playerController!.displayData.position,
         this.playerController!.colliderHeight,
@@ -289,16 +302,8 @@ class GameScene extends Scene {
     }
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
-      const playerResults = localStorage.getItem("playerResults");
-
-      if (playerResults) {
-        const results = JSON.parse(playerResults);
-        results.push(this.scoreboard.currentTime);
-        localStorage.setItem("playerResults", JSON.stringify(results));
-        console.log(results);
-      } else {
-        localStorage.setItem("playerResults", JSON.stringify([this.scoreboard.currentTime]));
-      }
+      const nickname = Game.instance.nickname;
+      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
 
       Game.instance.startResultScene();
     }

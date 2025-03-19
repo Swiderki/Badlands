@@ -14,8 +14,8 @@ class Game {
   //* Used to keep track of time
   private _lastRenderTime: number = 0;
   private _penultimateRenderTime: number = 0;
-
   private _currentScene: Scene | null = null;
+  private _nickname: string = "";
 
   static instance: Game;
 
@@ -34,6 +34,14 @@ class Game {
     this._currentScene = scene;
 
     this._currentScene.onMount();
+  }
+
+  get nickname() {
+    return this._nickname;
+  }
+
+  set nickname(nickname: string) {
+    this._nickname = nickname;
   }
 
   constructor(canvas: HTMLCanvasElement) {

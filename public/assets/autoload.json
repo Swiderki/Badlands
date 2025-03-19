@@ -8,16 +8,24 @@
     }
   },
   {
-    "name": "test-track",
-    "src": "/assets/tracks/test-track.png",
+    "name": "gravel-track-collider",
+    "src": "/assets/tracks/gravel/gravel-track-data.png",
     "config": {
       "spriteWidth": 320,
       "spriteHeight": 182
     }
   },
   {
-    "name": "test-track-collider",
-    "src": "/assets/tracks/test-track-data1.png",
+    "name": "gravel-track-layer-1",
+    "src": "/assets/tracks/gravel/gravel-track-layer1.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "gravel-track-layer-2",
+    "src": "/assets/tracks/gravel/gravel-track-layer2.png",
     "config": {
       "spriteWidth": 320,
       "spriteHeight": 182
@@ -98,6 +106,22 @@
   {
     "name": "boost_star",
     "src": "/assets/effect_objects/boost_star.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "spikes",
+    "src": "/assets/effect_objects/spikes.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "oil_spill",
+    "src": "/assets/effect_objects/oil_spill.png",
     "config": {
       "spriteWidth": 24,
       "spriteHeight": 24

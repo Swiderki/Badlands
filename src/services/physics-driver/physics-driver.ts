@@ -23,7 +23,7 @@ class PhysicsDriver {
       controller.actualForce,
       this.calculateFriction(controller, deltaTime)
     );
-
+    controller.actualForce = Vector.scale(controller.actualForce, this.engineBraking(controller, deltaTime));
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
     //controller.enterNitroMode()
@@ -38,7 +38,7 @@ class PhysicsDriver {
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
 
-    const SPEED_LOSS = 0.8;
+    const SPEED_LOSS = 0.7;
     controller.actualForce = Vector.scale(controller.actualForce, SPEED_LOSS);
 
     //? Miejsce zderzenia w tablicy trackCollider
@@ -105,9 +105,9 @@ class PhysicsDriver {
     // console.log("actualForce przed odbiciem:", controller.actualForce);
     // console.log("normal vector:", normal);
 
-    controller.rotate(angleDifference * 5);
+    controller.rotate(angleDifference * 3);
 
-    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 1)));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
     controller.setCurrentSprite();
     setTimeout(() => {
@@ -130,7 +130,7 @@ class PhysicsDriver {
 
   calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
     let deltatimeMultiplicator = 1;
-    if (deltaTime != 0) {
+    if (deltaTime !== 0) {
       deltatimeMultiplicator = 1 / (60 * deltaTime);
     }
 
@@ -156,6 +156,21 @@ class PhysicsDriver {
       ) / 1000;
     controller.brakingForce = 0;
     return frictionFactor;
+  }
+
+  engineBraking(controller: PhysicsBasedController, deltaTime: number) {
+    let deltatimeMultiplicator = 1;
+    if (deltaTime != 0) {
+      deltatimeMultiplicator = 1 / (60 * deltaTime);
+    }
+    const curSpeed = Vector.length(controller.actualForce);
+    const engineBrakingForce = 1;
+    let engineBrakingValue = 1;
+    if (curSpeed != 0) {
+      engineBrakingValue =
+        1 - ((controller.currentAdhesionModifier * engineBrakingForce) / curSpeed) * deltatimeMultiplicator;
+    }
+    return engineBrakingValue;
   }
 }
 
