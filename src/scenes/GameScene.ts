@@ -56,7 +56,7 @@ class GameScene extends Scene {
     }
     this.sceneRef.style.display = "block";
 
-    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/test-track.json");
+    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 1;
     await this.loadPlayer(this.track.startPositions[0]);
@@ -139,25 +139,19 @@ class GameScene extends Scene {
   }
 
   render(_ctx: CanvasRenderingContext2D) {
+    if (this.displayDriver === null || this.track === null) {
+      return;
+    }
+    this.displayDriver.displayTrack(this.track);
+    this.renderPlayer();
+    this.displayDriver.displayTrackFgLayers(this.track);
     this.displayDriver.performDrawCalls();
   }
 
-  private trackUpdate() {
-    if (this.track === null) {
+  renderPlayer() {
+    if (!this.playerController) {
       return;
     }
-
-    this.displayDriver.displayTrack(this.track);
-    this.track.displayCheckpoints(this.displayDriver);
-  }
-
-  private playerUpdate(deltaTime: number) {
-    if (!this.playerController || !this.playerController.displayData) {
-      return;
-    }
-
-    this.playerController.update(deltaTime);
-    this.physicsDriver.updateController(this.playerController, deltaTime);
     //! DEV: Draw player has boost effect
     if (this.timedEffectDriver.effects) {
       this.displayDriver.ctx.rect(
@@ -176,6 +170,23 @@ class GameScene extends Scene {
       this.displayDriver.ctx.fill();
     }
     this.displayDriver.drawSprite(this.playerController.displayData);
+  }
+
+  private trackUpdate() {
+    if (this.track === null) {
+      return;
+    }
+
+    this.track.displayCheckpoints(this.displayDriver);
+  }
+
+  private playerUpdate(deltaTime: number) {
+    if (!this.playerController || !this.playerController.displayData) {
+      return;
+    }
+
+    this.playerController.update(deltaTime);
+    this.physicsDriver.updateController(this.playerController, deltaTime);
   }
 
   private opponentsUpdate(deltaTime: number) {
