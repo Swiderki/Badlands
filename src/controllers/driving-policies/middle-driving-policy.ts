@@ -11,7 +11,7 @@ import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { Vector } from "@/src/util/vec-util";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {
-  private _visitedCheckpoint: number = 0;
+  private _visitedCheckpoint: number = 1;
   private maxSpeed = 190;
   private corneringSpeed = 30;
 
@@ -19,16 +19,24 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     super(trackPath, scaling_factor);
   }
 
-  private getTargetCheckpoint(car_position: Vec2D): Vec2D {
-    let target = this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
-    let distance = this.getDistance(car_position, target);
+  private updateCurrentCheckPoint(car_position: Vec2D) {
+    const distanceToNextCheckpoint = this._enemyPath.getDistanceToPoint(
+      car_position,
+      this._visitedCheckpoint
+    );
 
-    while (distance < 10) {
-      this._visitedCheckpoint = (this._visitedCheckpoint + 1) % this._enemyPath.sampledPoints.length;
-      target = this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
-      distance = this.getDistance(car_position, target);
+    if (
+      (distanceToNextCheckpoint < 30 && this._visitedCheckpoint !== this._enemyPath.sampledPoints.length) ||
+      (distanceToNextCheckpoint < 2 && this._visitedCheckpoint === this._enemyPath.sampledPoints.length) ||
+      isNaN(distanceToNextCheckpoint)
+    ) {
+      this._visitedCheckpoint++;
     }
-    return target;
+
+    if (this._visitedCheckpoint === this._enemyPath.sampledPoints.length) {
+      this._visitedCheckpoint = 1;
+      if (this.parentRef !== null) this.parentRef.currentLap++;
+    }
   }
 
   private getDistance(p1: Vec2D, p2: Vec2D): number {
@@ -59,19 +67,15 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
   private getTargetSpeed(curvature: number): number {
     // Normalize curvature: 0 means straight, 1 (or more) means a sharp turn
     const normalizedCurvature = Math.min(Math.abs(curvature * 10), 1);
-  
+
     // Linear interpolation between corneringSpeed and maxSpeed
     return this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature);
   }
-  
 
-  override getAction(
-    current_position: Vec2D,
-    current_rotation: number,
-    actualForce: Vec2D,
-  ): Action {
+  override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
+    this.updateCurrentCheckPoint(current_position);
     const car_position = { ...current_position };
-    const target = this.getTargetCheckpoint(car_position);
+    const target = this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
     const checkpoint = this._enemyPath.sampledPoints[this._visitedCheckpoint];
     const angle_diff = this.getAngleDifference(target, car_position, current_rotation);
     const rotation = this.computeRotation(angle_diff);

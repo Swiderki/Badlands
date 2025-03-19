@@ -160,13 +160,13 @@ class PhysicsDriver {
 
   engineBraking(controller: PhysicsBasedController, deltaTime: number) {
     let deltatimeMultiplicator = 1;
-    if (deltaTime != 0) {
+    if (deltaTime !== 0) {
       deltatimeMultiplicator = 1 / (60 * deltaTime);
     }
     const curSpeed = Vector.length(controller.actualForce);
     const engineBrakingForce = 1;
     let engineBrakingValue = 1;
-    if (curSpeed != 0) {
+    if (curSpeed !== 0) {
       engineBrakingValue =
         1 - ((controller.currentAdhesionModifier * engineBrakingForce) / curSpeed) * deltatimeMultiplicator;
     }
