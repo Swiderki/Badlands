@@ -1,9 +1,9 @@
+import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Scene from "./Scene";
 import Game from "@/src/services/game";
 
 export class ResultScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private playerResults: string[] | null = null;
   constructor() {
     super();
   }
@@ -15,9 +15,6 @@ export class ResultScene extends Scene {
     }
     this.sceneRef.style.display = "block";
 
-    const playerResults = localStorage.getItem("playerResults");
-    if (!playerResults) this.playerResults = [];
-    else this.playerResults = JSON.parse(playerResults);
     this.overwritePlayerResults();
 
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
@@ -52,17 +49,21 @@ export class ResultScene extends Scene {
     if (!playerResultsList) return;
 
     playerResultsList.innerHTML = "";
+    const playerResults = Scoreboard.instance.playerResults;
 
-    if (this.playerResults) {
-      const topResults = this.playerResults
-        .map((result) => parseInt(result))
-        .sort((a, b) => a - b)
-        .slice(0, 3);
+    if (playerResults && Array.isArray(playerResults)) {
+      const results = playerResults.map((result) =>
+        typeof result === "string" ? JSON.parse(result) : result
+      );
+
+      const topResults = results.sort((a, b) => parseFloat(a.time) - parseFloat(b.time)).slice(0, 3);
 
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");
-        const seconds = ((result % 60000) / 1000).toFixed(2);
-        resultHTML.innerText = `${index + 1}: ${seconds}s`;
+
+        const seconds = ((parseFloat(result.time) % 60000) / 1000).toFixed(2);
+
+        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${seconds}s`;
         playerResultsList.appendChild(resultHTML);
       });
     }
