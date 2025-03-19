@@ -4,9 +4,9 @@ import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
 import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
 
-export default class BananaPeelObstacle extends EffectObject {
+export default class SpikesObstacle extends EffectObject {
   constructor(position: Vec2D) {
-    super(position, Obstacles.BANANA_PEEL);
+    super(position, Obstacles.SPIKES);
   }
 
   override onEnter() {
@@ -14,20 +14,25 @@ export default class BananaPeelObstacle extends EffectObject {
     const timedEffectDriver = TimedEffectDriver.currentInstance;
     if (!playerController || !timedEffectDriver) return;
 
-    // playerController.currentAdhesionModifier *= 0.002;
+    playerController.actualForce.x *= 0.2;
+    playerController.actualForce.y *= 0.2;
+    playerController.currentMaxSpeedForward *= 0.2;
+    playerController.currentAccelerationPowerForward *= 0.7;
 
+    setTimeout(() => {
+      playerController.actualForce.x *= 0.1;
+      playerController.actualForce.y *= 0.1;
+    }, 200);
 
-    // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
-    // TODO: Zostawiłbym w bananie ten smieszny skręt bo to w sumie pasuje do komizmu skórki od banana
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
-      duration: 700,
-      finish() {},
-      update() {
-        playerController.rotate(-2);
+      duration: Infinity,
+      finish() {
+        // playerController.resetToDefaultSpeedAndAcceleration();
       },
+      update() {},
     };
 
-    timedEffectDriver.addEffect("slip", effect);
+    timedEffectDriver.addEffect("damaged", effect);
   }
 }

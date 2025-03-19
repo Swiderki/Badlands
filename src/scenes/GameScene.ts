@@ -300,16 +300,8 @@ class GameScene extends Scene {
     }
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
-      const playerResults = localStorage.getItem("playerResults");
-
-      if (playerResults) {
-        const results = JSON.parse(playerResults);
-        results.push(this.scoreboard.currentTime);
-        localStorage.setItem("playerResults", JSON.stringify(results));
-        console.log(results);
-      } else {
-        localStorage.setItem("playerResults", JSON.stringify([this.scoreboard.currentTime]));
-      }
+      const nickname = Game.instance.nickname;
+      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
 
       Game.instance.startResultScene();
     }

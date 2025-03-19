@@ -110,5 +110,21 @@
       "spriteWidth": 24,
       "spriteHeight": 24
     }
+  },
+  {
+    "name": "spikes",
+    "src": "/assets/effect_objects/spikes.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "oil_spill",
+    "src": "/assets/effect_objects/oil_spill.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
   }
 ]

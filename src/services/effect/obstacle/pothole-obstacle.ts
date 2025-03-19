@@ -18,6 +18,7 @@ export default class PotholeObstacle extends EffectObject {
     playerController.actualForce.x *= 0.1;
     playerController.actualForce.y *= 0.1;
     playerController.currentAccelerationPowerForward *= 0.9;
+    playerController.currentMaxSpeedForward *= 0.6; 
 
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
