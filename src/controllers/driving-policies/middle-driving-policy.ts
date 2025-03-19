@@ -12,8 +12,8 @@ import { Vector } from "@/src/util/vec-util";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {
   private _visitedCheckpoint: number = 0;
-  private maxSpeed = 160;
-  private corneringSpeed = 50;
+  private maxSpeed = 190;
+  private corneringSpeed = 30;
 
   constructor(trackPath: TrackPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
@@ -69,14 +69,13 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     current_position: Vec2D,
     current_rotation: number,
     actualForce: Vec2D,
-    maxSpeed: number
   ): Action {
     const car_position = { ...current_position };
     const target = this.getTargetCheckpoint(car_position);
     const checkpoint = this._enemyPath.sampledPoints[this._visitedCheckpoint];
     const angle_diff = this.getAngleDifference(target, car_position, current_rotation);
     const rotation = this.computeRotation(angle_diff);
-    const targetSpeed = this.getTargetSpeed(checkpoint.curvature, maxSpeed);
+    const targetSpeed = this.getTargetSpeed(checkpoint.curvature);
 
     const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
