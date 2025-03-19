@@ -66,6 +66,17 @@ class GameScene extends Scene {
       this.displayDriver.scaler
     );
     await this.loadEffectObjects();
+    this.initListeners();
+  }
+
+  private initListeners() {
+    document.addEventListener("keypress", (e) => {
+      if (e.key === " ") {
+        const obstacle = this.playerController?.dropObstacle();
+        if (!obstacle) return;
+        this.effectObjects.push(obstacle);
+      }
+    });
   }
 
   override onMount() {
@@ -271,6 +282,16 @@ class GameScene extends Scene {
     this.UiService.setSpeedMeterValue(t);
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
+
+    console.log(this.playerController.obstacleDropLoadFraction);
+    // draw obstacle drop loading
+    this.displayDriver.drawFillingCircle(
+      { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
+      16,
+      "red",
+      "yellowgreen",
+      this.playerController.obstacleDropLoadFraction
+    );
   }
 
   private scoreUpdate() {

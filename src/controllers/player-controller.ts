@@ -1,6 +1,14 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
+import EffectObject from "../services/effect/effect-object";
+import {
+  getEffectObjectByName,
+  getRandomObstacles,
+  getRandomObstacleSprite,
+  Obstacles,
+} from "../util/effects-utils";
+import { Vector } from "../util/vec-util";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -11,6 +19,8 @@ class PlayerController extends PhysicsBasedController {
   private _accelerationCooldown: number = 0.2;
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.04;
+  private _lastObstacleDropTimestamp: number = -1;
+  private readonly OBSTACLE_DROP_COOLDOWN = 3000;
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
@@ -30,6 +40,11 @@ class PlayerController extends PhysicsBasedController {
     return PlayerController._instance;
   }
 
+  /** @returns what fraction of obstacle drop was recovered (value between 0 - unrecovered and 1 - fully recovered) */
+  get obstacleDropLoadFraction() {
+    return Math.min(1, (Date.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
+  }
+
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
       //console.log(this._playerInput);
@@ -43,6 +58,27 @@ class PlayerController extends PhysicsBasedController {
 
   private getInput(key: string): boolean {
     return this._playerInput[key] || false;
+  }
+
+  dropObstacle() {
+    if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > Date.now()) {
+      return;
+    }
+
+    const sprite = getRandomObstacleSprite();
+    const EffectObject = getEffectObjectByName(sprite);
+
+    const angleInRad = (this.angle * Math.PI) / 180;
+    const someMagicalValue = 0.5 as const;
+    const largerDimension = Math.max(this._sprite!.config.spriteHeight, this._sprite!.config.spriteWidth);
+    const positionBehindCar = {
+      x: this.centerPosition.x - Math.cos(angleInRad) * largerDimension * someMagicalValue,
+      y: this.centerPosition.y - Math.sin(angleInRad) * largerDimension * someMagicalValue,
+    };
+
+    const obstacle = new EffectObject(positionBehindCar);
+    this._lastObstacleDropTimestamp = Date.now();
+    return obstacle;
   }
 
   override update(deltaTime: number) {

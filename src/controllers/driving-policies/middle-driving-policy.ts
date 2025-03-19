@@ -58,7 +58,7 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
 
     //* If the angle is close enough to the target, we can accelerate the car
     const acceleration = Math.abs(checkpoint.curvature) < 0.6;
-    console.log(acceleration);
+    // console.log(acceleration);
     return { acceleration, rotation, brake: false, accelerationPower: checkpoint.curvature };
   }
 }
