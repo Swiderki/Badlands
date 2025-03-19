@@ -32,6 +32,38 @@
     }
   },
   {
+    "name": "grass-track-collider-gates-off",
+    "src": "/assets/tracks/grass/grass-track-data-gates-off.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "grass-track-collider-gates-on",
+    "src": "/assets/tracks/grass/grass-track-data-gates-on.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "grass-track-layer-1",
+    "src": "/assets/tracks/grass/grass-track-layer1.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "grass-track-layer-2",
+    "src": "/assets/tracks/grass/grass-track-layer2.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
     "name": "peugeot_black",
     "src": "/assets/sprites/peugeot_black.png",
     "config": {
