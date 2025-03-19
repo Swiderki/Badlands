@@ -23,7 +23,7 @@ class PhysicsDriver {
       controller.actualForce,
       this.calculateFriction(controller, deltaTime)
     );
-
+    controller.actualForce = Vector.scale(controller.actualForce, this.engineBraking(controller, deltaTime));
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
     //controller.enterNitroMode()
@@ -156,6 +156,21 @@ class PhysicsDriver {
       ) / 1000;
     controller.brakingForce = 0;
     return frictionFactor;
+  }
+
+  engineBraking(controller: PhysicsBasedController, deltaTime: number) {
+    let deltatimeMultiplicator = 1;
+    if (deltaTime != 0) {
+      deltatimeMultiplicator = 1 / (60 * deltaTime);
+    }
+    const curSpeed = Vector.length(controller.actualForce);
+    const engineBrakingForce = 1;
+    let engineBrakingValue = 1;
+    if (curSpeed != 0) {
+      engineBrakingValue =
+        1 - ((controller.currentAdhesionModifier * engineBrakingForce) / curSpeed) * deltatimeMultiplicator;
+    }
+    return engineBrakingValue;
   }
 }
 

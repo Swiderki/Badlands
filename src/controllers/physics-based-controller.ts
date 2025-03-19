@@ -19,13 +19,12 @@ class PhysicsBasedController {
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
-  protected _maxSpeedForward: number = 400;
-  protected _maxSpeedBackwards: number = 250;
-  protected _accelerationPowerForward: number = 12;
-  protected _accelerationPowerBackwards: number = 8;
-
+  protected _maxSpeedForward: number = 300;
+  protected _maxSpeedBackwards: number = 200;
+  protected _accelerationPowerForward: number = 8;
+  protected _accelerationPowerBackwards: number = 4;
   protected _defaultAdhesionModifier: number = 1;
-  protected _mapAdhesion: number = 1;
+  protected _mapAdhesion: number = 0.9; // nalezy do (0;1)
 
   protected _currentMaxSpeedForward: number = this._maxSpeedForward;
   protected _currentMaxSpeedBackwards: number = this._maxSpeedBackwards;
