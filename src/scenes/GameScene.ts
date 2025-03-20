@@ -57,7 +57,7 @@ class GameScene extends Scene {
     }
     this.sceneRef.style.display = "block";
 
-    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
+    this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 1;
     await this.loadPlayer(this.track.startPositions[0]);
@@ -202,6 +202,7 @@ class GameScene extends Scene {
     if (this.track === null) {
       return;
     }
+    this.track.update();
   }
 
   private playerUpdate(deltaTime: number) {

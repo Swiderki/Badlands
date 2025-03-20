@@ -3,7 +3,7 @@ import Game from "@/src/services/game";
 
 export class SelectionScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private selectedMap: string = "desert";
+  private selectedMap: string = "gravel";
   private selectedCar: string = "peugeot";
   private selectedColor: string = "pink";
 

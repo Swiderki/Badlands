@@ -6,11 +6,14 @@ import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
 import { TrackPath } from "./track-path";
 
+import type track from "@/public/assets/tracks/grass/track.json";
+import GrassTrack from "./tracks/grass-track";
+
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
     return fetch(location.origin + src)
       .then((response) => response.json())
-      .then(async (data) => {
+      .then(async (data: typeof track) => {
         //* fetch all needed sprites
         const fgLayers = data.fgLayers.map((layerName: string) =>
           displayDriver.getSprite(layerName)
@@ -28,10 +31,13 @@ class TrackLoader {
         );
 
         //* Extract collider data from image
-        const colliderImageData = await TrackLoader.extractColliderFromImage(
+        const baseColliderImageData = await TrackLoader.extractColliderFromImage(
           displayDriver,
           data.colliderImage
         );
+        const openedShortcutColliderImage = data.openedShortcutColliderImage
+          ? await TrackLoader.extractColliderFromImage(displayDriver, data.openedShortcutColliderImage)
+          : null;
 
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
@@ -39,13 +45,27 @@ class TrackLoader {
         checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: 0 } });
         console.log(checkPointPath.sampledPoints);
 
+        if (src.includes("grass")) {
+          return new GrassTrack(
+            data.bonuses,
+            data.traction,
+            startPositions,
+            fgLayers,
+            bgLayers,
+            baseColliderImageData,
+            openedShortcutColliderImage,
+            checkPointPath
+          );
+        }
+
         return new Track(
           data.bonuses,
           data.traction,
           startPositions,
           fgLayers,
           bgLayers,
-          colliderImageData,
+          baseColliderImageData,
+          openedShortcutColliderImage,
           checkPointPath
         );
       });

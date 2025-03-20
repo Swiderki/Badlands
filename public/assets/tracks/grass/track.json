@@ -3,15 +3,13 @@
   "lapCount": 3,
   "bonuses": [],
   "startPositions": [
-    { "x": 50, "y": 290, "angle": 90 },
-    { "x": 80, "y": 290, "angle": 270 },
-    { "x": 110, "y": 290, "angle": 270 },
-    { "x": 140, "y": 290, "angle": 270 },
-    { "x": 170, "y": 290, "angle": 270 }
+    { "x": 320, "y": 320, "angle": 0 },
+    { "x": 320, "y": 340, "angle": 0 }
   ],
   "bgLayers": ["grass-track-layer-1"],
   "fgLayers": ["grass-track-layer-2"],
   "colliderImage": "grass-track-collider-gates-off",
+  "openedShortcutColliderImage": "grass-track-collider-gates-on",
 
   "comment": "trzeba zmienić punkciki",
 
