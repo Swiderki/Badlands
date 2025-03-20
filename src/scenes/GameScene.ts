@@ -20,6 +20,7 @@ import EffectObject from "../services/effect/effect-object";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { CollisionObject } from "@/types/collision";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
+import PhysicsBasedController from "../controllers/physics-based-controller";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
@@ -31,7 +32,7 @@ class GameScene extends Scene {
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
   private effectObjects: EffectObject[] = [];
-  private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
+  // private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
   private map: string;
@@ -66,6 +67,17 @@ class GameScene extends Scene {
       this.displayDriver.scaler
     );
     await this.loadEffectObjects();
+    this.initListeners();
+  }
+
+  private initListeners() {
+    document.addEventListener("keypress", (e) => {
+      if (e.key === " ") {
+        const obstacle = this.playerController?.dropObstacle();
+        if (!obstacle) return;
+        this.effectObjects.push(obstacle);
+      }
+    });
   }
 
   override onMount() {
@@ -116,7 +128,7 @@ class GameScene extends Scene {
       const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
-        perk._onEnter = () => {
+        perk._onEnter = (car) => {
           console.log("_onEnter");
           delete this.effectObjects[index];
           addPerk();
@@ -165,19 +177,20 @@ class GameScene extends Scene {
     if (!this.playerController) {
       return;
     }
+    // TODO: add this effect marking also to opponents
     //! DEV: Draw player has boost effect
-    if (this.timedEffectDriver.effects) {
+    if (this.playerController.timedEffectDriver.effects) {
       this.displayDriver.ctx.rect(
         this.playerController.displayData.position.x,
         this.playerController.displayData.position.y,
         10,
         10
       );
-      if (this.timedEffectDriver.hasEffect("boost")) {
+      if (this.playerController.timedEffectDriver.hasEffect("boost")) {
         this.displayDriver.ctx.fillStyle = "green";
-      } else if (this.timedEffectDriver.hasEffect("slip")) {
+      } else if (this.playerController.timedEffectDriver.hasEffect("slip")) {
         this.displayDriver.ctx.fillStyle = "yellow";
-      } else if (this.timedEffectDriver.hasEffect("damaged")) {
+      } else if (this.playerController.timedEffectDriver.hasEffect("damaged")) {
         this.displayDriver.ctx.fillStyle = "red";
       }
       this.displayDriver.ctx.fill();
@@ -304,14 +317,24 @@ class GameScene extends Scene {
         this.playerController!.angle
       );
 
-      const isColliding = this.collisionManager.isCollidingWithAnotherObject(
+      const collidingCars: PhysicsBasedController[] = [];
+
+      const isPlayerColliding = this.collisionManager.isCollidingWithAnotherObject(
         playerCorners,
         obstacle.collision
       );
 
-      obstacle._update(isColliding);
+      if (isPlayerColliding) {
+        collidingCars.push(this.playerController!);
+      }
+
+      //TODO: add colldiing opponents to collidingCars array
+
+      obstacle._update(collidingCars);
     });
-    this.timedEffectDriver.update();
+
+    this.playerController.timedEffectDriver.update();
+    this.opponentControllersList.forEach((opponent) => opponent.timedEffectDriver.update());
   }
 
   private uiUpdate() {
@@ -324,6 +347,16 @@ class GameScene extends Scene {
     this.UiService.setSpeedMeterValue(t);
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
+
+    console.log(this.playerController.obstacleDropLoadFraction);
+    // draw obstacle drop loading
+    this.displayDriver.drawFillingCircle(
+      { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
+      16,
+      "red",
+      "yellowgreen",
+      this.playerController.obstacleDropLoadFraction
+    );
   }
 
   private scoreUpdate() {

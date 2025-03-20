@@ -1,8 +1,12 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
-import { Vec2D } from "@/types/physics";
+
 import { PhysicsUtils } from "../util/physics-util";
+import { StartPosition } from "@/types/track-driver";
+import TimedEffectDriver from "../services/effect/timed-effect-driver";
+import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
+
 import { StartPosition } from "@/types/track-driver";
 import { CollisionObject } from "@/types/collision";
 
@@ -21,9 +25,9 @@ class PhysicsBasedController {
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
   protected _maxSpeedForward: number = 300;
-  protected _maxSpeedBackwards: number = 200;
-  protected _accelerationPowerForward: number = 8;
-  protected _accelerationPowerBackwards: number = 4;
+  protected _maxSpeedBackwards: number = 180;
+  protected _accelerationPowerForward: number = 9;
+  protected _accelerationPowerBackwards: number = 7;
   protected _defaultAdhesionModifier: number = 1;
   protected _mapAdhesion: number = 0.9; // nalezy do (0;1)
 
@@ -35,6 +39,8 @@ class PhysicsBasedController {
 
   colliderWidth: number = 2; //* Car width
   colliderHeight: number = 4; //* Car height
+
+  timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;

@@ -189,7 +189,7 @@ class PhysicsDriver {
     let engineBrakingValue = 1;
     if (curSpeed !== 0) {
       engineBrakingValue =
-        1 - ((controller.currentAdhesionModifier * engineBrakingForce) / curSpeed) * deltatimeMultiplicator;
+        1 - (controller.currentAdhesionModifier * deltatimeMultiplicator * engineBrakingForce) / curSpeed;
     }
     return engineBrakingValue;
   }

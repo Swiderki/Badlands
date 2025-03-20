@@ -117,7 +117,7 @@ class DisplayDriver {
 
   displayTrackFgLayers(track: Track) {
     for (const layer of track.fgLayers) {
-      console.log(layer);
+      // console.log(layer);
       if (!layer) {
         continue;
       }
@@ -199,6 +199,29 @@ class DisplayDriver {
       this._ctx.fillStyle = color;
       this._ctx.beginPath();
       this._ctx.arc(point.x, point.y, size, 0, 2 * Math.PI);
+      this._ctx.fill();
+      this._ctx.closePath();
+    });
+  }
+
+  /** @param fillFraction value should be between 0 and 1 */
+  drawFillingCircle(
+    point: Vec2D,
+    size: number,
+    fillingColor: string,
+    filledColor: string,
+    fillFraction: number
+  ) {
+    this.topQueue.push(() => {
+      this._ctx.fillStyle = fillFraction === 1 ? filledColor : fillingColor;
+      this._ctx.beginPath();
+      this._ctx.arc(
+        point.x,
+        point.y,
+        size,
+        Math.PI / 2 - Math.PI * fillFraction,
+        Math.PI / 2 + Math.PI * fillFraction
+      );
       this._ctx.fill();
       this._ctx.closePath();
     });

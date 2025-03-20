@@ -1,13 +1,19 @@
 import BananaPeelObstacle from "../services/effect/obstacle/banana-peel-obstacle";
 import BoostPerk from "../services/effect/perk/boost-perk";
 import EffectObject from "../services/effect/effect-object";
-import PerkObject from "../services/effect/perk/perk-object";
+import OilSpillObstacle from "../services/effect/obstacle/oil-spill-obstacle";
 import PotholeObstacle from "../services/effect/obstacle/pothole-obstacle";
 import PuddleObstacle from "../services/effect/obstacle/puddle-obstacle";
 import SpikesObstacle from "../services/effect/obstacle/spikes-obstacle";
 import Track from "../services/track-driver/track-driver";
-import OilSpillObstacle from "../services/effect/obstacle/oil-spill-obstacle";
 import { Vec2D } from "@/types/physics";
+
+// import PerkObject from "../services/effect/perk/perk-object";
+
+
+
+
+
 
 export enum Obstacles {
   POTHOLE = "pothole",
@@ -23,7 +29,7 @@ export enum Perks {
 
 export type EffectSprites = Obstacles | Perks;
 
-const getEffectObjectByName = (name: EffectSprites) => {
+export const getEffectObjectByName = (name: EffectSprites) => {
   switch (name) {
     case Obstacles.POTHOLE:
       return PotholeObstacle;
@@ -42,17 +48,17 @@ const getEffectObjectByName = (name: EffectSprites) => {
   }
 };
 
-const getRandomObstacleSprite = (): Obstacles => {
+export const getRandomObstacleSprite = (): Obstacles => {
   const effects = Object.values(Obstacles);
   return effects[Math.floor(Math.random() * effects.length)];
 };
 
-const getRandomPerkSprite = (): Perks => {
+export const getRandomPerkSprite = (): Perks => {
   const effects = Object.values(Perks);
   return effects[Math.floor(Math.random() * effects.length)];
 };
 
-const getRandomPosition = (currentObstacles: EffectObject[]): Vec2D => {
+export const getRandomPosition = (currentObstacles: EffectObject[]): Vec2D => {
   const sampledPoints = Track.currentInstance?.checkPointPath?.sampledPoints;
   if (!sampledPoints) {
     throw new Error("cannot generate objects when track is not loaded");
@@ -84,13 +90,13 @@ export const getRandomObstacles = (n: number, currentEffectObjects: EffectObject
   return addedObstacles;
 };
 
-export const getRandomPerks = (n: number, currentEffectObjects: EffectObject[]): PerkObject[] => {
-  const addedPerks: PerkObject[] = [];
+export const getRandomPerks = (n: number, currentEffectObjects: EffectObject[]): EffectObject[] => {
+  const addedPerks: EffectObject[] = [];
   for (let i = 0; i < n; i++) {
     const position = getRandomPosition(currentEffectObjects.concat(addedPerks));
     const sprite = getRandomPerkSprite();
     const RandomEffectObject = getEffectObjectByName(sprite);
-    addedPerks.push(new RandomEffectObject(position) as PerkObject); //* "as" is used because switch statement already filters this as PerkObject
+    addedPerks.push(new RandomEffectObject(position) as EffectObject); //* "as" is used because switch statement already filters this as PerkObject
   }
   return addedPerks;
 };
