@@ -48,11 +48,11 @@ class PlayerController extends PhysicsBasedController {
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
       //console.log(this._playerInput);
-      this._playerInput[e.key] = true;
+      this._playerInput[e.key.toLowerCase()] = true;
     });
 
     document.addEventListener("keyup", (e) => {
-      this._playerInput[e.key] = false;
+      this._playerInput[e.key.toLowerCase()] = false;
     });
   }
 
