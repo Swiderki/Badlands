@@ -114,11 +114,12 @@ class GameScene extends Scene {
     }
 
     //* Create Middle driving enemy
+    //* 
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, ), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler)
       )
     );
     //* Create Middle driving enemy
