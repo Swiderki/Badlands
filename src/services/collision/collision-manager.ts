@@ -1,7 +1,6 @@
 import { CollisionObject } from "@/types/collision";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
-import { getCarCorners } from "@/src/util/collision-util";
 
 class CollisionManager {
   scalingFactor: number;

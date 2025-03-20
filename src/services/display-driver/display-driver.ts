@@ -131,6 +131,7 @@ class DisplayDriver {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   displayColliderCorners(corners: Vec2D[], position: Vec2D, angle: number) {
     this._ctx.lineWidth = 3;
     this._ctx.strokeStyle = "red";

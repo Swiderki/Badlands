@@ -5,12 +5,10 @@ import OpponentController from "../controllers/opponents-controller";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
 import Scene from "./Scene";
-import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
 import { TrackPath } from "../services/track-driver/track-path";
-import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
@@ -18,8 +16,6 @@ import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Game from "../services/game";
 import EffectObject from "../services/effect/effect-object";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
-import { CollisionObject } from "@/types/collision";
-import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import PhysicsBasedController from "../controllers/physics-based-controller";
 import { EnemyPath } from "../services/track-driver/enemy-path";
 
@@ -159,6 +155,7 @@ class GameScene extends Scene {
       const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
           console.log("_onEnter");
           delete this.effectObjects[index];
@@ -181,6 +178,7 @@ class GameScene extends Scene {
     this.uiUpdate();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render(_ctx: CanvasRenderingContext2D) {
     if (this.displayDriver === null || this.track === null) {
       return;

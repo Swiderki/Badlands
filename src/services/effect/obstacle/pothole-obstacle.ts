@@ -1,8 +1,7 @@
-import PlayerController from "@/src/controllers/player-controller";
 import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
-import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import  { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class PotholeObstacle extends EffectObject {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CollisionObject } from "@/types/collision";
 import DisplayDriver from "../display-driver/display-driver";
 import { EffectSprites } from "@/src/util/effects-utils";

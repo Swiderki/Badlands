@@ -1,4 +1,3 @@
-import PlayerController from "@/src/controllers/player-controller";
 import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
