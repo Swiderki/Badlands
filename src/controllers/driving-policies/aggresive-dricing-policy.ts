@@ -5,7 +5,6 @@ import { PhysicsUtils } from "../../util/physics-util";
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 import PlayerController from "../player-controller";
 import { CheckPoint } from "@/types/track-driver";
-import { Vector } from "@/src/util/vec-util";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 190;

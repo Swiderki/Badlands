@@ -1,4 +1,4 @@
-import { Color, Sprite, SpriteArray } from "@/types/display-driver";
+import { Color, Sprite } from "@/types/display-driver";
 import DisplayDriver from "../display-driver/display-driver";
 import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";

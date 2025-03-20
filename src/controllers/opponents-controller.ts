@@ -3,7 +3,6 @@ import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
-import { CollisionObject } from "@/types/collision";
 import DisplayDriver from "../services/display-driver/display-driver";
 
 class OpponentController extends PhysicsBasedController {

@@ -7,6 +7,7 @@ class MainMenuScene extends Scene {
 
   init() {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(_deltaTime: number) {}
 
   render(ctx: CanvasRenderingContext2D) {

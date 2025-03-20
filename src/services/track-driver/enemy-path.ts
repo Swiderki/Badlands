@@ -5,7 +5,7 @@ export class EnemyPath extends TrackPath {
   static createFromTrackPath(trackPath: TrackPath, offset?: number): EnemyPath {
     const enemyPath = new EnemyPath(trackPath.path, trackPath.sampledPoints.length);
     enemyPath.sampledPoints = trackPath.sampledPoints;
-    enemyPath.sampledPoints = enemyPath.sampledPoints.map((checkpoint, i) => {
+    enemyPath.sampledPoints = enemyPath.sampledPoints.map((checkpoint) => {
       const { tangent } = checkpoint;
       const angle = Math.atan2(tangent.y, tangent.x);
       const newAngle = angle + Math.PI / 2;
