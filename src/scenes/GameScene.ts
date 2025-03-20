@@ -21,6 +21,7 @@ import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { CollisionObject } from "@/types/collision";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import PhysicsBasedController from "../controllers/physics-based-controller";
+import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
@@ -111,11 +112,40 @@ class GameScene extends Scene {
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }
+
+    //* Create Middle driving enemy
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(checkPointPath, scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, ), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use BalancedDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[1],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use AggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[2],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use SuperAggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[3],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler)
       )
     );
   }

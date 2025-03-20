@@ -4,6 +4,7 @@ import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
 import { CollisionObject } from "@/types/collision";
+import DisplayDriver from "../services/display-driver/display-driver";
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
@@ -24,11 +25,11 @@ class OpponentController extends PhysicsBasedController {
     this._currentMaxSpeedForward = 200;
     this._accelerationPowerForward = 40;
 
-    this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
     this.setCurrentSprite();
     this._drivingPolicy = drivingPolicy;
     this._drivingPolicy.parentRef = this;
+    this.setPosition(this._drivingPolicy.enemyPath.sampledPoints[0].point);
   }
 
   override update(deltaTime: number) {
@@ -58,6 +59,11 @@ class OpponentController extends PhysicsBasedController {
 
     if (this.currentLap >= 3) {
       Game.instance?.startResultScene();
+    }
+
+    const displayDriver = DisplayDriver.currentInstance;
+    if (displayDriver) {
+      displayDriver.displayCheckpoints(this._drivingPolicy.enemyPath.sampledPoints, "red");
     }
   }
 }

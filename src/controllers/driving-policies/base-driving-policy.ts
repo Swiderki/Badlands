@@ -9,8 +9,12 @@ abstract class BaseDrivingPolicy {
   // eslint-disable-next-line no-undef
   protected _enemyPath: EnemyPath;
   protected _scaling_factor: number;
-  
+
   parentRef: OpponentController | null = null;
+
+  get enemyPath(): EnemyPath {
+    return this._enemyPath;
+  }
 
   constructor(trackPath: EnemyPath, scaling_factor: number) {
     this._enemyPath = trackPath;

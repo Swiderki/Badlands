@@ -160,13 +160,9 @@ class DisplayDriver {
     this._ctx.closePath();
   }
 
-  displayCheckpoints(checkpoints: CheckPoint[]) {
+  displayCheckpoints(checkpoints: CheckPoint[], color?: string) {
     for (const point of checkpoints) {
-      this._ctx.fillStyle = "yellow";
-      this._ctx.beginPath();
-      this._ctx.fillRect(point.point.x, point.point.y, 2, 2);
-      this._ctx.fill();
-      this._ctx.closePath();
+      this.drawPoint(point.point, 2, color || "yellow");
     }
   }
 
