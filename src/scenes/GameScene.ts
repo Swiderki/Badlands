@@ -328,8 +328,18 @@ class GameScene extends Scene {
         collidingCars.push(this.playerController!);
       }
 
-      //TODO: add colldiing opponents to collidingCars array
+      this.opponentControllersList.forEach((opponent) => {
+        const opponentCorners = getCarCorners(
+          opponent.displayData.position,
+          opponent.colliderHeight,
+          opponent.colliderWidth,
+          opponent.angle
+        );
 
+        if (this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision)) {
+          collidingCars.push(opponent);
+        }
+      });
       obstacle._update(collidingCars);
     });
 
