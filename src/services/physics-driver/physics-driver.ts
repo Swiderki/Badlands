@@ -115,6 +115,27 @@ class PhysicsDriver {
     }, 50);
   }
 
+  handleCollisionBetweenControllers(
+    controller1: PhysicsBasedController,
+    controller2: PhysicsBasedController
+  ) {
+    const normal = Vector.normalize(Vector.subtract(controller1.position, controller2.position));
+    const relativeVelocity = Vector.subtract(controller1.velocity, controller2.velocity);
+    const speedAlongNormal = Vector.dot(relativeVelocity, normal);
+
+    if (speedAlongNormal > 0) return; // Objects are separating
+
+    const RESTITUTION = 0.8; // Elasticity factor
+    const impulseMagnitude = (-(1 + RESTITUTION) * speedAlongNormal) / 2;
+    const impulse = Vector.scale(normal, impulseMagnitude);
+
+    controller1.velocity = Vector.add(controller1.velocity, impulse);
+    controller2.velocity = Vector.subtract(controller2.velocity, impulse);
+
+    controller1.setPosition(Vector.add(controller1.position, Vector.scale(normal, 1)));
+    controller2.setPosition(Vector.subtract(controller2.position, Vector.scale(normal, 1)));
+  }
+
   calculateActualForce(controller: PhysicsBasedController, deltaTime: number) {
     controller.actualForce = Vector.add(
       controller.actualForce,
@@ -160,13 +181,13 @@ class PhysicsDriver {
 
   engineBraking(controller: PhysicsBasedController, deltaTime: number) {
     let deltatimeMultiplicator = 1;
-    if (deltaTime != 0) {
+    if (deltaTime !== 0) {
       deltatimeMultiplicator = 1 / (60 * deltaTime);
     }
     const curSpeed = Vector.length(controller.actualForce);
     const engineBrakingForce = 1;
     let engineBrakingValue = 1;
-    if (curSpeed != 0) {
+    if (curSpeed !== 0) {
       engineBrakingValue =
         1 - (controller.currentAdhesionModifier * deltatimeMultiplicator * engineBrakingForce) / curSpeed;
     }

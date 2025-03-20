@@ -2,27 +2,33 @@ import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
+import Game from "../services/game";
+import { CollisionObject } from "@/types/collision";
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.04;
   private _lastAcceleration: number = 0;
-  private _accelerationCooldown: number = 0.1;
+  private _accelerationCooldown: number = 0.02;
   private _lastBrake: number = 0;
-  private _brakeCooldown: number = 0.04;
+  private _brakeCooldown: number = 0.02;
 
   private _drivingPolicy: DrivingPolicyBase;
+
+  currentLap = 0;
 
   constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
     super(sprite);
 
     // Temporary, bacause he cant deal with greater values
-    this._currentMaxSpeedForward = 60;
+    this._currentMaxSpeedForward = 200;
+    this._accelerationPowerForward = 40;
 
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
     this.setCurrentSprite();
     this._drivingPolicy = drivingPolicy;
+    this._drivingPolicy.parentRef = this;
   }
 
   override update(deltaTime: number) {
@@ -33,7 +39,8 @@ class OpponentController extends PhysicsBasedController {
     //* Offset for x and y +30 and +15 is added for the same reason like in @/src/util/collision-util.ts
     const action = this._drivingPolicy.getAction(
       { x: this.position.x + this.colliderWidth / 2 + 30, y: this.position.y + this.colliderHeight / 2 + 15 },
-      this.angle
+      this.angle,
+      this.actualForce
     );
 
     if (action.acceleration && this._lastAcceleration >= this._accelerationCooldown) {
@@ -47,6 +54,10 @@ class OpponentController extends PhysicsBasedController {
     if (action.brake && this._lastBrake >= this._brakeCooldown) {
       this.brake();
       this._lastBrake = 0;
+    }
+
+    if (this.currentLap >= 3) {
+      Game.instance?.startResultScene();
     }
   }
 }

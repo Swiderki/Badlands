@@ -5,7 +5,7 @@ import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
 
 export class TrackPath {
-  private path: string;
+  path: string;
   sampledPoints: CheckPoint[] = [];
 
   constructor(path: string, numPoints: number) {

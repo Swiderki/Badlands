@@ -82,6 +82,11 @@ class Game {
         // this.startMainMenuScene();
       }
     }
+
+    if (event.key === "o") {
+      this.nickname = "Player";
+      this.startGameScene("peugeot", "pink", "gravel");
+    }
   }
 
   async startGameScene(car: string, color: string, map: string) {
