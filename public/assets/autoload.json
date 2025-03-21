@@ -102,5 +102,13 @@
       "spriteWidth": 24,
       "spriteHeight": 24
     }
+  },
+  {
+    "name": "nitro_icon",
+    "src": "/assets/ui/nitro_sprite.png",
+    "config": {
+      "spriteWidth": 18,
+      "spriteHeight": 18
+    }
   }
 ]
