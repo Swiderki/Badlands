@@ -12,12 +12,13 @@ class OpponentController extends PhysicsBasedController {
   private _accelerationCooldown: number = 0.02;
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.02;
-
   private _drivingPolicy: DrivingPolicyBase;
-
+  nickname: string;
+  finished = false;
   currentLap = 0;
+  
 
-  constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase) {
+  constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase, nickname: string) {
     super(sprite);
 
     // Temporary, bacause he cant deal with greater values
@@ -29,6 +30,7 @@ class OpponentController extends PhysicsBasedController {
     this._drivingPolicy = drivingPolicy;
     this._drivingPolicy.parentRef = this;
     this.setPosition(this._drivingPolicy.enemyPath.sampledPoints[0].point);
+    this.nickname = nickname;
   }
 
   override update(deltaTime: number) {

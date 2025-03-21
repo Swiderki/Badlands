@@ -6,6 +6,7 @@ import Scene from "../scenes/Scene";
 import { StartScene } from "../scenes/StartScene";
 import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
+import { Scoreboard } from "./scoreboard/scoreboard";
 
 class Game {
   //* Drivers
@@ -86,6 +87,9 @@ class Game {
     if (event.key === "o") {
       this.nickname = "Player";
       this.startGameScene("peugeot", "pink", "gravel");
+    }
+    if (event.key === "i") {
+      Scoreboard.instance.currentLap += 1;
     }
   }
 
