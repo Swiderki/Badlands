@@ -56,8 +56,8 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
-
-    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
+    console.log(this.map);
+    this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
@@ -453,7 +453,7 @@ class GameScene extends Scene {
       console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
       this.playerController.finished = true;
-      this.playerController.finishedTime =this.scoreboard.currentTime 
+      this.playerController.finishedTime = this.scoreboard.currentTime;
       //  ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
 
       if (

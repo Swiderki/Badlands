@@ -3,11 +3,11 @@
   "lapCount": 3,
   "bonuses": [],
   "startPositions": [
-    { "x": 50, "y": 290, "angle": 90 },
-    { "x": 80, "y": 290, "angle": 270 },
+    { "x": 80, "y": 290, "angle": 90 },
     { "x": 110, "y": 290, "angle": 270 },
     { "x": 140, "y": 290, "angle": 270 },
-    { "x": 170, "y": 290, "angle": 270 }
+    { "x": 170, "y": 290, "angle": 270 },
+    { "x": 210, "y": 290, "angle": 270 }
   ],
   "bgLayers": ["grass-track-layer-1"],
   "fgLayers": ["grass-track-layer-2"],
