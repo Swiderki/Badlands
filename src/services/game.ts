@@ -5,7 +5,12 @@ import MainMenuScene from "../scenes/MainMenuScene";
 import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
+
 import { StartScene } from "../scenes/StartScene";
+
+import { Scoreboard } from "./scoreboard/scoreboard";
+import { CountdownScene } from "../scenes/CountdownScene";
+
 
 class Game {
   //* Drivers
@@ -40,7 +45,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    console.log(scene);
+    // console.log(scene);
     this._currentScene = scene;
 
     this._currentScene.onMount();
@@ -97,6 +102,15 @@ class Game {
       this.nickname = "Player";
       this.startGameScene("peugeot", "pink", "gravel");
     }
+    if (event.key === "i") {
+      Scoreboard.instance.currentLap += 1;
+      const gameScene = Game.instance.currentScene;
+      if (gameScene instanceof GameScene) {
+        gameScene.opponentControllersList.forEach((opponent) => {
+          opponent.currentLap += 1;
+        });
+      }
+    }
   }
 
   async startGameScene(car: string, color: string, map: string) {
@@ -104,6 +118,10 @@ class Game {
     await this.currentScene.init();
   }
 
+  async startCountdownScene(car: string, color: string, map: string) {
+    this.currentScene = new CountdownScene(car, color, map);
+    await this.currentScene.init();
+  }
   async startSelectionScene() {
     this.currentScene = new SelectionScene();
     await this.currentScene.init();

@@ -3,7 +3,7 @@ export class Scoreboard {
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
   playerResults: { nickname: string; time: number }[] = [];
-  _currentLap: number = 1;
+  _currentLap: number = 0;
   currentCheckpoint: number = 1;
 
   static get instance(): Scoreboard {
@@ -22,13 +22,18 @@ export class Scoreboard {
     return now.getTime() - this.currentPlayerStartTime.getTime();
   }
 
+  resetCurrentTime() {
+    this.currentPlayerStartTime = new Date();
+    this.lapTimeList = [null, null, null];
+  }
+
   get currentLap(): number {
     return this._currentLap;
   }
 
   set currentLap(lap: number) {
-    document.querySelector(`#lap-${this._currentLap}`)?.classList.remove("current");
-    document.querySelector(`#lap-${lap}`)?.classList.add("current");
+    document.querySelector(`#lap-${this._currentLap + 1}`)?.classList.remove("current");
+    document.querySelector(`#lap-${lap + 1}`)?.classList.add("current");
     this._currentLap = lap;
   }
 

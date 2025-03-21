@@ -88,10 +88,12 @@ export class UIService {
     if (!this._scoreboardListRef) {
       throw new Error("Scoreboard not initialized");
     }
+    if (Scoreboard.instance.currentLap === this.lapCount) return;
     const minutes = Math.floor(time / 60000);
     const seconds = ((time % 60000) / 1000).toFixed(0);
     const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
-    this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap} span`)!.innerHTML =
+    console.log(Scoreboard.instance.currentLap);
+    this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap + 1} span`)!.innerHTML =
       currentTime;
   }
 

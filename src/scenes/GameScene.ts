@@ -5,12 +5,10 @@ import OpponentController from "../controllers/opponents-controller";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
 import Scene from "./Scene";
-import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
 import { TrackPath } from "../services/track-driver/track-path";
-import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
@@ -18,14 +16,14 @@ import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Game from "../services/game";
 import EffectObject from "../services/effect/effect-object";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
-import { CollisionObject } from "@/types/collision";
-import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import PhysicsBasedController from "../controllers/physics-based-controller";
+import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
   private playerController: PlayerController | null = null;
-  private opponentControllersList: OpponentController[] = [];
+  //! It Should be private
+  opponentControllersList: OpponentController[] = [];
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
@@ -36,11 +34,13 @@ class GameScene extends Scene {
   private playerCar: string;
   private playerColor: string;
   private map: string;
+  static instance: GameScene;
 
   //* Element ref
   sceneRef: HTMLElement | null = null;
   constructor(displayDriver: DisplayDriver, car: string, color: string, map: string) {
     super();
+    GameScene.instance = this;
     this.playerCar = car;
     this.playerColor = color;
     this.map = map;
@@ -56,10 +56,12 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
-
-    this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
+    console.log(this.map);
+    this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     this.UiService.generateScoreboard();
-    this.scoreboard.currentLap = 1;
+    this.scoreboard.currentLap = 0;
+    this.scoreboard.resetCurrentTime();
+
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
@@ -68,6 +70,19 @@ class GameScene extends Scene {
     );
     await this.loadEffectObjects();
     this.initListeners();
+  }
+  static getInstance(): GameScene {
+    if (!GameScene.instance) {
+      throw new Error("Game instance not initialized");
+    }
+    return GameScene.instance;
+  }
+
+  get player(): PlayerController {
+    if (!this.playerController) {
+      throw new Error("Player not initialized");
+    }
+    return this.playerController;
   }
 
   private initListeners() {
@@ -125,7 +140,7 @@ class GameScene extends Scene {
 
   private async loadPlayer(startPosition: StartPosition) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
-    console.log(spriteName);
+    // console.log(spriteName);
     const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
@@ -138,11 +153,45 @@ class GameScene extends Scene {
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }
+
+    //* Create Middle driving enemy
+    //*
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(checkPointPath, scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+        "Bob"
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use BalancedDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[1],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        "Jack"
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use AggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[2],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
+        "NormcnkZJXnvkxjzcnvknjxcal"
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use SuperAggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[3],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        "Middle"
       )
     );
   }
@@ -155,8 +204,9 @@ class GameScene extends Scene {
       const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
-          console.log("_onEnter");
+          // console.log("_onEnter");
           delete this.effectObjects[index];
           addPerk();
         };
@@ -177,6 +227,7 @@ class GameScene extends Scene {
     this.uiUpdate();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render(_ctx: CanvasRenderingContext2D) {
     if (this.displayDriver === null || this.track === null) {
       return;
@@ -355,8 +406,18 @@ class GameScene extends Scene {
         collidingCars.push(this.playerController!);
       }
 
-      //TODO: add colldiing opponents to collidingCars array
+      this.opponentControllersList.forEach((opponent) => {
+        const opponentCorners = getCarCorners(
+          opponent.displayData.position,
+          opponent.colliderHeight,
+          opponent.colliderWidth,
+          opponent.angle
+        );
 
+        if (this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision)) {
+          collidingCars.push(opponent);
+        }
+      });
       obstacle._update(collidingCars);
     });
 
@@ -375,7 +436,7 @@ class GameScene extends Scene {
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
 
-    console.log(this.playerController.obstacleDropLoadFraction);
+    // console.log(this.playerController.obstacleDropLoadFraction);
     // draw obstacle drop loading
     this.displayDriver.drawFillingCircle(
       { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
@@ -416,9 +477,19 @@ class GameScene extends Scene {
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
       const nickname = Game.instance.nickname;
+      console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
+      this.playerController.finished = true;
+      this.playerController.finishedTime = this.scoreboard.currentTime;
+      //  ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
 
-      Game.instance.startResultScene();
+      if (
+        this.playerController.finished &&
+        this.opponentControllersList.every((opponent) => opponent.finished)
+      ) {
+        Game.instance.startResultScene();
+      }
+      // Game.instance.startResultScene();
     }
   }
 }

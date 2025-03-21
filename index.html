@@ -42,24 +42,29 @@
             <div class="btn_wrapper">
               <button>Return</button>
               <button>Submit</button>
-
             </div>
           </div>
 
+        </div>
+      </div>
+      <div id="countdown-scene" class="scene">
+        <div class="inner">
+          <h1 class="countdown_text">Get Ready!</h1>
+          <p class="countdown"></p>
         </div>
       </div>
       <div id="selection-scene" class="scene">
         <div class="inner">
           <h2>Choose Your Map</h2>
           <div class="options">
-            <div class="option selected" data-map="desert">Desert</div>
-            <div class="option" data-map="city">City</div>
-            <div class="option" data-map="forest">Forest</div>
+            <div class="option selected" data-map="grass">Grass</div>
+            <div class="option" data-map="gravel">Gravel</div>
           </div>
 
           <h2>Choose Your Car</h2>
           <div class="options">
             <div class="option selected" data-car="peugeot">Peugeot</div>
+            <div class="option" data-car="opel">Opel astra</div>
           </div>
 
           <h2>Color</h2>
@@ -92,8 +97,8 @@
           <div class="winner-section">
             <h2>Winner!</h2>
             <img src="/public/assets/car.png" alt="">
-            <p><strong>Place:</strong> 1st</p>
-            <p><strong>Time:</strong> 7.3 sec</p>
+            <p><strong class="winner_nickname"></strong></p>
+            <p class="winner_time"></p>
           </div>
           <div class="wrapper">
             <div class="race-results">

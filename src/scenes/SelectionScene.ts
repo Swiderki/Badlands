@@ -3,7 +3,7 @@ import Game from "@/src/services/game";
 
 export class SelectionScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private selectedMap: string = "desert";
+  private selectedMap: string = "grass";
   private selectedCar: string = "peugeot";
   private selectedColor: string = "pink";
 
@@ -42,12 +42,15 @@ export class SelectionScene extends Scene {
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
-      Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
+      Game.getInstance().startCountdownScene(this.selectedCar, this.selectedColor, this.selectedMap);
+      // Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override update(deltaTime: number): void {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override render(ctx: CanvasRenderingContext2D): void {}
 
   override onMount() {

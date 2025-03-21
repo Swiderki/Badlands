@@ -1,14 +1,10 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
-import EffectObject from "../services/effect/effect-object";
 import {
   getEffectObjectByName,
-  getRandomObstacles,
   getRandomObstacleSprite,
-  Obstacles,
 } from "../util/effects-utils";
-import { Vector } from "../util/vec-util";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -21,6 +17,8 @@ class PlayerController extends PhysicsBasedController {
   private _brakeCooldown: number = 0.04;
   private _lastObstacleDropTimestamp: number = -1;
   private readonly OBSTACLE_DROP_COOLDOWN = 3000;
+  finished = false;
+  finishedTime = 0;
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);

@@ -1,13 +1,10 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
-
 import { PhysicsUtils } from "../util/physics-util";
-import { StartPosition } from "@/types/track-driver";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
 
-import { StartPosition } from "@/types/track-driver";
 import { CollisionObject } from "@/types/collision";
 
 const spriteCount = 60;
