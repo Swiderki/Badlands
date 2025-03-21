@@ -7,6 +7,7 @@ import { StartScene } from "../scenes/StartScene";
 import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
 import { Scoreboard } from "./scoreboard/scoreboard";
+import { CountdownScene } from "../scenes/CountdownScene";
 
 class Game {
   //* Drivers
@@ -104,6 +105,10 @@ class Game {
     await this.currentScene.init();
   }
 
+  async startCountdownScene(car: string, color: string, map: string) {
+    this.currentScene = new CountdownScene(car, color, map);
+    await this.currentScene.init();
+  }
   async startSelectionScene() {
     this.currentScene = new SelectionScene();
     await this.currentScene.init();
