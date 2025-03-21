@@ -22,7 +22,8 @@ import { EnemyPath } from "../services/track-driver/enemy-path";
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
   private playerController: PlayerController | null = null;
-  private opponentControllersList: OpponentController[] = [];
+  //! It Should be private
+  opponentControllersList: OpponentController[] = [];
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
@@ -33,11 +34,13 @@ class GameScene extends Scene {
   private playerCar: string;
   private playerColor: string;
   private map: string;
+  static instance: GameScene;
 
   //* Element ref
   sceneRef: HTMLElement | null = null;
   constructor(displayDriver: DisplayDriver, car: string, color: string, map: string) {
     super();
+    GameScene.instance = this;
     this.playerCar = car;
     this.playerColor = color;
     this.map = map;
@@ -56,7 +59,7 @@ class GameScene extends Scene {
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
     this.UiService.generateScoreboard();
-    this.scoreboard.currentLap = 1;
+    this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
 
     await this.loadPlayer(this.track.startPositions[0]);
@@ -67,6 +70,19 @@ class GameScene extends Scene {
     );
     await this.loadEffectObjects();
     this.initListeners();
+  }
+  static getInstance(): GameScene {
+    if (!GameScene.instance) {
+      throw new Error("Game instance not initialized");
+    }
+    return GameScene.instance;
+  }
+
+  get player(): PlayerController {
+    if (!this.playerController) {
+      throw new Error("Player not initialized");
+    }
+    return this.playerController;
   }
 
   private initListeners() {
@@ -97,7 +113,7 @@ class GameScene extends Scene {
 
   private async loadPlayer(startPosition: StartPosition) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
-    console.log(spriteName);
+    // console.log(spriteName);
     const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
@@ -112,12 +128,13 @@ class GameScene extends Scene {
     }
 
     //* Create Middle driving enemy
-    //* 
+    //*
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+        "Bob"
       )
     );
     //* Create Middle driving enemy
@@ -126,7 +143,8 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[1],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        "Jack"
       )
     );
     //* Create Middle driving enemy
@@ -135,7 +153,8 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[2],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
+        "NormcnkZJXnvkxjzcnvknjxcal"
       )
     );
     //* Create Middle driving enemy
@@ -146,9 +165,6 @@ class GameScene extends Scene {
         startPositions[3],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Middle"
-      )
-    );
-
       )
     );
   }
@@ -163,7 +179,7 @@ class GameScene extends Scene {
         const index = this.effectObjects.length;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
-          console.log("_onEnter");
+          // console.log("_onEnter");
           delete this.effectObjects[index];
           addPerk();
         };
@@ -393,7 +409,7 @@ class GameScene extends Scene {
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
 
-    console.log(this.playerController.obstacleDropLoadFraction);
+    // console.log(this.playerController.obstacleDropLoadFraction);
     // draw obstacle drop loading
     this.displayDriver.drawFillingCircle(
       { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
@@ -434,9 +450,11 @@ class GameScene extends Scene {
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
       const nickname = Game.instance.nickname;
+      console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
       this.playerController.finished = true;
-      this.playerController.finishedTime = ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
+      this.playerController.finishedTime =this.scoreboard.currentTime 
+      //  ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
 
       if (
         this.playerController.finished &&

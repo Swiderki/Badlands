@@ -31,7 +31,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    console.log(scene);
+    // console.log(scene);
     this._currentScene = scene;
 
     this._currentScene.onMount();
@@ -90,6 +90,12 @@ class Game {
     }
     if (event.key === "i") {
       Scoreboard.instance.currentLap += 1;
+      const gameScene = Game.instance.currentScene;
+      if (gameScene instanceof GameScene) {
+        gameScene.opponentControllersList.forEach((opponent) => {
+          opponent.currentLap += 1;
+        });
+      }
     }
   }
 

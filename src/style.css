@@ -167,6 +167,10 @@ h1 {
   display: none;
 }
 
+#result-scene {
+  overflow: hidden;
+}
+
 .options {
   display: flex;
   gap: 20px;
@@ -202,14 +206,50 @@ h1 {
 .player-history ul {
   list-style: none;
   padding: 0;
+  display: flex;
+  gap: 10px;
 }
 .race-results li,
 .player-history li {
   padding: 2px 0;
 }
 
+.race-results,
+.player-history {
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.race-results ul,
+.player-history ul {
+  display: flex;
+  gap: 5px;
+  padding: 0;
+  width: fit-content;
+  /* overflow: hidden; */
+  margin: 0;
+  list-style: none;
+  position: relative;
+  /* animation: scrollAnimation 8s linear infinite alternate; */
+}
+
+@keyframes scrollAnimation {
+  from {
+    transform: translateX(2%);
+  }
+  to {
+    transform: translateX(calc(-100% + 280px));
+  }
+}
+
+.race-results ul li {
+  width: max-content;
+  text-wrap: none;
+}
+
 #result-scene h3 {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 #result-scene li {
@@ -222,7 +262,7 @@ h1 {
 
 #result-scene .wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   margin-right: 10px;
 }
 

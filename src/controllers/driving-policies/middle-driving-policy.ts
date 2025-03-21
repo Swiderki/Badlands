@@ -83,14 +83,13 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
-    console.table({
-      curvature: checkpoint.curvature,
-      targetSpeed,
-      currentVelocity,
-      shouldAccelerate,
-      shouldBrake,
-    });
-
+    // console.table({
+    //   curvature: checkpoint.curvature,
+    //   targetSpeed,
+    //   currentVelocity,
+    //   shouldAccelerate,
+    //   shouldBrake,
+    // });
 
     //* Debugging visualization
     DisplayDriver.currentInstance?.drawLineBetweenVectors(car_position, target, "#0066ff");

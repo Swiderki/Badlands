@@ -37,7 +37,7 @@ class TrackLoader {
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
 
         checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: -1 } });
-        console.log(checkPointPath.sampledPoints);
+        // console.log(checkPointPath.sampledPoints);
 
         return new Track(
           data.bonuses,
@@ -98,7 +98,7 @@ class TrackLoader {
         colliderData.push(row);
       }
 
-      console.log(debug);
+      // console.log(debug);
       resolve(colliderData);
     });
   }

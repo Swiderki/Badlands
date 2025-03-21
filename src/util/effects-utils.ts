@@ -10,11 +10,6 @@ import { Vec2D } from "@/types/physics";
 
 // import PerkObject from "../services/effect/perk/perk-object";
 
-
-
-
-
-
 export enum Obstacles {
   POTHOLE = "pothole",
   PUDDLE = "puddle",
@@ -74,8 +69,8 @@ export const getRandomPosition = (currentObstacles: EffectObject[]): Vec2D => {
       return distanceBetweenPointAndObstacle > minimumSpaceBetween;
     })
   );
-  console.log("aaaa", sampledPoints.length, nonCollidingPoints.length);
-  console.log(nonCollidingPoints);
+  // console.log("aaaa", sampledPoints.length, nonCollidingPoints.length);
+  // console.log(nonCollidingPoints);
   return nonCollidingPoints[Math.floor(Math.random() * nonCollidingPoints.length)].point;
 };
 
