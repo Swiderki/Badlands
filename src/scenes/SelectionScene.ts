@@ -42,8 +42,8 @@ export class SelectionScene extends Scene {
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
-      Game.getInstance().startCountdownScene(this.selectedCar, this.selectedColor, this.selectedMap);
-      // Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
+      // Game.getInstance().startCountdownScene(this.selectedCar, this.selectedColor, this.selectedMap);
+      Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
     });
   }
 
