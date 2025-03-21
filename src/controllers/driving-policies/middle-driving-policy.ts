@@ -8,7 +8,6 @@ const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
-import { Vector } from "@/src/util/vec-util";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {
   private _visitedCheckpoint: number = 1;

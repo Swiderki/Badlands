@@ -72,6 +72,46 @@
     }
   },
   {
+    "name": "opel_black",
+    "src": "/assets/sprites/opel_black.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "opel_pink",
+    "src": "/assets/sprites/opel_pink.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "opel_blue",
+    "src": "/assets/sprites/opel_blue.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "opel_green",
+    "src": "/assets/sprites/opel_green.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "opel_yellow",
+    "src": "/assets/sprites/opel_yellow.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
     "name": "peugeot_blue",
     "src": "/assets/sprites/peugeot_blue.png",
     "config": {

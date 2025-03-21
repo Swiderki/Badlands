@@ -5,12 +5,10 @@ import OpponentController from "../controllers/opponents-controller";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
 import Scene from "./Scene";
-import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
 import { TrackPath } from "../services/track-driver/track-path";
-import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
@@ -18,9 +16,8 @@ import { Scoreboard } from "../services/scoreboard/scoreboard";
 import Game from "../services/game";
 import EffectObject from "../services/effect/effect-object";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
-import { CollisionObject } from "@/types/collision";
-import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import PhysicsBasedController from "../controllers/physics-based-controller";
+import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
@@ -113,20 +110,45 @@ class GameScene extends Scene {
     if (!opponentSprite) {
       throw new Error("Failed to get opponent sprite");
     }
+
+    //* Create Middle driving enemy
+    //* 
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(checkPointPath, scaler),
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use BalancedDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[1],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use AggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[2],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler)
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use SuperAggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite,
+        startPositions[3],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Middle"
       )
     );
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite,
-        startPositions[0],
-        new MiddleDrivingPolicy(checkPointPath, scaler),
-        "Normal"
+
       )
     );
   }
@@ -139,6 +161,7 @@ class GameScene extends Scene {
       const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
           console.log("_onEnter");
           delete this.effectObjects[index];
@@ -161,6 +184,7 @@ class GameScene extends Scene {
     this.uiUpdate();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render(_ctx: CanvasRenderingContext2D) {
     if (this.displayDriver === null || this.track === null) {
       return;
@@ -339,8 +363,18 @@ class GameScene extends Scene {
         collidingCars.push(this.playerController!);
       }
 
-      //TODO: add colldiing opponents to collidingCars array
+      this.opponentControllersList.forEach((opponent) => {
+        const opponentCorners = getCarCorners(
+          opponent.displayData.position,
+          opponent.colliderHeight,
+          opponent.colliderWidth,
+          opponent.angle
+        );
 
+        if (this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision)) {
+          collidingCars.push(opponent);
+        }
+      });
       obstacle._update(collidingCars);
     });
 

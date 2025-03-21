@@ -1,6 +1,5 @@
 import Scene from "./Scene";
 import Game from "@/src/services/game";
-import { StartScene } from "./StartScene";
 
 export class AboutScene extends Scene {
   private sceneRef: HTMLElement | null = null;
@@ -20,8 +19,11 @@ export class AboutScene extends Scene {
     });
   }
 
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override update(deltaTime: number): void {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override render(ctx: CanvasRenderingContext2D): void {}
 
   override onMount() {

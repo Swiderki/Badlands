@@ -1,7 +1,6 @@
 import { Vec2D } from "@/types/physics";
 import { CheckPoint, SVGCommand } from "@/types/track-driver";
 import { Bezier } from "bezier-js";
-import { Vector } from "./vec-util";
 
 export function parseSVGPath(svgPath: string): SVGCommand[] {
   const commands = svgPath.match(/[MLCQZVv][^MLCQZVv]*/g); // Include 'V' and 'v' in the regex
@@ -93,7 +92,6 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
       }
     } else if (command.type === "Q") {
       // Quadratic Bezier curve
-      const previous = sampledPoints[sampledPoints.length - 1];
       const bezier = new Bezier(
         { x: command.cp1x, y: command.cp1y },
         { x: command.cp1x, y: command.cp1y },

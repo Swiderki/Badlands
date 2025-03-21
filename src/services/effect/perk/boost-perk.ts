@@ -1,7 +1,6 @@
-import PlayerController from "@/src/controllers/player-controller";
 import { Vec2D } from "@/types/physics";
 import { Perks } from "@/src/util/effects-utils";
-import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import { TimedEffect } from "../timed-effect-driver";
 // import PerkObject from "./perk-object";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";

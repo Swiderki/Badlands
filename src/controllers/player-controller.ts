@@ -1,14 +1,10 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
-import EffectObject from "../services/effect/effect-object";
 import {
   getEffectObjectByName,
-  getRandomObstacles,
   getRandomObstacleSprite,
-  Obstacles,
 } from "../util/effects-utils";
-import { Vector } from "../util/vec-util";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
