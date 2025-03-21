@@ -1,11 +1,11 @@
+import { AboutScene } from "../scenes/AboutScene";
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
-import { StartScene } from "../scenes/StartScene";
-import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
+import { StartScene } from "../scenes/StartScene";
 
 class Game {
   //* Drivers
@@ -20,6 +20,16 @@ class Game {
   static instance: Game;
 
   deltaTime: number = 0;
+
+  private _pauseDetails = {
+    isPaused: false,
+    isWindowActive: null as boolean | null,
+    documentTimeline: new DocumentTimeline(),
+  };
+
+  get pauseDetails() {
+    return this._pauseDetails;
+  }
 
   get currentScene() {
     if (!this._currentScene) {
@@ -119,6 +129,17 @@ class Game {
     this.currentScene.init();
   }
 
+  pauseGame(): void {
+    this._pauseDetails.isPaused = true;
+  }
+
+  resumeGame(): void {
+    this._pauseDetails.isPaused = false;
+    this._lastRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
+    this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
+    this._update();
+  }
+
   //* This method is called every frame, but it should be free of any game logic
   //* It's only purpose is to keep FPS stable
   //* It prevents the game from running too fast or too slow
@@ -128,6 +149,10 @@ class Game {
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
+
+    // pause render if window isn't active
+    // returns here to allow last render before pause
+    if (this._pauseDetails.isPaused === true) return;
 
     requestAnimationFrame((renderTime) => {
       this._penultimateRenderTime = this._lastRenderTime;

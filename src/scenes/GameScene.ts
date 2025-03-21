@@ -78,6 +78,33 @@ class GameScene extends Scene {
         this.effectObjects.push(obstacle);
       }
     });
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        const game = Game.getInstance();
+        if (game.pauseDetails.isPaused) {
+          game.resumeGame();
+        } else {
+          game.pauseGame();
+        }
+      }
+    });
+    window.addEventListener("focus", () => {
+      const game = Game.getInstance();
+
+      // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
+      if (game.pauseDetails.isWindowActive === null) return;
+
+      game.pauseDetails.isWindowActive = true;
+      game.resumeGame();
+    });
+
+    window.addEventListener("blur", () => {
+      const game = Game.getInstance();
+
+      game.pauseDetails.isWindowActive = false;
+
+      game.pauseGame();
+    });
   }
 
   override onMount() {
