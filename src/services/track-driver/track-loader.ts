@@ -12,7 +12,11 @@ class TrackLoader {
       .then((response) => response.json())
       .then(async (data) => {
         //* fetch all needed sprites
-        const layers = data.layers.map((layerName: string) =>
+        const fgLayers = data.fgLayers.map((layerName: string) =>
+          displayDriver.getSprite(layerName)
+        ) as Array<Sprite | null>;
+
+        const bgLayers = data.bgLayers.map((layerName: string) =>
           displayDriver.getSprite(layerName)
         ) as Array<Sprite | null>;
 
@@ -31,13 +35,16 @@ class TrackLoader {
 
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
+
         checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: 0 } });
         console.log(checkPointPath.sampledPoints);
+
         return new Track(
           data.bonuses,
           data.traction,
           startPositions,
-          layers,
+          fgLayers,
+          bgLayers,
           colliderImageData,
           checkPointPath
         );

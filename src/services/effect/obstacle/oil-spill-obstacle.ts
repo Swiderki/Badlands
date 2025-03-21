@@ -1,14 +1,13 @@
 import PlayerController from "@/src/controllers/player-controller";
-import { Vec2D } from "@/types/physics";
-import { Perks } from "@/src/util/effects-utils";
-import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
-// import PerkObject from "./perk-object";
-import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
+import { Vec2D } from "@/types/physics";
+import { Obstacles } from "@/src/util/effects-utils";
+import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
-export default class BoostPerk extends EffectObject {
+export default class OilSpillObstacle extends EffectObject {
   constructor(position: Vec2D) {
-    super(position, Perks.BOOST_STAR);
+    super(position, Obstacles.OIL_SPILL);
   }
 
   override onEnter(car: PhysicsBasedController) {
@@ -16,18 +15,18 @@ export default class BoostPerk extends EffectObject {
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
 
-    car.currentAccelerationPowerForward *= 2;
-    car.currentAccelerationPowerBackwards *= 2;
+    car.currentAdhesionModifier *= 0.002;
 
+    // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
-      duration: 5000,
+      duration: 700,
       finish() {
-        car.resetToDefaultSpeedAndAcceleration();
+        car.resetToDefaultAdhesionModifier();
       },
       update() {},
     };
 
-    car.timedEffectDriver.addEffect("boost", effect);
+    car.timedEffectDriver.addEffect("slip", effect);
   }
 }

@@ -23,7 +23,7 @@ class PhysicsDriver {
       controller.actualForce,
       this.calculateFriction(controller, deltaTime)
     );
-
+    controller.actualForce = Vector.scale(controller.actualForce, this.engineBraking(controller, deltaTime));
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
     //controller.enterNitroMode()
@@ -38,7 +38,7 @@ class PhysicsDriver {
     const approachVector = Vector.subtract(controller.centerPosition, collisionPoint as Vec2D);
     const normalizedNormal = Vector.normalize(approachVector);
 
-    const SPEED_LOSS = 0.8;
+    const SPEED_LOSS = 0.7;
     controller.actualForce = Vector.scale(controller.actualForce, SPEED_LOSS);
 
     //? Miejsce zderzenia w tablicy trackCollider
@@ -105,14 +105,35 @@ class PhysicsDriver {
     // console.log("actualForce przed odbiciem:", controller.actualForce);
     // console.log("normal vector:", normal);
 
-    controller.rotate(angleDifference * 5);
+    controller.rotate(angleDifference * 3);
 
-    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 1)));
+    controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
     controller.setCurrentSprite();
     setTimeout(() => {
       this.isColliding = false;
     }, 50);
+  }
+
+  handleCollisionBetweenControllers(
+    controller1: PhysicsBasedController,
+    controller2: PhysicsBasedController
+  ) {
+    const normal = Vector.normalize(Vector.subtract(controller1.position, controller2.position));
+    const relativeVelocity = Vector.subtract(controller1.velocity, controller2.velocity);
+    const speedAlongNormal = Vector.dot(relativeVelocity, normal);
+
+    if (speedAlongNormal > 0) return; // Objects are separating
+
+    const RESTITUTION = 0.8; // Elasticity factor
+    const impulseMagnitude = (-(1 + RESTITUTION) * speedAlongNormal) / 2;
+    const impulse = Vector.scale(normal, impulseMagnitude);
+
+    controller1.velocity = Vector.add(controller1.velocity, impulse);
+    controller2.velocity = Vector.subtract(controller2.velocity, impulse);
+
+    controller1.setPosition(Vector.add(controller1.position, Vector.scale(normal, 1)));
+    controller2.setPosition(Vector.subtract(controller2.position, Vector.scale(normal, 1)));
   }
 
   calculateActualForce(controller: PhysicsBasedController, deltaTime: number) {
@@ -130,7 +151,7 @@ class PhysicsDriver {
 
   calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
     let deltatimeMultiplicator = 1;
-    if (deltaTime != 0) {
+    if (deltaTime !== 0) {
       deltatimeMultiplicator = 1 / (60 * deltaTime);
     }
 
@@ -145,17 +166,28 @@ class PhysicsDriver {
 
     const frictionFactor =
       Math.round(
-        (0.998 -
-          controller.mapAdhesion *
-            controller.currentAdhesionModifier *
-            frictionAmount *
-            0.03 *
-            deltatimeMultiplicator -
-          controller.brakingForce * deltatimeMultiplicator) *
+        (1 -
+          (0.002 +
+            controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
+            controller.brakingForce) *
+            deltatimeMultiplicator) *
           1000
       ) / 1000;
+    console.log(frictionFactor);
+
     controller.brakingForce = 0;
     return frictionFactor;
+  }
+
+  engineBraking(controller: PhysicsBasedController, deltaTime: number) {
+    const curSpeed = Vector.length(controller.actualForce);
+    const engineBrakingForce = 1 * deltaTime * 60;
+    let engineBrakingValue = 1;
+    if (curSpeed !== 0) {
+      engineBrakingValue =
+        1 - (controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce) / curSpeed;
+    }
+    return engineBrakingValue;
   }
 }
 

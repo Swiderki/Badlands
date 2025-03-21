@@ -2,6 +2,7 @@ export class Scoreboard {
   static _instance: Scoreboard | null = null;
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
+  playerResults: { nickname: string; time: number }[] = [];
   _currentLap: number = 1;
   currentCheckpoint: number = 1;
 

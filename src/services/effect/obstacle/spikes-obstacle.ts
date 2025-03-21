@@ -1,14 +1,13 @@
 import PlayerController from "@/src/controllers/player-controller";
-import { Vec2D } from "@/types/physics";
-import { Perks } from "@/src/util/effects-utils";
-import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
-// import PerkObject from "./perk-object";
-import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
+import { Vec2D } from "@/types/physics";
+import { Obstacles } from "@/src/util/effects-utils";
+import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
-export default class BoostPerk extends EffectObject {
+export default class SpikesObstacle extends EffectObject {
   constructor(position: Vec2D) {
-    super(position, Perks.BOOST_STAR);
+    super(position, Obstacles.SPIKES);
   }
 
   override onEnter(car: PhysicsBasedController) {
@@ -16,18 +15,25 @@ export default class BoostPerk extends EffectObject {
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
 
-    car.currentAccelerationPowerForward *= 2;
-    car.currentAccelerationPowerBackwards *= 2;
+    car.actualForce.x *= 0.2;
+    car.actualForce.y *= 0.2;
+    car.currentMaxSpeedForward *= 0.2;
+    car.currentAccelerationPowerForward *= 0.7;
+
+    setTimeout(() => {
+      car.actualForce.x *= 0.1;
+      car.actualForce.y *= 0.1;
+    }, 200);
 
     const effect: TimedEffect = {
       startTimestamp: Date.now(),
-      duration: 5000,
+      duration: Infinity,
       finish() {
-        car.resetToDefaultSpeedAndAcceleration();
+        // playerController.resetToDefaultSpeedAndAcceleration();
       },
       update() {},
     };
 
-    car.timedEffectDriver.addEffect("boost", effect);
+    car.timedEffectDriver.addEffect("damaged", effect);
   }
 }

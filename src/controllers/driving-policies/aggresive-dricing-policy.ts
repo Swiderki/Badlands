@@ -2,18 +2,16 @@ import { TrackPath } from "@/src/services/track-driver/track-path";
 import BaseDrivingPolicy from "./base-driving-policy";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
-
-const accPrecision = 0.01;
-const breakPrecision = 0.01;
-
-//* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
+import PlayerController from "../player-controller";
+import { CheckPoint } from "@/types/track-driver";
 import { Vector } from "@/src/util/vec-util";
 
-class MiddleDrivingPolicy extends BaseDrivingPolicy {
-  private _visitedCheckpoint: number = 1;
+class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 190;
   private corneringSpeed = 30;
+  _visitedCheckpoint: number = 1;
+  private attackRange = 50; // Odległość, w której próbuje uderzyć gracza
 
   constructor(trackPath: TrackPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
@@ -47,7 +45,6 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     const target_angle = PhysicsUtils.normalizeAngle(
       Math.atan2(target.y - car_position.y, target.x - car_position.x) * (180 / Math.PI)
     );
-
     const angle_diff = target_angle - current_rotation;
     return angle_diff > 180 ? angle_diff - 360 : angle_diff < -180 ? angle_diff + 360 : angle_diff;
   }
@@ -56,54 +53,52 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     return angle_diff < 0 ? Math.max(angle_diff, -max_rotation) : Math.min(angle_diff, max_rotation);
   }
 
-  private actualForceToVelocity(actualForce: Vec2D, current_rotation: number): number {
-    const forwardVector = {
-      x: Math.cos(current_rotation * (Math.PI / 180)),
-      y: Math.sin(current_rotation * (Math.PI / 180)),
-    };
-    return Math.hypot(actualForce.x * forwardVector.x, actualForce.y * forwardVector.y);
-  }
-
   private getTargetSpeed(curvature: number): number {
-    // Normalize curvature: 0 means straight, 1 (or more) means a sharp turn
     const normalizedCurvature = Math.min(Math.abs(curvature * 10), 1);
-
-    // Linear interpolation between corneringSpeed and maxSpeed
     return this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature);
   }
 
-  override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
+  private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
     this.updateCurrentCheckPoint(current_position);
-    const car_position = { ...current_position };
-    const target = this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
-    const checkpoint = this._enemyPath.sampledPoints[this._visitedCheckpoint];
-    const angle_diff = this.getAngleDifference(target, car_position, current_rotation);
+    if (PlayerController.currentInstance !== null) {
+      const playerPosition = PlayerController.currentInstance!.centerPosition;
+      const distanceToPlayer = this.getDistance(current_position, playerPosition);
+      const shouldAttack = distanceToPlayer < this.attackRange;
+      if (shouldAttack) {
+        return {
+          shouldAttack: true,
+          target: { point: playerPosition, curvature: 0, tangent: playerPosition },
+        };
+      }
+    }
+    return { shouldAttack: false, target: this._enemyPath.sampledPoints[this._visitedCheckpoint] };
+  }
+
+  override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
+    const { target, shouldAttack } = this.getTarget(current_position);
+
+    const angle_diff = this.getAngleDifference(target.point, current_position, current_rotation);
     const rotation = this.computeRotation(angle_diff);
-    const targetSpeed = this.getTargetSpeed(checkpoint.curvature);
+    const targetSpeed = this.getTargetSpeed(target.curvature);
 
-    const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
-    const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
-    const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
-    console.table({
-      curvature: checkpoint.curvature,
-      targetSpeed,
-      currentVelocity,
-      shouldAccelerate,
-      shouldBrake,
-    });
+    const currentVelocity = Math.hypot(actualForce.x, actualForce.y);
+    const shouldAccelerate = currentVelocity < targetSpeed;
+    const shouldBrake = currentVelocity > targetSpeed;
 
-
-    //* Debugging visualization
-    DisplayDriver.currentInstance?.drawLineBetweenVectors(car_position, target, "#0066ff");
-    DisplayDriver.currentInstance?.drawPoint(target, 4, "#0000ff");
+    DisplayDriver.currentInstance?.drawLineBetweenVectors(
+      current_position,
+      target.point,
+      shouldAttack ? "#ff0000" : "#0066ff"
+    );
+    DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
     return {
       acceleration: shouldAccelerate,
       rotation,
       brake: shouldBrake,
-      accelerationPower: checkpoint.curvature,
+      accelerationPower: shouldAttack ? 1.5 : 1,
     };
   }
 }
 
-export default MiddleDrivingPolicy;
+export default AggressiveDrivingPolicy;

@@ -99,12 +99,28 @@ class DisplayDriver {
   }
 
   displayTrack(track: Track) {
-    for (const layer of track.layers) {
+    for (const layer of track.bgLayers) {
       if (!layer) {
         continue;
       }
       //* Here we use direct draw 'cause this happens every frame and nedd to be as quick as possible
       //* Since that's the case allocating usless SpriteData object would be a waste of resources(memory & compute power)
+      this._ctx.drawImage(
+        layer.image,
+        0,
+        0,
+        layer.config.spriteWidth * this.scaler,
+        layer.config.spriteHeight * this.scaler
+      );
+    }
+  }
+
+  displayTrackFgLayers(track: Track) {
+    for (const layer of track.fgLayers) {
+      // console.log(layer);
+      if (!layer) {
+        continue;
+      }
       this._ctx.drawImage(
         layer.image,
         0,
@@ -183,6 +199,29 @@ class DisplayDriver {
       this._ctx.fillStyle = color;
       this._ctx.beginPath();
       this._ctx.arc(point.x, point.y, size, 0, 2 * Math.PI);
+      this._ctx.fill();
+      this._ctx.closePath();
+    });
+  }
+
+  /** @param fillFraction value should be between 0 and 1 */
+  drawFillingCircle(
+    point: Vec2D,
+    size: number,
+    fillingColor: string,
+    filledColor: string,
+    fillFraction: number
+  ) {
+    this.topQueue.push(() => {
+      this._ctx.fillStyle = fillFraction === 1 ? filledColor : fillingColor;
+      this._ctx.beginPath();
+      this._ctx.arc(
+        point.x,
+        point.y,
+        size,
+        Math.PI / 2 - Math.PI * fillFraction,
+        Math.PI / 2 + Math.PI * fillFraction
+      );
       this._ctx.fill();
       this._ctx.closePath();
     });
