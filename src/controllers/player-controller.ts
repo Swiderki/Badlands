@@ -17,6 +17,8 @@ class PlayerController extends PhysicsBasedController {
   private _brakeCooldown: number = 0.04;
   private _lastObstacleDropTimestamp: number = -1;
   private readonly OBSTACLE_DROP_COOLDOWN = 3000;
+  finished = false;
+  finishedTime = "";
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);

@@ -57,6 +57,8 @@ class GameScene extends Scene {
     this.track = await TrackLoader.loadTrack(this.displayDriver, "/assets/tracks/gravel/track.json");
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 1;
+    this.scoreboard.resetCurrentTime();
+
     await this.loadPlayer(this.track.startPositions[0]);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
@@ -142,7 +144,11 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[3],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        "Middle"
+      )
+    );
+
       )
     );
   }
@@ -429,8 +435,16 @@ class GameScene extends Scene {
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
       const nickname = Game.instance.nickname;
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
+      this.playerController.finished = true;
+      this.playerController.finishedTime = ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
 
-      Game.instance.startResultScene();
+      if (
+        this.playerController.finished &&
+        this.opponentControllersList.every((opponent) => opponent.finished)
+      ) {
+        Game.instance.startResultScene();
+      }
+      // Game.instance.startResultScene();
     }
   }
 }

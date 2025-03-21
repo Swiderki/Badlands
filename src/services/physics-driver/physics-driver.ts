@@ -166,30 +166,26 @@ class PhysicsDriver {
 
     const frictionFactor =
       Math.round(
-        (0.998 -
-          controller.mapAdhesion *
-            controller.currentAdhesionModifier *
-            frictionAmount *
-            0.03 *
-            deltatimeMultiplicator -
-          controller.brakingForce * deltatimeMultiplicator) *
+        (1 -
+          (0.002 +
+            controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
+            controller.brakingForce) *
+            deltatimeMultiplicator) *
           1000
       ) / 1000;
+    console.log(frictionFactor);
+
     controller.brakingForce = 0;
     return frictionFactor;
   }
 
   engineBraking(controller: PhysicsBasedController, deltaTime: number) {
-    let deltatimeMultiplicator = 1;
-    if (deltaTime !== 0) {
-      deltatimeMultiplicator = 1 / (60 * deltaTime);
-    }
     const curSpeed = Vector.length(controller.actualForce);
-    const engineBrakingForce = 1;
+    const engineBrakingForce = 1 * deltaTime * 60;
     let engineBrakingValue = 1;
     if (curSpeed !== 0) {
       engineBrakingValue =
-        1 - (controller.currentAdhesionModifier * deltatimeMultiplicator * engineBrakingForce) / curSpeed;
+        1 - (controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce) / curSpeed;
     }
     return engineBrakingValue;
   }

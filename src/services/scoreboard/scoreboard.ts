@@ -22,6 +22,11 @@ export class Scoreboard {
     return now.getTime() - this.currentPlayerStartTime.getTime();
   }
 
+  resetCurrentTime() {
+    this.currentPlayerStartTime = new Date();
+    this.lapTimeList = [null, null, null];
+  }
+
   get currentLap(): number {
     return this._currentLap;
   }
