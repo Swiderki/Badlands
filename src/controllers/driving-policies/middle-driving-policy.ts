@@ -8,6 +8,8 @@ const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
+import CollisionManager from "@/src/services/collision/collision-manager";
+import { Vector } from "@/src/util/vec-util";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {
   private _visitedCheckpoint: number = 1;
@@ -71,10 +73,53 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     return this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature);
   }
 
+  getTarget(current_position: Vec2D): Vec2D {
+    const collisionManager = CollisionManager.instance;
+    if (!collisionManager || !this.parentRef)
+      return this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
+
+    const rayCast = collisionManager.rayCastFromController(this.parentRef, 150, 0, true);
+    if (rayCast) {
+      console.log("collision detected");
+      DisplayDriver.currentInstance?.drawPoint(rayCast, 4, "#ff0000");
+      //TODO make this one determine how to avoid obstacle
+      //* Theres a chance i will just do more raycast anf choose direction with most space
+      // Check left and right
+      const leftClear = !collisionManager.rayCastFromController(this.parentRef, 100, -30);
+      const rightClear = !collisionManager.rayCastFromController(this.parentRef, 100, 30);
+
+      let angleChange = 0;
+      if (leftClear && rightClear) {
+        const leftFurtherDistance = collisionManager.rayCastFromController(this.parentRef, 150, -30);
+        if (leftFurtherDistance) {
+          angleChange = -30;
+        } else {
+          angleChange = 30;
+        }
+      } else if (leftClear) {
+        angleChange = -30;
+      } else if (rightClear) {
+        angleChange = 30;
+      }
+
+      return Vector.add(
+        current_position,
+        Vector.scale(
+          {
+            x: Math.cos((angleChange * Math.PI) / 180),
+            y: Math.sin((angleChange * Math.PI) / 180),
+          },
+          10
+        )
+      );
+    }
+    return this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
+  }
+
   override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
     this.updateCurrentCheckPoint(current_position);
     const car_position = { ...current_position };
-    const target = this._enemyPath.sampledPoints[this._visitedCheckpoint].point;
+    const target = this.getTarget(car_position);
     const checkpoint = this._enemyPath.sampledPoints[this._visitedCheckpoint];
     const angle_diff = this.getAngleDifference(target, car_position, current_rotation);
     const rotation = this.computeRotation(angle_diff);
@@ -83,14 +128,13 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
-    console.table({
-      curvature: checkpoint.curvature,
-      targetSpeed,
-      currentVelocity,
-      shouldAccelerate,
-      shouldBrake,
-    });
-
+    // console.table({
+    //   curvature: checkpoint.curvature,
+    //   targetSpeed,
+    //   currentVelocity,
+    //   shouldAccelerate,
+    //   shouldBrake,
+    // });
 
     //* Debugging visualization
     DisplayDriver.currentInstance?.drawLineBetweenVectors(car_position, target, "#0066ff");

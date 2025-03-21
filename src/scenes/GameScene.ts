@@ -21,14 +21,14 @@ import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
-  private playerController: PlayerController | null = null;
-  private opponentControllersList: OpponentController[] = [];
+  playerController: PlayerController | null = null;
+  opponentControllersList: OpponentController[] = [];
+  effectObjects: EffectObject[] = [];
   private track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  private effectObjects: EffectObject[] = [];
   // private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
@@ -110,7 +110,7 @@ class GameScene extends Scene {
     }
 
     //* Create Middle driving enemy
-    //* 
+    //*
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
@@ -118,33 +118,34 @@ class GameScene extends Scene {
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler)
       )
     );
-    //* Create Middle driving enemy
-    //* It will later use BalancedDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite,
-        startPositions[1],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler)
-      )
-    );
-    //* Create Middle driving enemy
-    //* It will later use AggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite,
-        startPositions[2],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler)
-      )
-    );
-    //* Create Middle driving enemy
-    //* It will later use SuperAggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite,
-        startPositions[3],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler)
-      )
-    );
+
+    // //* Create Middle driving enemy
+    // //* It will later use BalancedDrivingPolicy
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite,
+    //     startPositions[1],
+    //     new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler)
+    //   )
+    // );
+    // //* Create Middle driving enemy
+    // //* It will later use AggressiveDrivingPolicy
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite,
+    //     startPositions[2],
+    //     new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler)
+    //   )
+    // );
+    // //* Create Middle driving enemy
+    // //* It will later use SuperAggressiveDrivingPolicy
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite,
+    //     startPositions[3],
+    //     new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler)
+    //   )
+    // );
   }
 
   private async loadEffectObjects() {
@@ -387,7 +388,6 @@ class GameScene extends Scene {
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
 
-    console.log(this.playerController.obstacleDropLoadFraction);
     // draw obstacle drop loading
     this.displayDriver.drawFillingCircle(
       { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },

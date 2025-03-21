@@ -1,12 +1,95 @@
 import { CollisionObject } from "@/types/collision";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import { getCarCorners, rayCast } from "@/src/util/collision-util";
+import GameScene from "@/src/scenes/GameScene";
+import Game from "../game";
+import DisplayDriver from "../display-driver/display-driver";
+import { debug } from "console";
 
 class CollisionManager {
   scalingFactor: number;
+  static _instance: CollisionManager | null = null;
+
+  static get instance(): CollisionManager | null {
+    return CollisionManager._instance;
+  }
+
+  rayCastFromController(
+    controller: PhysicsBasedController,
+    length: number,
+    angleOffset: number,
+    debug: boolean = false
+  ): Vec2D | null {
+    const { x, y } = controller.centerPosition;
+    const angle = controller.angle + angleOffset;
+    const angleInRadians = angle * (Math.PI / 180);
+
+    const endVector = { x: x + length * Math.cos(angleInRadians), y: y + length * Math.sin(angleInRadians) };
+
+    let bestIntersection: Vec2D | null = null;
+
+    console.log("INCOMING RAYCAST");
+    if (debug) DisplayDriver.currentInstance?.drawLineBetweenVectors({ x, y }, endVector, "orange");
+
+    const gameSceneRef = Game.getInstance().currentScene as GameScene;
+    if (!(gameSceneRef instanceof GameScene)) {
+      return null;
+    }
+
+    const updateIntersection = (intersection: Vec2D | null) => {
+      if (!intersection) {
+        return;
+      }
+
+      if (!bestIntersection) {
+        bestIntersection = intersection;
+        return;
+      }
+
+      const dist1 = Vector.distance(controller.centerPosition, intersection);
+      const dist2 = Vector.distance(controller.centerPosition, bestIntersection);
+
+      if (dist1 < dist2) {
+        bestIntersection = intersection;
+      }
+    };
+
+    //* Intersect with opponents
+    const opponentList = gameSceneRef.opponentControllersList;
+    for (const opponent of opponentList) {
+      if (opponent === controller) {
+        continue;
+      }
+      const castRes = rayCast(
+        controller.centerPosition,
+        endVector,
+        getCarCorners(opponent.position, opponent.colliderWidth, opponent.colliderHeight, opponent.angle)
+      );
+
+      updateIntersection(castRes);
+    } 
+
+    //* Intersect with obstacles
+    const obstacleList = gameSceneRef.effectObjects;
+    for (const obstacle of obstacleList) {
+      if (obstacle === undefined || obstacle === null) continue;
+      const castRes = rayCast(
+        controller.centerPosition ,
+        endVector,
+        this.getRotatedCorners(obstacle.collision)
+      );
+
+      updateIntersection(castRes);
+    }
+    console.log(bestIntersection);
+    return bestIntersection;
+  }
 
   constructor(scalingFactor: number) {
     this.scalingFactor = scalingFactor;
+    CollisionManager._instance = this;
   }
 
   private getGridPosition(position: Vec2D): { x: number; y: number } {

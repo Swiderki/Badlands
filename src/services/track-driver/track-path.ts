@@ -30,14 +30,12 @@ export class TrackPath {
 
     // Obliczanie odległości między pos a closestPoint
     const distance = Vector.length(Vector.subtract(pos, closestPoint));
-    if (pointId === this.sampledPoints.length - 1) {
-      console.table({ point, previousPoint, p1, p2, v2, w, projectionScalar, closestPoint, distance });
-    }
-    const dd = DisplayDriver.currentInstance;
-    if (dd) {
-      dd.drawLineBetweenVectors(p1, p2, "red");
-      dd.drawLineBetweenVectors(pos, closestPoint, "blue"); // Rysuje linię od pos do najbliższego punktu
-    }
+
+    // const dd = DisplayDriver.currentInstance;
+    // if (dd) {
+    //   dd.drawLineBetweenVectors(p1, p2, "red");
+    //   dd.drawLineBetweenVectors(pos, closestPoint, "blue"); // Rysuje linię od pos do najbliższego punktu
+    // }
 
     return distance;
   }
