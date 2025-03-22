@@ -19,6 +19,9 @@ class PhysicsBasedController {
   protected _angle: number = 0;
   protected _brakingForce: number = 0;
 
+  protected _steeringForce: number = 0;
+  protected _isTurning: boolean = false;
+
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
   protected _maxSpeedForward: number = 300;
@@ -89,6 +92,22 @@ class PhysicsBasedController {
 
   get actualForce() {
     return this._actualForce;
+  }
+
+  set steeringForce(steeringForce: number) {
+    this._steeringForce = steeringForce;
+  }
+
+  get steeringForce() {
+    return this._steeringForce;
+  }
+
+  set isTurning(isTurning: boolean) {
+    this._isTurning = isTurning;
+  }
+
+  get isTurning() {
+    return this._isTurning;
   }
 
   set actualForce(force: Vec2D) {
@@ -194,12 +213,22 @@ class PhysicsBasedController {
     // aby wyłączyć nitro służy funkcja resetToDefaultSpeedAndAcceleration()
   }
 
-  turning(value: number) {
+  addSteeringForce(value: number) {
+    this.steeringForce += value;
+    if (this.steeringForce > 1) {
+      this.steeringForce = 1;
+    }
+    if (this.steeringForce < -1) {
+      this.steeringForce = -1;
+    }
+  }
+
+  turning() {
     const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
-        (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
-          (this.currentMaxSpeedForward * 2)
+        (3 * this.steeringForce * (Vector.length(this.actualForce) + this._maxSpeedForward)) /
+          (this._maxSpeedForward * 2)
       );
     }
   }

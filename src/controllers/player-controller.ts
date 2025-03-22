@@ -1,10 +1,7 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
-import {
-  getEffectObjectByName,
-  getRandomObstacleSprite,
-} from "../util/effects-utils";
+import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-utils";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -98,12 +95,14 @@ class PlayerController extends PhysicsBasedController {
     }
 
     if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
-      this.turning(1);
+      this.isTurning = true;
+      this.addSteeringForce(0.2);
       this._lastRotation = 0;
     }
 
     if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
-      this.turning(-1);
+      this.isTurning = true;
+      this.addSteeringForce(-0.2);
       this._lastRotation = 0;
     }
     //if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
