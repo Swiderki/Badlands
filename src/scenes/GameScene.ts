@@ -24,7 +24,7 @@ class GameScene extends Scene {
   playerController: PlayerController | null = null;
   opponentControllersList: OpponentController[] = [];
   effectObjects: EffectObject[] = [];
-  private track: Track | null = null;
+  track: Track | null = null;
   private collisionManager: CollisionManager;
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
@@ -97,7 +97,6 @@ class GameScene extends Scene {
 
   private async loadPlayer(startPosition: StartPosition) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
-    console.log(spriteName);
     const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
@@ -117,7 +116,8 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler)
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+        "test"
       )
     );
 
@@ -160,7 +160,6 @@ class GameScene extends Scene {
         const index = this.effectObjects.length;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
-          console.log("_onEnter");
           delete this.effectObjects[index];
           addPerk();
         };
@@ -420,7 +419,6 @@ class GameScene extends Scene {
     }
 
     this.UiService.setCurrentTime(this.scoreboard.currentTime);
-    // console.log(this.scoreboard.currentLapTime);
     this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
 
     if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {

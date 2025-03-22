@@ -1,12 +1,18 @@
-import { CollisionObject } from "@/types/collision";
+import { CollisionObject, PathIntersection } from "@/types/collision";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
-import { getCarCorners, rayCast } from "@/src/util/collision-util";
+import { getCarCorners, lineToRectDistance, rayCast } from "@/src/util/collision-util";
 import GameScene from "@/src/scenes/GameScene";
 import Game from "../game";
 import DisplayDriver from "../display-driver/display-driver";
 import { debug } from "console";
+import { CheckPoint } from "@/types/track-driver";
+import OpponentController from "@/src/controllers/opponents-controller";
+import EffectObject from "../effect/effect-object";
+import BoostPerk from "../effect/perk/boost-perk";
+
+const SOME_ARBITRARY_THRESHOLD = 30;
 
 class CollisionManager {
   scalingFactor: number;
@@ -30,7 +36,6 @@ class CollisionManager {
 
     let bestIntersection: Vec2D | null = null;
 
-    console.log("INCOMING RAYCAST");
     if (debug) DisplayDriver.currentInstance?.drawLineBetweenVectors({ x, y }, endVector, "orange");
 
     const gameSceneRef = Game.getInstance().currentScene as GameScene;
@@ -69,22 +74,67 @@ class CollisionManager {
       );
 
       updateIntersection(castRes);
-    } 
+    }
 
     //* Intersect with obstacles
     const obstacleList = gameSceneRef.effectObjects;
     for (const obstacle of obstacleList) {
       if (obstacle === undefined || obstacle === null) continue;
       const castRes = rayCast(
-        controller.centerPosition ,
+        controller.centerPosition,
         endVector,
         this.getRotatedCorners(obstacle.collision)
       );
 
       updateIntersection(castRes);
     }
-    console.log(bestIntersection);
     return bestIntersection;
+  }
+
+  getActualPathIntersections(actualPath: CheckPoint[], controllerToSkip: OpponentController) {
+    const gameSceneRef = Game.getInstance().currentScene as GameScene;
+    if (!(gameSceneRef instanceof GameScene)) {
+      return [];
+    }
+
+    const intersections: PathIntersection[] = [];
+
+    for (const effectObject of gameSceneRef.effectObjects) {
+      //* I swear to god, I WILL personally find the person how decided to randomly add undefined to the effectObjects array
+      if (effectObject === undefined || effectObject === null) continue;
+      if (effectObject instanceof BoostPerk) continue;
+      const intersectionObject = {
+        objectCorners: this.getRotatedCorners(effectObject.collision),
+        intersectionStartIndex: -1,
+        intersectionEndIndex: -1,
+        distance: 0,
+      };
+      const corners = this.getRotatedCorners(effectObject.collision);
+      for (let i = 0; i < actualPath.length - 1; i++) {
+        const p1 = actualPath[i].point;
+        const p2 = actualPath[i + 1].point;
+
+        const distance = lineToRectDistance(p1, p2, corners);
+        if (distance < SOME_ARBITRARY_THRESHOLD && intersectionObject.intersectionStartIndex === -1) {
+          intersectionObject.intersectionStartIndex = i;
+          continue;
+        }
+
+        if (distance > SOME_ARBITRARY_THRESHOLD && intersectionObject.intersectionStartIndex !== -1) {
+          intersectionObject.intersectionEndIndex = i;
+          intersectionObject.distance = distance;
+          intersections.push(intersectionObject);
+          break;
+        }
+
+        if (i === actualPath.length - 2 && intersectionObject.intersectionStartIndex !== -1) {
+          intersectionObject.intersectionEndIndex = i;
+          intersections.push(intersectionObject);
+        }
+      }
+    }
+
+    return intersections;
   }
 
   constructor(scalingFactor: number) {
@@ -198,6 +248,51 @@ class CollisionManager {
 
   private overlaps(proj1: { min: number; max: number }, proj2: { min: number; max: number }): boolean {
     return proj1.max >= proj2.min && proj2.max >= proj1.min;
+  }
+
+  circleOverlapsWithTrack(center: Vec2D, radius: number) {
+    const gameScene = Game.getInstance().currentScene as GameScene;
+    if (!(gameScene instanceof GameScene)) {
+      return false;
+    }
+    const currentTrack = gameScene.track;
+    if (!currentTrack) {
+      return false;
+    }
+
+    const trackCollider = currentTrack.colliderImage;
+    const gridPos = this.getGridPosition(center);
+
+    if (!trackCollider) {
+      return false;
+    }
+
+    const numSamples = 16; // Number of points to sample around the circle's edge
+    const angleStep = (2 * Math.PI) / numSamples;
+
+    if (
+      gridPos.x < 0 ||
+      gridPos.y < 0 ||
+      gridPos.y >= trackCollider.length ||
+      gridPos.x >= trackCollider[0].length
+    ) {
+      return true;
+    }
+    if (radius === 1) return trackCollider[gridPos.y][gridPos.y] !== 0;
+
+    for (let i = 0; i < numSamples; i++) {
+      const angle = i * angleStep;
+      const edgeX = center.x + radius * Math.cos(angle);
+      const edgeY = center.y + radius * Math.sin(angle);
+      const edgeGridPos = this.getGridPosition({ x: edgeX, y: edgeY });
+
+      // Check if this point is inside the track bounds
+      if (trackCollider[edgeGridPos.y][edgeGridPos.y] !== 0) {
+        return true; // Collision detected
+      }
+    }
+
+    return false; // Circle is fully within the track;
   }
 }
 

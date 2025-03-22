@@ -4,6 +4,7 @@ import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
 import DisplayDriver from "../services/display-driver/display-driver";
+import { Vector } from "../util/vec-util";
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
@@ -16,9 +17,13 @@ class OpponentController extends PhysicsBasedController {
   nickname: string;
   finished = false;
   currentLap = 0;
-  
 
-  constructor(sprite: Sprite, startPosition: StartPosition, drivingPolicy: DrivingPolicyBase, nickname: string) {
+  constructor(
+    sprite: Sprite,
+    startPosition: StartPosition,
+    drivingPolicy: DrivingPolicyBase,
+    nickname: string
+  ) {
     super(sprite);
 
     // Temporary, bacause he cant deal with greater values
@@ -29,7 +34,8 @@ class OpponentController extends PhysicsBasedController {
     this.setCurrentSprite();
     this._drivingPolicy = drivingPolicy;
     this._drivingPolicy.parentRef = this;
-    this.setPosition(this._drivingPolicy.enemyPath.sampledPoints[0].point);
+    console.log(this._drivingPolicy.enemyPath.sampledPoints[0]);
+    this.setPosition(Vector.subtract(this._drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
     this.nickname = nickname;
   }
 
@@ -64,6 +70,7 @@ class OpponentController extends PhysicsBasedController {
 
     const displayDriver = DisplayDriver.currentInstance;
     if (displayDriver) {
+      displayDriver.displayActualPath(this._drivingPolicy.enemyPath.actualPath, "green");
       displayDriver.displayCheckpoints(this._drivingPolicy.enemyPath.sampledPoints, "red");
     }
   }

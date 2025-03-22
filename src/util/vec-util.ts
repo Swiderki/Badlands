@@ -14,6 +14,25 @@ export namespace Vector {
     return { x: v1.x + v2.x, y: v1.y + v2.y };
   }
 
+  export function lerp(v1: Vec2D, v2: Vec2D, t: number): Vec2D {
+    return {
+      x: v1.x + (v2.x - v1.x) * t,
+      y: v1.y + (v2.y - v1.y) * t,
+    };
+  }
+
+  export function angleBetween(v1: Vec2D, v2: Vec2D): number {
+    return Math.atan2(v2.y - v1.y, v2.x - v1.x);
+  }
+
+  export function equals(v1: Vec2D, v2: Vec2D): boolean {
+    return v1.x === v2.x && v1.y === v2.y;
+  }
+
+  export function perpendicular(v: Vec2D): Vec2D {
+    return { x: -v.y, y: v.x };
+  }
+
   export function subtract(v1: Vec2D, v2: Vec2D): Vec2D {
     return { x: v1.x - v2.x, y: v1.y - v2.y };
   }

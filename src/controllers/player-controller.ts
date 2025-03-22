@@ -45,7 +45,6 @@ class PlayerController extends PhysicsBasedController {
 
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
-      //console.log(this._playerInput);
       this._playerInput[e.key] = true;
     });
 
@@ -81,8 +80,6 @@ class PlayerController extends PhysicsBasedController {
 
   override update(deltaTime: number) {
     //* This one is just for testing purposes
-    // console.log(deltaTime);
-    // console.log(this._lastRotation);
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;

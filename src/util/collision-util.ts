@@ -99,3 +99,39 @@ function onSegment(p: Vec2D, q: Vec2D, r: Vec2D): boolean {
 function distance(a: Vec2D, b: Vec2D): number {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 }
+
+function lineSegmentToLineSegmentDistance(a1: Vec2D, a2: Vec2D, b1: Vec2D, b2: Vec2D): number {
+  const intersection = getIntersection(a1, a2, b1, b2);
+  if (intersection) return 0; // Segments intersect
+
+  const dist1 = Math.min(distance(a1, b1), distance(a1, b2));
+  const dist2 = Math.min(distance(a2, b1), distance(a2, b2));
+  const dist3 = Math.min(distanceToSegment(a1, b1, b2), distanceToSegment(a2, b1, b2));
+  const dist4 = Math.min(distanceToSegment(b1, a1, a2), distanceToSegment(b2, a1, a2));
+
+  return Math.min(dist1, dist2, dist3, dist4);
+}
+
+function distanceToSegment(p: Vec2D, v: Vec2D, w: Vec2D): number {
+  const l2 = distance(v, w) ** 2;
+  if (l2 === 0) return distance(p, v);
+
+  const t = Math.max(0, Math.min(1, ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2));
+  const projection = { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) };
+
+  return distance(p, projection);
+}
+
+export function lineToRectDistance(from: Vec2D, to: Vec2D, rect: Vec2D[]): number {
+  let minDist = Infinity;
+
+  for (let i = 0; i < rect.length; i++) {
+    const p1 = rect[i];
+    const p2 = rect[(i + 1) % rect.length];
+    const dist = lineSegmentToLineSegmentDistance(from, to, p1, p2);
+
+    minDist = Math.min(minDist, dist);
+  }
+
+  return minDist;
+}
