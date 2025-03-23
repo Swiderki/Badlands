@@ -142,13 +142,13 @@ class Track {
         if (this.currentTransitionFraction) {
           displayDriver.drawSprite({
             currentSprite: Math.floor((this.currentTransitionFraction * spritesNumber) % spritesNumber),
-            position: { x: gate.x, y: gate.y },
+            position: { x: (gate.x * displayDriver.scaler) / 2, y: (gate.y * displayDriver.scaler) / 2 },
             sprite: gate.sprite,
           });
         } else {
           displayDriver.drawSprite({
             currentSprite: 0,
-            position: { x: gate.x, y: gate.y },
+            position: { x: (gate.x * displayDriver.scaler) / 2, y: (gate.y * displayDriver.scaler) / 2 },
             sprite: gate.sprite,
           });
         }
@@ -158,13 +158,13 @@ class Track {
             currentSprite: Math.floor(
               (spritesNumber - this.currentTransitionFraction * spritesNumber) % spritesNumber
             ),
-            position: { x: gate.x, y: gate.y },
+            position: { x: (gate.x * displayDriver.scaler) / 2, y: (gate.y * displayDriver.scaler) / 2 },
             sprite: gate.sprite,
           });
         } else {
           displayDriver.drawSprite({
             currentSprite: spritesNumber - 1,
-            position: { x: gate.x, y: gate.y },
+            position: { x: (gate.x * displayDriver.scaler) / 2, y: (gate.y * displayDriver.scaler) / 2 },
             sprite: gate.sprite,
           });
         }
