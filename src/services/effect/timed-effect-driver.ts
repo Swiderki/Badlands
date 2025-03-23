@@ -1,13 +1,14 @@
 import { getDeltaTime } from "@/src/util/delta-time";
 
 export interface TimedEffect {
+  canBeOverrided: boolean;
   startTimestamp: number;
   duration: number;
   update(deltaTime: number): void;
   finish(): void;
 }
 
-type EffectType = "boost" | "slip" | "damaged"; // | "slow" | "freeze" // TODO: Implement other effects
+type EffectType = "boost" | "slip" | "damaged" | "nitro"; // | "slow" | "freeze" // TODO: Implement other effects
 
 /** This is a class managing time effect like a weaker grip after driving into banana peel, boost after collecting a boost-star etc. */
 export default class TimedEffectDriver {
@@ -37,7 +38,10 @@ export default class TimedEffectDriver {
 
   addEffect(type: EffectType, effect: TimedEffect) {
     if (this._effects.has(type)) {
-      this._effects.get(type)?.finish();
+      if (!this._effects.get(type)!.canBeOverrided) {
+        return;
+      }
+      this._effects.get(type)!.finish();
     }
     this._effects.set(type, effect);
   }

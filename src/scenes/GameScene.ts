@@ -86,6 +86,7 @@ class GameScene extends Scene {
   }
 
   private initListeners() {
+    //* i've added keypress listener instead of keydown to prevent just holding key
     document.addEventListener("keypress", (e) => {
       if (e.key === " ") {
         const obstacle = this.playerController?.dropObstacle();
@@ -265,7 +266,9 @@ class GameScene extends Scene {
         10,
         10
       );
-      if (this.playerController.timedEffectDriver.hasEffect("boost")) {
+      if (this.playerController.timedEffectDriver.hasEffect("nitro")) {
+        this.displayDriver.ctx.fillStyle = "blue";
+      } else if (this.playerController.timedEffectDriver.hasEffect("boost")) {
         this.displayDriver.ctx.fillStyle = "green";
       } else if (this.playerController.timedEffectDriver.hasEffect("slip")) {
         this.displayDriver.ctx.fillStyle = "yellow";

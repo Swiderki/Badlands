@@ -1,11 +1,11 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
+
+import { CollisionObject } from "@/types/collision";
 import { PhysicsUtils } from "../util/physics-util";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
-
-import { CollisionObject } from "@/types/collision";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -41,6 +41,11 @@ class PhysicsBasedController {
   colliderHeight: number = 4; //* Car height
 
   timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
+
+  private readonly NITRO_DURATION: number = 200; // ms
+  private readonly NITRO_REFUEL_COOLDOWN: number = 3000; // ms
+  private currentRefuelingTimestamp: number = -1;
+  private isNitroActive = false;
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;
@@ -204,13 +209,37 @@ class PhysicsBasedController {
     this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
   }
 
+  /**
+   * Nitro is an effect activated by holding a key.
+   *  - cooldown starts counting when level is 0, it will not be refueled when
+   *    player have used 0.5 of total capacity or sth
+   */
   enterNitroMode() {
-    const nitroModifier = 1.5;
+    if (this.isNitroActive || Date.now() < this.currentRefuelingTimestamp + this.NITRO_REFUEL_COOLDOWN) {
+      return;
+    }
+
+    console.log("enter nitro");
+
+    const nitroModifier = 2;
+    this.isNitroActive = true;
     this.currentMaxSpeedForward = this._maxSpeedForward * nitroModifier;
     this.currentMaxSpeedBackwards = this._maxSpeedBackwards * nitroModifier;
     this.currentAccelerationPowerForward = this._accelerationPowerForward * nitroModifier;
     this.currentAccelerationPowerBackwards = this._accelerationPowerBackwards * nitroModifier;
     // aby wyłączyć nitro służy funkcja resetToDefaultSpeedAndAcceleration()
+
+    this.timedEffectDriver.addEffect("nitro", {
+      canBeOverrided: false,
+      duration: this.NITRO_DURATION,
+      finish: () => {
+        this.resetToDefaultSpeedAndAcceleration();
+        this.isNitroActive = false;
+        this.currentRefuelingTimestamp = Date.now();
+      },
+      startTimestamp: Date.now(),
+      update: () => {},
+    });
   }
 
   addSteeringForce(value: number) {

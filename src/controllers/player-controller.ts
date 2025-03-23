@@ -42,8 +42,10 @@ class PlayerController extends PhysicsBasedController {
 
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
-      //console.log(this._playerInput);
       this._playerInput[e.key.toLowerCase()] = true;
+      if (e.key === "Shift") {
+        this.enterNitroMode();
+      }
     });
 
     document.addEventListener("keyup", (e) => {
