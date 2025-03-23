@@ -2,6 +2,7 @@ import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-utils";
+import { UIService } from "../services/ui-service/ui-service";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -44,7 +45,9 @@ class PlayerController extends PhysicsBasedController {
     document.addEventListener("keydown", (e) => {
       this._playerInput[e.key.toLowerCase()] = true;
       if (e.key === "Shift") {
-        this.enterNitroMode();
+        UIService.getInstance().setIsNitroIndicatorActive(false);
+        const onRefuel = () => UIService.getInstance().setIsNitroIndicatorActive(true);
+        this.enterNitroMode(onRefuel);
       }
     });
 

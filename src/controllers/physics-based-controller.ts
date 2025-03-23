@@ -214,7 +214,7 @@ class PhysicsBasedController {
    *  - cooldown starts counting when level is 0, it will not be refueled when
    *    player have used 0.5 of total capacity or sth
    */
-  enterNitroMode() {
+  enterNitroMode(onRefuel?: () => void) {
     if (this.isNitroActive || Date.now() < this.currentRefuelingTimestamp + this.NITRO_REFUEL_COOLDOWN) {
       return;
     }
@@ -236,6 +236,9 @@ class PhysicsBasedController {
         this.resetToDefaultSpeedAndAcceleration();
         this.isNitroActive = false;
         this.currentRefuelingTimestamp = Date.now();
+        if (onRefuel) {
+          setTimeout(onRefuel, this.NITRO_REFUEL_COOLDOWN);
+        }
       },
       startTimestamp: Date.now(),
       update: () => {},

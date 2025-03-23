@@ -39,6 +39,14 @@ export class UIService {
     return this._speedTipRef;
   }
 
+  private get nitroIndicator(): HTMLElement {
+    const nitroIndicator = document.querySelector<HTMLElement>("#nitro-indicator");
+    if (!nitroIndicator) {
+      throw new Error("cannot find element for nitro indicator");
+    }
+    return nitroIndicator;
+  }
+
   private createLapHTML(num: number): HTMLLIElement {
     const lapHTML = document.createElement("li");
     lapHTML.id = `lap-${num}`;
@@ -103,5 +111,9 @@ export class UIService {
 
   setSpeedMeterValue(value: number) {
     this.speedTipRef.style.setProperty("--speed-rotation", `${value.toPrecision(2)}deg`);
+  }
+
+  setIsNitroIndicatorActive(active: boolean) {
+    this.nitroIndicator.style.setProperty("--current-sprite", active ? "0" : "1");
   }
 }
