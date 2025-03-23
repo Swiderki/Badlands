@@ -230,5 +230,21 @@
       "spriteWidth": 18,
       "spriteHeight": 18
     }
+  },
+  {
+    "name": "gate_horizontal",
+    "src": "/assets/sprites/gate_horizontal.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "gate_vertical",
+    "src": "/assets/sprites/gate_vertical.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
   }
 ]

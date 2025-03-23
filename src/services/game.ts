@@ -5,6 +5,7 @@ import MainMenuScene from "../scenes/MainMenuScene";
 import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
+import { StartScene } from "../scenes/StartScene";
 
 import { StartScene } from "../scenes/StartScene";
 
@@ -79,7 +80,9 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    await this.displayDriver.autoLoadSprites();
+    const aa = await this.displayDriver.autoLoadSprites();
+
+    console.log(aa);
 
     //* Start the game loop
     this._update();

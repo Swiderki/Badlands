@@ -43,11 +43,11 @@ class PlayerController extends PhysicsBasedController {
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
       //console.log(this._playerInput);
-      this._playerInput[e.key] = true;
+      this._playerInput[e.key.toLowerCase()] = true;
     });
 
     document.addEventListener("keyup", (e) => {
-      this._playerInput[e.key] = false;
+      this._playerInput[e.key.toLowerCase()] = false;
     });
   }
 
@@ -89,24 +89,24 @@ class PlayerController extends PhysicsBasedController {
       (this.getInput("ArrowUp") || this.getInput("w")) &&
       this._lastAcceleration >= this._accelerationCooldown
     )*/
-    if (this.getInput("ArrowUp") || this.getInput("w")) {
+    if (this.getInput("arrowup") || this.getInput("w")) {
       this.accelerateForward();
       this._lastAcceleration = 0;
     }
 
-    if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
+    if ((this.getInput("arrowright") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
       this.isTurning = true;
       this.addSteeringForce(0.2);
       this._lastRotation = 0;
     }
 
-    if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
+    if ((this.getInput("arrowleft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
       this.isTurning = true;
       this.addSteeringForce(-0.2);
       this._lastRotation = 0;
     }
     //if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
-    if (this.getInput("ArrowDown") || this.getInput("s")) {
+    if (this.getInput("arrowdown") || this.getInput("s")) {
       this.brake();
       this._lastBrake = 0;
     }

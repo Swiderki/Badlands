@@ -230,6 +230,10 @@ class DisplayDriver {
     });
     this.topQueue = [];
   }
+
+  addDrawCall(call: () => void) {
+    this.topQueue.push(call);
+  }
 }
 
 export default DisplayDriver;

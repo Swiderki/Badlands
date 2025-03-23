@@ -56,7 +56,7 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
-    console.log(this.map);
+
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
@@ -248,6 +248,7 @@ class GameScene extends Scene {
 
     this.displayDriver.displayTrackFgLayers(this.track);
     this.track.displayCheckpoints(this.displayDriver);
+    this.track.renderGates();
     this.displayDriver.performDrawCalls();
   }
 
@@ -280,6 +281,7 @@ class GameScene extends Scene {
     if (this.track === null) {
       return;
     }
+    this.track.update();
   }
 
   private playerUpdate(deltaTime: number) {
