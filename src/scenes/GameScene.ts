@@ -58,6 +58,8 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "block";
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
+    this.startCoundown();
+
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
@@ -71,11 +73,41 @@ class GameScene extends Scene {
     await this.loadEffectObjects();
     this.initListeners();
   }
+
   static getInstance(): GameScene {
     if (!GameScene.instance) {
       throw new Error("Game instance not initialized");
     }
     return GameScene.instance;
+  }
+
+  startCoundown() {
+    Game.getInstance().pauseGame();
+    const countdownDialog = document.querySelector("#countdown-scene");
+    const countdown = document.querySelector(".countdown");
+    const text = document.querySelector(".countdown_text");
+    const speedMeter = document.querySelector(".speed-meter__inner");
+
+    if (!countdown || !text || !countdownDialog || !speedMeter) {
+      throw Error("Countdown scene not initialized");
+    }
+    countdown.innerHTML = "3";
+    text.innerHTML = "READY";
+    countdownDialog.setAttribute("style", "display: block");
+    speedMeter.setAttribute("style", "display: none");
+    setTimeout(() => {
+      countdown.innerHTML = "2";
+      text.innerHTML = "STEADY";
+      setTimeout(() => {
+        countdown.innerHTML = "1";
+        text.innerHTML = "GO!";
+        setTimeout(() => {
+          countdownDialog.setAttribute("style", "display: none");
+          speedMeter.setAttribute("style", "display: block");
+          Game.getInstance().resumeGame();
+        }, 1000);
+      }, 1000);
+    }, 1000);
   }
 
   get player(): PlayerController {
