@@ -1,11 +1,11 @@
+import { AboutScene } from "../scenes/AboutScene";
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
-import { StartScene } from "../scenes/StartScene";
-import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
+import { StartScene } from "../scenes/StartScene";
 
 class Game {
   //* Drivers
@@ -64,7 +64,9 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    await this.displayDriver.autoLoadSprites();
+    const aa = await this.displayDriver.autoLoadSprites();
+
+    console.log(aa);
 
     //* Start the game loop
     this._update();

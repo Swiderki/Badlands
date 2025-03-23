@@ -170,6 +170,7 @@ class GameScene extends Scene {
 
     this.displayDriver.displayTrackFgLayers(this.track);
     this.track.displayCheckpoints(this.displayDriver);
+    this.track.renderGates();
     this.displayDriver.performDrawCalls();
   }
 

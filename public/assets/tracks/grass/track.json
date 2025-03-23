@@ -10,6 +10,10 @@
   "fgLayers": ["grass-track-layer-2"],
   "colliderImage": "grass-track-collider-gates-off",
   "openedShortcutColliderImage": "grass-track-collider-gates-on",
+  "gates": [
+    { "x": 128, "y": 166, "sprite": "gate_horizontal" },
+    { "x": 412, "y": 22, "sprite": "gate_vertical" }
+  ],
 
   "comment": "trzeba zmienić punkciki",
 

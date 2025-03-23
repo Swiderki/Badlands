@@ -1,13 +1,12 @@
 import { Color, Sprite, SpriteArray } from "@/types/display-driver";
+
 import DisplayDriver from "../display-driver/display-driver";
-import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
+import Track from "./track-driver";
+import { TrackPath } from "./track-path";
 import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
-import { TrackPath } from "./track-path";
-
 import type track from "@/public/assets/tracks/grass/track.json";
-import GrassTrack from "./tracks/grass-track";
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
@@ -39,24 +38,13 @@ class TrackLoader {
           ? await TrackLoader.extractColliderFromImage(displayDriver, data.openedShortcutColliderImage)
           : null;
 
+        const gates = data.gates ?? [];
+
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
 
         checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: 0 } });
         console.log(checkPointPath.sampledPoints);
-
-        if (src.includes("grass")) {
-          return new GrassTrack(
-            data.bonuses,
-            data.traction,
-            startPositions,
-            fgLayers,
-            bgLayers,
-            baseColliderImageData,
-            openedShortcutColliderImage,
-            checkPointPath
-          );
-        }
 
         return new Track(
           data.bonuses,
@@ -66,6 +54,7 @@ class TrackLoader {
           bgLayers,
           baseColliderImageData,
           openedShortcutColliderImage,
+          gates,
           checkPointPath
         );
       });
