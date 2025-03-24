@@ -7,6 +7,7 @@ import PuddleObstacle from "../services/effect/obstacle/puddle-obstacle";
 import SpikesObstacle from "../services/effect/obstacle/spikes-obstacle";
 import Track from "../services/track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
+import WrenchPerk from "../services/effect/perk/wrench-perk";
 
 // import PerkObject from "../services/effect/perk/perk-object";
 
@@ -20,24 +21,29 @@ export enum Obstacles {
 
 export enum Perks {
   BOOST_STAR = "boost_star",
+  WRENCH = "wrench",
 }
 
 export type EffectSprites = Obstacles | Perks;
 
 export const getEffectObjectByName = (name: EffectSprites) => {
   switch (name) {
+    // obstacles
     case Obstacles.POTHOLE:
       return PotholeObstacle;
     case Obstacles.PUDDLE:
       return PuddleObstacle;
     case Obstacles.BANANA_PEEL:
       return BananaPeelObstacle;
-    case Perks.BOOST_STAR:
-      return BoostPerk;
     case Obstacles.SPIKES:
       return SpikesObstacle;
     case Obstacles.OIL_SPILL:
       return OilSpillObstacle;
+    // perks
+    case Perks.BOOST_STAR:
+      return BoostPerk;
+    case Perks.WRENCH:
+      return WrenchPerk;
     default:
       throw new Error("effect not found");
   }

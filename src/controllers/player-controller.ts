@@ -82,6 +82,12 @@ class PlayerController extends PhysicsBasedController {
   }
 
   override update(deltaTime: number) {
+    console.log(
+      this._currentMaxSpeedForward,
+      this._currentMaxSpeedBackwards,
+      this._currentAccelerationPowerForward,
+      this._currentAccelerationPowerBackwards
+    );
     //* This one is just for testing purposes
     // console.log(deltaTime);
     // console.log(this._lastRotation);

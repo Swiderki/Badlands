@@ -5,6 +5,10 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class PotholeObstacle extends EffectObject {
+  private readonly FORCE_MODIFIER = 0.1;
+  private readonly ACCELERATION_MODIFIER = 0.9;
+  private readonly MAX_SPEED_MODIFIER = 0.6;
+
   constructor(position: Vec2D) {
     super(position, Obstacles.POTHOLE);
   }
@@ -15,17 +19,18 @@ export default class PotholeObstacle extends EffectObject {
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
 
-    car.actualForce.x *= 0.1;
-    car.actualForce.y *= 0.1;
-    car.currentAccelerationPowerForward *= 0.9;
-    car.currentMaxSpeedForward *= 0.6;
+    car.actualForce.x *= this.FORCE_MODIFIER;
+    car.actualForce.y *= this.FORCE_MODIFIER;
+    car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
+    car.currentMaxSpeedForward *= this.MAX_SPEED_MODIFIER;
 
     const effect: TimedEffect = {
       canBeOverrided: true,
       startTimestamp: Date.now(),
       duration: Infinity,
-      finish() {
-        car.resetToDefaultSpeedAndAcceleration();
+      finish: () => {
+        car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
+        car.currentMaxSpeedForward /= this.MAX_SPEED_MODIFIER;
       },
       update() {},
     };

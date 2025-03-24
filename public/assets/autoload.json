@@ -246,5 +246,14 @@
       "spriteWidth": 80,
       "spriteHeight": 80
     }
+  },
+
+  {
+    "name": "wrench",
+    "src": "/assets/effect_objects/obs1.jpg",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
   }
 ]

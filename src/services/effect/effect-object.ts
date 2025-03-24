@@ -47,8 +47,8 @@ export default class EffectObject {
       this._onEnter(car);
       this.onEnter(car);
     });
-    collidingCars.forEach(this.onColliding);
-    exitingCars.forEach(this.onExit);
+    collidingCars.forEach((car) => this.onColliding(car));
+    exitingCars.forEach((car) => this.onExit(car));
 
     this.previouslyCollidingCars = currentlyCollidingCars;
 

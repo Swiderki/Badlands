@@ -50,6 +50,15 @@ export default class TimedEffectDriver {
     this._effects.delete(type);
   }
 
+  finishEffect(type: EffectType) {
+    const effect = this._effects.get(type);
+    if (!effect) {
+      console.warn(`Trying to finish effect which is not present on the player (${type})`);
+    }
+    effect?.finish();
+    this.cancelEffect(type);
+  }
+
   hasEffect(type: EffectType): boolean {
     return this._effects.has(type);
   }

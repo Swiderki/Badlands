@@ -5,6 +5,9 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class SpikesObstacle extends EffectObject {
+  private readonly FORCE_MODIFIER = 0.2;
+  private readonly ACCELERATION_MODIFIER = 0.7;
+
   constructor(position: Vec2D) {
     super(position, Obstacles.SPIKES);
   }
@@ -14,22 +17,18 @@ export default class SpikesObstacle extends EffectObject {
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
 
-    car.actualForce.x *= 0.2;
-    car.actualForce.y *= 0.2;
-    car.currentMaxSpeedForward *= 0.2;
-    car.currentAccelerationPowerForward *= 0.7;
-
-    setTimeout(() => {
-      car.actualForce.x *= 0.1;
-      car.actualForce.y *= 0.1;
-    }, 200);
+    car.actualForce.x *= this.FORCE_MODIFIER;
+    car.actualForce.y *= this.FORCE_MODIFIER;
+    car.currentMaxSpeedForward *= this.FORCE_MODIFIER;
+    car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
 
     const effect: TimedEffect = {
       canBeOverrided: true,
       startTimestamp: Date.now(),
       duration: Infinity,
-      finish() {
-        // playerController.resetToDefaultSpeedAndAcceleration();
+      finish: () => {
+        car.currentMaxSpeedForward /= this.FORCE_MODIFIER;
+        car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
       },
       update() {},
     };
