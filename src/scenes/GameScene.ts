@@ -273,8 +273,11 @@ class GameScene extends Scene {
         currentSprite: 0,
       });
     });
-    this.renderPlayer();
+    if (!this.playerController!.finished) {
+      this.renderPlayer();
+    }
     this.opponentControllersList.forEach((opponent) => {
+      if (opponent.finished) return;
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
@@ -318,6 +321,7 @@ class GameScene extends Scene {
     if (!this.playerController || !this.playerController.displayData) {
       return;
     }
+    if (this.playerController.finished) return;
 
     this.playerController.update(deltaTime);
     this.physicsDriver.updateController(this.playerController, deltaTime);
@@ -329,6 +333,7 @@ class GameScene extends Scene {
     }
 
     for (const opponent of this.opponentControllersList) {
+      if (opponent.finished) continue;
       opponent.update(deltaTime);
       this.physicsDriver.updateController(opponent, deltaTime);
     }
@@ -508,7 +513,9 @@ class GameScene extends Scene {
     }
 
     if (this.scoreboard.currentLap === this.UiService.lapCount) {
+      if (this.playerController.finished) return;
       const nickname = Game.instance.nickname;
+
       console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
       this.playerController.finished = true;
