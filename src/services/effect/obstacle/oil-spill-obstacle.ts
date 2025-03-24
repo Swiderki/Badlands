@@ -1,7 +1,7 @@
 import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
-import  { TimedEffect } from "../timed-effect-driver";
+import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class OilSpillObstacle extends EffectObject {
@@ -18,6 +18,7 @@ export default class OilSpillObstacle extends EffectObject {
 
     // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     const effect: TimedEffect = {
+      canBeOverrided: true,
       startTimestamp: Date.now(),
       duration: 700,
       finish() {

@@ -1,16 +1,18 @@
 import { Color, Sprite } from "@/types/display-driver";
+
 import DisplayDriver from "../display-driver/display-driver";
-import Track from "./track-driver";
 import { StartPosition } from "@/types/track-driver";
+import Track from "./track-driver";
+import { TrackPath } from "./track-path";
 import { Vec2D } from "@/types/physics";
 import { mapPixelToCollisionType } from "@/src/util/misc-utils";
-import { TrackPath } from "./track-path";
+import type track from "@/public/assets/tracks/grass/track.json";
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
     return fetch(location.origin + src)
       .then((response) => response.json())
-      .then(async (data) => {
+      .then(async (data: typeof track) => {
         //* fetch all needed sprites
         const fgLayers = data.fgLayers.map((layerName: string) =>
           displayDriver.getSprite(layerName)
@@ -28,10 +30,15 @@ class TrackLoader {
         );
 
         //* Extract collider data from image
-        const colliderImageData = await TrackLoader.extractColliderFromImage(
+        const baseColliderImageData = await TrackLoader.extractColliderFromImage(
           displayDriver,
           data.colliderImage
         );
+        const openedShortcutColliderImage = data.openedShortcutColliderImage
+          ? await TrackLoader.extractColliderFromImage(displayDriver, data.openedShortcutColliderImage)
+          : null;
+
+        const gates = data.gates ?? [];
 
         const pathOffset = data.pathOffset;
         const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
@@ -45,7 +52,9 @@ class TrackLoader {
           startPositions,
           fgLayers,
           bgLayers,
-          colliderImageData,
+          baseColliderImageData,
+          openedShortcutColliderImage,
+          gates,
           checkPointPath
         );
       });

@@ -68,7 +68,7 @@ class OpponentController extends PhysicsBasedController {
     if (this.currentLap >= 3) {
       this.finished = true;
       this.finishedTime = Scoreboard.instance.currentTime
-      
+
       if (
         GameScene.instance.opponentControllersList.every((opponent) => opponent.finished) &&
         GameScene.instance.player.finished

@@ -57,8 +57,21 @@ body {
   display: none;
 }
 
-.speed-meter__wrapper img {
+.speed-meter__wrapper img#speed-meter {
   width: 100%;
+}
+
+.speed-meter__wrapper div#nitro-indicator {
+  --current-sprite: 0;
+  background-image: url('/assets/ui/nitro_sprite.png');
+  --icon-size: 18px;
+  background-position-x: calc(var(--current-sprite) * var(--icon-size));
+  width: var(--icon-size);
+  height: var(--icon-size);
+  position: absolute;
+  bottom: 16px;
+  --some-offset: 10px;
+  left: calc(50% - var(--icon-size) - var(--some-offset));
 }
 
 .acc-tip,

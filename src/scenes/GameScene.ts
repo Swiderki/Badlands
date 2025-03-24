@@ -56,7 +56,7 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
-    console.log(this.map);
+
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     this.startCoundown();
 
@@ -118,6 +118,7 @@ class GameScene extends Scene {
   }
 
   private initListeners() {
+    //* i've added keypress listener instead of keydown to prevent just holding key
     document.addEventListener("keypress", (e) => {
       if (e.key === " ") {
         const obstacle = this.playerController?.dropObstacle();
@@ -283,6 +284,7 @@ class GameScene extends Scene {
 
     this.displayDriver.displayTrackFgLayers(this.track);
     this.track.displayCheckpoints(this.displayDriver);
+    this.track.renderGates();
     this.displayDriver.performDrawCalls();
   }
 
@@ -299,7 +301,9 @@ class GameScene extends Scene {
         10,
         10
       );
-      if (this.playerController.timedEffectDriver.hasEffect("boost")) {
+      if (this.playerController.timedEffectDriver.hasEffect("nitro")) {
+        this.displayDriver.ctx.fillStyle = "blue";
+      } else if (this.playerController.timedEffectDriver.hasEffect("boost")) {
         this.displayDriver.ctx.fillStyle = "green";
       } else if (this.playerController.timedEffectDriver.hasEffect("slip")) {
         this.displayDriver.ctx.fillStyle = "yellow";
@@ -315,6 +319,7 @@ class GameScene extends Scene {
     if (this.track === null) {
       return;
     }
+    this.track.update();
   }
 
   private playerUpdate(deltaTime: number) {

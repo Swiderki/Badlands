@@ -19,6 +19,7 @@ export default class BoostPerk extends EffectObject {
     car.currentAccelerationPowerBackwards *= 2;
 
     const effect: TimedEffect = {
+      canBeOverrided: true,
       startTimestamp: Date.now(),
       duration: 5000,
       finish() {

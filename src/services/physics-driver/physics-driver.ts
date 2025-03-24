@@ -3,6 +3,7 @@ import { PhysicsUtils } from "@/src/util/physics-util";
 import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
 import DisplayDriver from "../display-driver/display-driver";
+import { sign } from "crypto";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't perform physics inside the controller, it's 'cause it uses information that single controller has no access to
@@ -26,6 +27,14 @@ class PhysicsDriver {
     controller.actualForce = Vector.scale(controller.actualForce, this.engineBraking(controller, deltaTime));
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
+    controller.turning();
+    if (controller.steeringForce !== 0 && !controller.isTurning) {
+      controller.steeringForce =
+        Math.round(
+          (controller.steeringForce - 60 * deltaTime * 0.05 * Math.sign(controller.steeringForce)) * 100
+        ) / 100;
+    }
+    controller.isTurning = false;
     //controller.enterNitroMode()
   }
 

@@ -25,6 +25,7 @@ export default class SpikesObstacle extends EffectObject {
     }, 200);
 
     const effect: TimedEffect = {
+      canBeOverrided: true,
       startTimestamp: Date.now(),
       duration: Infinity,
       finish() {
