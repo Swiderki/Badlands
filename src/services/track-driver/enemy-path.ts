@@ -120,46 +120,59 @@ export class EnemyPath extends TrackPath {
       const intersectionEndIndex =
         intersection.intersectionEndIndex + 3
           ? intersection.intersectionEndIndex
-          : intersection.intersectionEndIndex + 3;
-      const intersectionEndPoint = this.actualPath[intersectionEndIndex].point;
+          : intersection.intersectionEndIndex + 3; 
+      const intersectionEndPoint = this.actualPath[intersectionEndIndex].point; 
 
       const positionOfObstacle = Vector.add(
         Vector.scale(Vector.add(intersection.objectCorners[0], intersection.objectCorners[2]), 0.5),
-        { x: 12, y: 12 }
+        { x: 12, y: 12 } //! It will work only for obstacles that are 24x24
       );
 
       const pointsToReconsider = this.actualPath
         .slice(intersectionStartIndex, intersectionEndIndex + 1)
         .map((point) => point.point);
 
-      const safeDistance = 2;
+      const safeDistance = 50;
       const newPoints: Vec2D[] = [];
 
-      for (let i = 0; i < pointsToReconsider.length - 1; i++) {
+      //* Check the distances between obstacle and track bounds
+      //* I will finish this as soon as Staszek responds to my message
+      // if(pointsToReconsider.length > 2) {
+      //   const midPoint = Math.floor(pointsToReconsider.length/2);
+      //   const perpendicular = Vector.normalize(Vector.perpendicular(Vector.subtract(pointsToReconsider[midPoint], pointsToReconsider[midPoint+1])));
+      //   const reversePerpendicular = Vector.scale(perpendicular, -1);
+          
+      //   let pointToTheLeftOfObstacle = Vector.add(positionOfObstacle, reversePerpendicular);
+      //   let pointToTheRightOfObstacle = Vector.add(positionOfObstacle, perpendicular);
+      
+      //   while(true){
+      //     break;
+      //   }
+      // }
+
+
+      for (let i = 0; i < pointsToReconsider.length-1; i++) {
         const p1 = pointsToReconsider[i];
-        const p2 = pointsToReconsider[i + 1];
-        const v = Vector.subtract(p2, p1);
-        const distance = Math.min(Vector.distance(p1, positionOfObstacle) - 20, 0);
-        const perpendicular = Vector.perpendicular(v);
-        const reversePerpendicular = Vector.scale(perpendicular, -1); // Reverse perpendicular
+
+        const v = Vector.subtract(p1, positionOfObstacle);
+        const distance = Vector.distance(p1, positionOfObstacle);
 
         // Calculate the offset using both perpendicular and reverse perpendicular
-        const perpendicularOffset = Vector.scale(
-          Vector.normalize(perpendicular),
-          Math.max(safeDistance - distance, 1)
-        );
-        const reversePerpendicularOffset = Vector.scale(
-          Vector.normalize(reversePerpendicular),
-          Math.max(safeDistance - distance, 1)
+        const offset = Vector.scale(
+          Vector.normalize(v),
+          Math.max(safeDistance - distance, 0)
         );
 
         // Choose the direction that provides the greater safe distance (avoiding obstacles)
-        const finalOffset =
-          Vector.length(perpendicularOffset) > Vector.length(reversePerpendicularOffset)
-            ? perpendicularOffset
-            : reversePerpendicularOffset;
 
-        const finalPoint = Vector.add(p1, finalOffset);
+        const finalPoint = Vector.add(p1, offset);
+
+        const displayDriver2 = DisplayDriver.currentInstance;
+        if (displayDriver2 || false) {
+          displayDriver2.drawLineBetweenVectors(p1, finalPoint, "#ff0000");
+          displayDriver2.drawLineBetweenVectors(p1, positionOfObstacle, "#ff0000");
+        }
+
         newPoints.push(finalPoint);
       }
 
