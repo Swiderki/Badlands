@@ -48,6 +48,7 @@ class PhysicsBasedController {
   private isNitroActive = false;
 
   invisible = false;
+  no_collision = false;
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;

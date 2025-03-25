@@ -232,6 +232,14 @@
     }
   },
   {
+    "name": "no_collision",
+    "src": "/assets/effect_objects/no_collision.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
     "name": "oil_spill",
     "src": "/assets/effect_objects/oil_spill.png",
     "config": {

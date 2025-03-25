@@ -10,6 +10,7 @@ import { Vec2D } from "@/types/physics";
 import WrenchPerk from "../services/effect/perk/wrench-perk";
 import IceObstacle from "../services/effect/obstacle/ice-cube-obstacle";
 import InvisiblePerk from "../services/effect/perk/invisible-perk";
+import NoCollisionPerk from "../services/effect/perk/no-collision-perk";
 // import PerkObject from "../services/effect/perk/perk-object";
 
 export enum Obstacles {
@@ -25,6 +26,7 @@ export enum Perks {
   WRENCH = "wrench",
   ICE_CUBE = "ice_cube",
   INVISIBLE = "invisible",
+  NO_COLLISION = "no_collision",
 }
 
 export type EffectSprites = Obstacles | Perks;
@@ -51,6 +53,8 @@ export const getEffectObjectByName = (name: EffectSprites) => {
       return InvisiblePerk;
     case Perks.ICE_CUBE:
       return IceObstacle;
+    case Perks.NO_COLLISION:
+      return NoCollisionPerk
     default:
       throw new Error("effect not found");
   }

@@ -407,14 +407,15 @@ class GameScene extends Scene {
         this.collisionManager.isCollidingWithAnotherObject(
           this.playerController.collision,
           opponent.collision
-        )
+        ) &&
+        !this.playerController.no_collision
       ) {
         this.physicsDriver.handleCollisionBetweenControllers(this.playerController, opponent);
       }
 
       //* Handle enemy enemy collisions
       this.opponentControllersList.forEach((opponent2) => {
-        if (opponent === opponent2) {
+        if (opponent === opponent2 || opponent.no_collision || opponent2.no_collision) {
           return;
         }
         if (this.collisionManager.isCollidingWithAnotherObject(opponent.collision, opponent2.collision)) {
@@ -444,7 +445,7 @@ class GameScene extends Scene {
         obstacle.collision
       );
 
-      if (isPlayerColliding) {
+      if (isPlayerColliding && !this.playerController!.no_collision) {
         collidingCars.push(this.playerController!);
       }
 
@@ -456,7 +457,10 @@ class GameScene extends Scene {
           opponent.angle
         );
 
-        if (this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision)) {
+        if (
+          this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision) &&
+          !opponent.no_collision
+        ) {
           collidingCars.push(opponent);
         }
       });
