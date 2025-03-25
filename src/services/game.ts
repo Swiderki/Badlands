@@ -7,8 +7,6 @@ import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
 import { StartScene } from "../scenes/StartScene";
 
-import { StartScene } from "../scenes/StartScene";
-
 import { Scoreboard } from "./scoreboard/scoreboard";
 
 class Game {
