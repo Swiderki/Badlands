@@ -21,7 +21,7 @@ import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
-  private playerController: PlayerController | null = null;
+  playerController: PlayerController | null = null;
   //! It Should be private
   opponentControllersList: OpponentController[] = [];
   private track: Track | null = null;
@@ -274,11 +274,11 @@ class GameScene extends Scene {
         currentSprite: 0,
       });
     });
-    if (!this.playerController!.finished) {
+    if (!this.playerController!.finished && !this.playerController!.invisible) {
       this.renderPlayer();
     }
     this.opponentControllersList.forEach((opponent) => {
-      if (opponent.finished) return;
+      if (opponent.finished || opponent.invisible) return;
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
