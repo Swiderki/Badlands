@@ -408,7 +408,8 @@ class GameScene extends Scene {
           this.playerController.collision,
           opponent.collision
         ) &&
-        !this.playerController.no_collision
+        !this.playerController.no_collision &&
+        !opponent.no_collision
       ) {
         this.physicsDriver.handleCollisionBetweenControllers(this.playerController, opponent);
       }

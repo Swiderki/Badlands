@@ -19,7 +19,7 @@ export default class NoCollisionPerk extends EffectObject {
     const effect: TimedEffect = {
       canBeOverrided: false,
       startTimestamp: Date.now(),
-      duration: 12000,
+      duration: 5000,
       finish: () => {
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
