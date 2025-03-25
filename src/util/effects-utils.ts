@@ -17,12 +17,12 @@ export enum Obstacles {
   BANANA_PEEL = "banana_peel",
   SPIKES = "spikes",
   OIL_SPILL = "oil_spill",
-  ICE_CUBE = "ice_cube",
 }
 
 export enum Perks {
   BOOST_STAR = "boost_star",
   WRENCH = "wrench",
+  ICE_CUBE = "ice_cube",
 }
 
 export type EffectSprites = Obstacles | Perks;
@@ -40,7 +40,7 @@ export const getEffectObjectByName = (name: EffectSprites) => {
       return SpikesObstacle;
     case Obstacles.OIL_SPILL:
       return OilSpillObstacle;
-    case Obstacles.ICE_CUBE:
+    case Perks.ICE_CUBE:
       return IceObstacle;
     // perks
     case Perks.BOOST_STAR:

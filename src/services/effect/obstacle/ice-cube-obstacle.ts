@@ -1,13 +1,12 @@
 import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
-import { Obstacles } from "@/src/util/effects-utils";
-import TimedEffectDriver, { TimedEffect } from "../timed-effect-driver";
+import { Obstacles, Perks } from "@/src/util/effects-utils";
+import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
-import PlayerController from "@/src/controllers/player-controller";
 
 export default class IceObstacle extends EffectObject {
   constructor(position: Vec2D) {
-    super(position, Obstacles.ICE_CUBE);
+    super(position, Perks.ICE_CUBE);
   }
 
   override onEnter(car: PhysicsBasedController) {
@@ -15,6 +14,7 @@ export default class IceObstacle extends EffectObject {
     const oldMaxSpeedBackward = car.currentMaxSpeedBackwards;
     car.currentMaxSpeedForward = 0;
     car.currentMaxSpeedBackwards = 0;
+    car.actualForce = { x: 0, y: 0 };
 
     const effect: TimedEffect = {
       canBeOverrided: true,
@@ -26,7 +26,7 @@ export default class IceObstacle extends EffectObject {
       },
       update() {},
     };
-
+    // TODO change effect to freeze
     car.timedEffectDriver.addEffect("slip", effect);
   }
 }

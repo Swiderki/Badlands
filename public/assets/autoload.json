@@ -208,6 +208,14 @@
     }
   },
   {
+    "name": "ice_cube",
+    "src": "/assets/effect_objects/ice_cube.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
     "name": "spikes",
     "src": "/assets/effect_objects/spikes.png",
     "config": {
