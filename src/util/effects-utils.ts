@@ -8,7 +8,7 @@ import SpikesObstacle from "../services/effect/obstacle/spikes-obstacle";
 import Track from "../services/track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
 import WrenchPerk from "../services/effect/perk/wrench-perk";
-
+import IceObstacle from "../services/effect/obstacle/ice-cube-obstacle";
 // import PerkObject from "../services/effect/perk/perk-object";
 
 export enum Obstacles {
@@ -17,6 +17,7 @@ export enum Obstacles {
   BANANA_PEEL = "banana_peel",
   SPIKES = "spikes",
   OIL_SPILL = "oil_spill",
+  ICE_CUBE = "ice_cube",
 }
 
 export enum Perks {
@@ -39,6 +40,8 @@ export const getEffectObjectByName = (name: EffectSprites) => {
       return SpikesObstacle;
     case Obstacles.OIL_SPILL:
       return OilSpillObstacle;
+    case Obstacles.ICE_CUBE:
+      return IceObstacle;
     // perks
     case Perks.BOOST_STAR:
       return BoostPerk;
