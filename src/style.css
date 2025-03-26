@@ -173,6 +173,31 @@ body {
   outline: none;
 }
 
+#start-scene button.mainBtn,
+#selection-scene button.mainBtn,
+#result-scene button.mainBtn,
+#about-scene button.mainBtn {
+  background-color: #fff;
+  color: #000;
+  transition: all 200ms;
+}
+
+#start-scene button.mainBtn:hover,
+#selection-scene button.mainBtn:hover,
+#result-scene button.mainBtn:hover,
+#about-scene button.mainBtn:hover {
+  background-color: #eee;
+  border-color: #eee;
+}
+
+#start-scene button.mainBtn:active,
+#selection-scene button.mainBtn:active,
+#result-scene button.mainBtn:active,
+#about-scene button.mainBtn:active {
+  background-color: #ccc;
+  border-color: #ccc;
+}
+
 #start-scene h1,
 #selection-scene h2,
 #result-scene h2,
