@@ -4,8 +4,8 @@ import { Obstacles } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class PuddleObstacle extends EffectObject {
-  private readonly FORCE_MODIFIER = 0.3;
-  private readonly ACCELERATION_MODIFIER = 0.1;
+  private readonly FORCE_MODIFIER = 0.4;
+  private readonly ACCELERATION_MODIFIER = 0.7;
 
   constructor(position: Vec2D) {
     super(position, Obstacles.PUDDLE);
