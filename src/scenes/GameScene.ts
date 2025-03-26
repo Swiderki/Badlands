@@ -21,7 +21,7 @@ import { EnemyPath } from "../services/track-driver/enemy-path";
 
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
-  private playerController: PlayerController | null = null;
+  playerController: PlayerController | null = null;
   //! It Should be private
   opponentControllersList: OpponentController[] = [];
   private track: Track | null = null;
@@ -274,11 +274,11 @@ class GameScene extends Scene {
         currentSprite: 0,
       });
     });
-    if (!this.playerController!.finished) {
+    if (!this.playerController!.finished && !this.playerController!.invisible) {
       this.renderPlayer();
     }
     this.opponentControllersList.forEach((opponent) => {
-      if (opponent.finished) return;
+      if (opponent.finished || opponent.invisible) return;
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
@@ -407,14 +407,16 @@ class GameScene extends Scene {
         this.collisionManager.isCollidingWithAnotherObject(
           this.playerController.collision,
           opponent.collision
-        )
+        ) &&
+        !this.playerController.no_collision &&
+        !opponent.no_collision
       ) {
         this.physicsDriver.handleCollisionBetweenControllers(this.playerController, opponent);
       }
 
       //* Handle enemy enemy collisions
       this.opponentControllersList.forEach((opponent2) => {
-        if (opponent === opponent2) {
+        if (opponent === opponent2 || opponent.no_collision || opponent2.no_collision) {
           return;
         }
         if (this.collisionManager.isCollidingWithAnotherObject(opponent.collision, opponent2.collision)) {
@@ -444,7 +446,7 @@ class GameScene extends Scene {
         obstacle.collision
       );
 
-      if (isPlayerColliding) {
+      if (isPlayerColliding && !this.playerController!.no_collision) {
         collidingCars.push(this.playerController!);
       }
 
@@ -456,7 +458,10 @@ class GameScene extends Scene {
           opponent.angle
         );
 
-        if (this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision)) {
+        if (
+          this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision) &&
+          !opponent.no_collision
+        ) {
           collidingCars.push(opponent);
         }
       });
@@ -521,11 +526,10 @@ class GameScene extends Scene {
       if (this.playerController.finished) return;
       const nickname = Game.instance.nickname;
 
-      console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
       this.playerController.finished = true;
       this.playerController.finishedTime = this.scoreboard.currentTime;
-      //  ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
+      this.UiService.showSkipButton();
 
       if (
         this.playerController.finished &&

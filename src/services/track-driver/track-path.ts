@@ -31,7 +31,7 @@ export class TrackPath {
     // Obliczanie odległości między pos a closestPoint
     const distance = Vector.length(Vector.subtract(pos, closestPoint));
     if (pointId === this.sampledPoints.length - 1) {
-      console.table({ point, previousPoint, p1, p2, v2, w, projectionScalar, closestPoint, distance });
+      // console.table({ point, previousPoint, p1, p2, v2, w, projectionScalar, closestPoint, distance });
     }
     const dd = DisplayDriver.currentInstance;
     if (dd) {

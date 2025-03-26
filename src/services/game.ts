@@ -77,7 +77,8 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    await this.displayDriver.autoLoadSprites();
+    const aa = await this.displayDriver.autoLoadSprites();
+
 
     //* Start the game loop
     this._update();

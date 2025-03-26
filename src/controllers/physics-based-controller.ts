@@ -48,6 +48,9 @@ class PhysicsBasedController {
   private currentRefuelingTimestamp: number = -1;
   private isNitroActive = false;
 
+  invisible = false;
+  no_collision = false;
+
   constructor(sprite: Sprite) {
     this._sprite = sprite;
 
@@ -223,7 +226,7 @@ class PhysicsBasedController {
       return;
     }
 
-    console.log("enter nitro");
+    // console.log("enter nitro");
 
     const nitroModifier = 2;
     this.isNitroActive = true;
