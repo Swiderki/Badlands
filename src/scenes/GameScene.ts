@@ -526,11 +526,10 @@ class GameScene extends Scene {
       if (this.playerController.finished) return;
       const nickname = Game.instance.nickname;
 
-      console.log("koniec");
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
       this.playerController.finished = true;
       this.playerController.finishedTime = this.scoreboard.currentTime;
-      //  ((this.scoreboard.currentTime % 60000) / 1000).toFixed(2);
+      this.UiService.showSkipButton();
 
       if (
         this.playerController.finished &&

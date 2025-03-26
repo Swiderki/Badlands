@@ -78,7 +78,6 @@ class Game {
 
     const aa = await this.displayDriver.autoLoadSprites();
 
-    console.log(aa);
 
     //* Start the game loop
     this._update();

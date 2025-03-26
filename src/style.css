@@ -145,7 +145,8 @@ body {
 #start-scene button,
 #selection-scene button,
 #result-scene button,
-#about-scene button {
+#about-scene button,
+.skip__wrapper button {
   background-color: transparent;
   color: #fff;
   border: none;
@@ -411,4 +412,22 @@ h1 {
 
 #start-scene .inner {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
+}
+
+.skip__wrapper {
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+  display: none;
+}
+
+.skip__wrapper button {
+  width: auto;
+  width: 120px;
+
+  font-size: 30px;
+  color: white;
+  background-color: black;
+  border: 3px solid white;
+  font-family: "Pixelify Sans", sans-serif;
 }

@@ -222,7 +222,7 @@ class PhysicsBasedController {
       return;
     }
 
-    console.log("enter nitro");
+    // console.log("enter nitro");
 
     const nitroModifier = 2;
     this.isNitroActive = true;

@@ -16,7 +16,6 @@ export class ResultScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
-    console.log("init");
     this.overwritePlayerResults();
     this.overWriteRaceResults();
     this.addAnimation();
@@ -63,7 +62,7 @@ export class ResultScene extends Scene {
       );
 
       const topResults = results.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      console.log(topResults);
+      // console.log(topResults);
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");
 
@@ -84,58 +83,55 @@ export class ResultScene extends Scene {
     }
   }
   overWriteRaceResults() {
-    this.results.length = 0;
-    const opponetsResults = GameScene.instance?.opponentControllersList.map((opponent) => {
-      return {
+    this.results = [];
+
+    const opponentsResults =
+      GameScene.instance?.opponentControllersList.map((opponent) => ({
         nickname: opponent.nickname,
         time: opponent.finishedTime,
-      };
-    });
+      })) || [];
+
     const playerResults = {
       nickname: Game.instance.nickname,
       time: GameScene.instance.player.finishedTime,
     };
 
-    this.results = [...opponetsResults, playerResults].filter((result) => result.time !== 0);
-    this.results.sort((a, b) => a.time - b.time);
+    this.results = [...opponentsResults, playerResults];
+
+    // Sortowanie - najpierw normalnie po czasie, a DNF (time === 0) na końcu
+    this.results.sort((a, b) => {
+      if (a.time === 0) return 1;
+      if (b.time === 0) return -1;
+      return a.time - b.time;
+    });
 
     const raceResults = document.querySelector(".race-results ul");
     if (!raceResults) return;
     raceResults.innerHTML = "";
-    console.log(this.results);
+
     this.results.forEach((result, index) => {
       const resultHTML = document.createElement("li");
-
-      const seconds = ((result.time % 60000) / 1000).toFixed(2);
-      const minutes = Math.floor(result.time / 60000);
-      let minutesString = minutes.toString();
-      if (minutes < 10) {
-        minutesString = "0" + minutes;
-      }
-      let secondsString = seconds.toString();
-      if (Number(seconds) < 10) {
-        secondsString = "0" + seconds;
-      }
-      console.log(`${index + 1}: ${result.nickname} - ${minutesString}:${secondsString}`);
-      resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString}`;
+      resultHTML.innerText =
+        result.time === 0
+          ? `${index + 1}: ${result.nickname} - DNF`
+          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)}`;
       raceResults.appendChild(resultHTML);
     });
-
+    this.displayWinner();
+  }
+  displayWinner() {
+    if (!this.results.length || this.results[0].time === 0) return;
     const winner = this.results[0];
-    const winnerText = document.querySelector(".winner_nickname");
-    if (winnerText) winnerText.innerHTML = winner.nickname;
-    const winnerTime = document.querySelector(".winner_time");
-    const seconds = ((winner.time % 60000) / 1000).toFixed(2);
-    const minutes = Math.floor(winner.time / 60000);
-    let minutesString = minutes.toString();
-    if (minutes < 10) {
-      minutesString = "0" + minutes;
-    }
-    let secondsString = seconds.toString();
-    if (Number(seconds) < 10) {
-      secondsString = "0" + seconds;
-    }
-    if (winnerTime) winnerTime.innerHTML = `${minutesString}:${secondsString}`;
+    document.querySelector(".winner_nickname")!.innerHTML = winner.nickname;
+    document.querySelector(".winner_time")!.innerHTML = this.formatTime(winner.time);
+  }
+
+  formatTime(time: number): string {
+    const minutes = Math.floor(time / 60000)
+      .toString()
+      .padStart(2, "0");
+    const seconds = ((time % 60000) / 1000).toFixed(2).padStart(5, "0");
+    return `${minutes}:${seconds}`;
   }
 
   addAnimation() {
