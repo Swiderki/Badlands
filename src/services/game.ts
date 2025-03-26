@@ -142,7 +142,7 @@ class Game {
   }
 
   pauseGame(skipOverlayUpdate = false): void {
-    if (!skipOverlayUpdate) {
+    if (!skipOverlayUpdate && this.currentScene instanceof GameScene) {
       htmlShowPauseOverlay();
     }
     this._pauseDetails.isPaused = true;
