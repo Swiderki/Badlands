@@ -1,3 +1,4 @@
+import Game from "../game";
 import { Scoreboard } from "../scoreboard/scoreboard";
 
 export class UIService {
@@ -10,6 +11,7 @@ export class UIService {
   private _scoreboardRef: HTMLElement | null = null;
   private _scoreboardTotalTimeRef: HTMLElement | null = null;
   private _scoreboardListRef: HTMLElement | null = null;
+  private _skipWrapper: HTMLElement | null = null;
 
   lapCount: number = 3;
 
@@ -69,8 +71,10 @@ export class UIService {
     this._scoreboardRef = document.querySelector(".scoreboard__wrapper");
     this._scoreboardListRef = document.querySelector(".scoreboard__wrapper ul");
     this._scoreboardTotalTimeRef = document.querySelector(".scoreboard__wrapper h3 .highlight");
+    this._skipWrapper = document.querySelector(".skip__wrapper");
     this.setAccMeterValue(0);
     this.setSpeedMeterValue(0);
+    this.addSkipButtonListener();
   }
 
   public static getInstance(): UIService {
@@ -100,7 +104,7 @@ export class UIService {
     const minutes = Math.floor(time / 60000);
     const seconds = ((time % 60000) / 1000).toFixed(0);
     const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
-    console.log(Scoreboard.instance.currentLap);
+    // console.log(Scoreboard.instance.currentLap);
     this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap + 1} span`)!.innerHTML =
       currentTime;
   }
@@ -115,5 +119,17 @@ export class UIService {
 
   setIsNitroIndicatorActive(active: boolean) {
     this.nitroIndicator.style.setProperty("--current-sprite", active ? "0" : "1");
+  }
+
+  showSkipButton() {
+    if (!this._skipWrapper) return;
+    this._skipWrapper.style.display = "block";
+  }
+
+  addSkipButtonListener() {
+    if (!this._skipWrapper) return;
+    this._skipWrapper.addEventListener("click", () => {
+      Game.instance.startResultScene();
+    });
   }
 }
