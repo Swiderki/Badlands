@@ -3,6 +3,7 @@ import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
 import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class OilSpillObstacle extends EffectObject {
   private readonly ADHESION_MODIFIER = 0.002;
@@ -21,7 +22,7 @@ export default class OilSpillObstacle extends EffectObject {
     // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     const effect: TimedEffect = {
       canBeOverrided: true,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: 700,
       finish: () => {
         car.currentAdhesionModifier /= this.ADHESION_MODIFIER;

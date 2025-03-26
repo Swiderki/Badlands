@@ -3,6 +3,7 @@ import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-utils";
 import { UIService } from "../services/ui-service/ui-service";
+import GameTimeline from "../services/game-logic/game-timeline";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -38,7 +39,7 @@ class PlayerController extends PhysicsBasedController {
 
   /** @returns what fraction of obstacle drop was recovered (value between 0 - unrecovered and 1 - fully recovered) */
   get obstacleDropLoadFraction() {
-    return Math.min(1, (Date.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
+    return Math.min(1, (GameTimeline.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
   }
 
   private _addInputListeners() {
@@ -61,7 +62,7 @@ class PlayerController extends PhysicsBasedController {
   }
 
   dropObstacle() {
-    if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > Date.now()) {
+    if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > GameTimeline.now()) {
       return;
     }
 
@@ -77,7 +78,7 @@ class PlayerController extends PhysicsBasedController {
     };
 
     const obstacle = new EffectObject(positionBehindCar);
-    this._lastObstacleDropTimestamp = Date.now();
+    this._lastObstacleDropTimestamp = GameTimeline.now();
     return obstacle;
   }
 

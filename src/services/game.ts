@@ -8,6 +8,7 @@ import { SelectionScene } from "../scenes/SelectionScene";
 import { StartScene } from "../scenes/StartScene";
 import { Scoreboard } from "./scoreboard/scoreboard";
 import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+import GameTimeline from "./game-logic/game-timeline";
 
 class Game {
   //* Drivers
@@ -76,9 +77,7 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    const aa = await this.displayDriver.autoLoadSprites();
-
-    console.log(aa);
+    await this.displayDriver.autoLoadSprites();
 
     //* Start the game loop
     this._update();
@@ -164,6 +163,7 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
+    GameTimeline.update(this.deltaTime);
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
 

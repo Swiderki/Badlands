@@ -5,6 +5,7 @@ import { StartPosition } from "@/types/track-driver";
 import { TrackPath } from "./track-path";
 import { Vec2D } from "@/types/physics";
 import type track from "@/public/assets/tracks/grass/track.json";
+import GameTimeline from "../game-logic/game-timeline";
 
 type GateConfig = (typeof track.gates)[number];
 type Gate = Omit<GateConfig, "sprite"> & { sprite: Sprite };
@@ -97,7 +98,7 @@ class Track {
   get currentTransitionFraction() {
     const transition = Math.max(
       0,
-      Date.now() -
+      GameTimeline.now() -
         this.lastTrackObstacleSwitchTimestamp -
         this.TRACK_COLLIDER_SWITCH_COOLDOWN +
         this.SWITCH_TRANSITION_DURATION
@@ -127,9 +128,9 @@ class Track {
   }
 
   update() {
-    if (Date.now() > this.lastTrackObstacleSwitchTimestamp + this.TRACK_COLLIDER_SWITCH_COOLDOWN) {
+    if (GameTimeline.now() > this.lastTrackObstacleSwitchTimestamp + this.TRACK_COLLIDER_SWITCH_COOLDOWN) {
       this._currentColliderImageIndex = (this._currentColliderImageIndex + 1) % this._colliderImages.length;
-      this.lastTrackObstacleSwitchTimestamp = Date.now();
+      this.lastTrackObstacleSwitchTimestamp = GameTimeline.now();
     }
   }
 
