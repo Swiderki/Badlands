@@ -6,10 +6,8 @@ import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
 import { StartScene } from "../scenes/StartScene";
-
-import { StartScene } from "../scenes/StartScene";
-
 import { Scoreboard } from "./scoreboard/scoreboard";
+import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 
 class Game {
   //* Drivers
@@ -144,11 +142,15 @@ class Game {
     this.currentScene.init();
   }
 
-  pauseGame(): void {
+  pauseGame(skipOverlayUpdate = false): void {
+    if (!skipOverlayUpdate) {
+      htmlShowPauseOverlay();
+    }
     this._pauseDetails.isPaused = true;
   }
 
   resumeGame(): void {
+    htmlHidePauseOverlay();
     this._pauseDetails.isPaused = false;
     this._lastRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
     this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;

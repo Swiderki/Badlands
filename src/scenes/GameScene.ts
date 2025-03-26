@@ -82,7 +82,7 @@ class GameScene extends Scene {
   }
 
   startCoundown() {
-    Game.getInstance().pauseGame();
+    Game.getInstance().pauseGame(true);
     const countdownDialog = document.querySelector("#countdown-scene");
     const countdown = document.querySelector(".countdown");
     const text = document.querySelector(".countdown_text");
