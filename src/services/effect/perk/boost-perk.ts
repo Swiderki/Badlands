@@ -4,6 +4,7 @@ import { TimedEffect } from "../timed-effect-driver";
 // import PerkObject from "./perk-object";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class BoostPerk extends EffectObject {
   private readonly ACCELERATION_MODIFIER = 2;
@@ -22,7 +23,7 @@ export default class BoostPerk extends EffectObject {
 
     const effect: TimedEffect = {
       canBeOverrided: true,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: 5000,
       finish: () => {
         car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;

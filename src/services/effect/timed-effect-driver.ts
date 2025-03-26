@@ -1,4 +1,5 @@
 import { getDeltaTime } from "@/src/util/delta-time";
+import GameTimeline from "../game-logic/game-timeline";
 
 export interface TimedEffect {
   canBeOverrided: boolean;
@@ -29,7 +30,7 @@ export default class TimedEffectDriver {
   update() {
     this._effects.forEach((effect, type) => {
       effect.update(getDeltaTime());
-      if (effect.startTimestamp + effect.duration < Date.now()) {
+      if (GameTimeline.now() > effect.startTimestamp + effect.duration) {
         effect.finish();
         this.cancelEffect(type);
       }

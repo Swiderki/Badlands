@@ -6,8 +6,9 @@ import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
 import { StartScene } from "../scenes/StartScene";
-
 import { Scoreboard } from "./scoreboard/scoreboard";
+import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+import GameTimeline from "./game-logic/game-timeline";
 
 class Game {
   //* Drivers
@@ -141,11 +142,15 @@ class Game {
     this.currentScene.init();
   }
 
-  pauseGame(): void {
+  pauseGame(skipOverlayUpdate = false): void {
+    if (!skipOverlayUpdate && this.currentScene instanceof GameScene) {
+      htmlShowPauseOverlay();
+    }
     this._pauseDetails.isPaused = true;
   }
 
   resumeGame(): void {
+    htmlHidePauseOverlay();
     this._pauseDetails.isPaused = false;
     this._lastRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
     this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
@@ -159,6 +164,7 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
+    GameTimeline.update(this.deltaTime);
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
 

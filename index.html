@@ -48,13 +48,12 @@
         </div>
         <div class="dialog">
           <div class="dialog__inner">
-            <input type="text" name="nickname" placeholder="Your nickname..." id="nickname" value="noname">
+            <input type="text" name="nickname" placeholder="Your nickname..." id="nickname" value="noname" />
             <div class="btn_wrapper">
               <button>Return</button>
               <button>Submit</button>
             </div>
           </div>
-
         </div>
         <img class="start-scene__bg" src="/public/assets/ui/lannding-screen.png" alt="landing-screen" />
       </div>
@@ -81,7 +80,6 @@
             <div class="option" data-color="yellow">Yellow</div>
             <div class="option" data-color="black">Black</div>
             <!-- <div class="option" data-color="white">white</div> -->
-
           </div>
 
           <button id="play-btn">Play</button>
@@ -91,9 +89,8 @@
         <div class="inner">
           <h2>About</h2>
           <p>
-            Zloziemie is a simple racing game where you can choose your map, car
-            and color. The goal is to reach the finish line as fast as possible.
-
+            Zloziemie is a simple racing game where you can choose your map, car and color. The goal is to
+            reach the finish line as fast as possible.
           </p>
           <button>Back</button>
           <img class="start-scene__bg" src="/public/assets/ui/lannding-screen.png" alt="landing-screen" />
@@ -103,7 +100,7 @@
         <div class="inner">
           <div class="winner-section">
             <h2>Winner!</h2>
-            <img src="/public/assets/car.png" alt="">
+            <img src="/public/assets/car.png" alt="" />
             <p><strong class="winner_nickname"></strong></p>
             <p class="winner_time"></p>
           </div>
@@ -116,20 +113,21 @@
                 <li>3rd - Player 3 - 12.0 sec</li>
               </ul>
             </div>
-            
+
             <!-- Historia wyników gracza -->
             <div class="player-history">
               <h3>Player History</h3>
-              <ul class="player-results">
-
-              </ul>
+              <ul class="player-results"></ul>
             </div>
           </div>
 
-          
           <button>Back</button>
         </div>
       </div>
+    </div>
+
+    <div id="game-pause-overlay">PAUSED</div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

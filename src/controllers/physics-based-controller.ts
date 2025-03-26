@@ -6,6 +6,7 @@ import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
+import GameTimeline from "../services/game-logic/game-timeline";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -218,7 +219,10 @@ class PhysicsBasedController {
    *    player have used 0.5 of total capacity or sth
    */
   enterNitroMode(onRefuel?: () => void) {
-    if (this.isNitroActive || Date.now() < this.currentRefuelingTimestamp + this.NITRO_REFUEL_COOLDOWN) {
+    if (
+      this.isNitroActive ||
+      GameTimeline.now() < this.currentRefuelingTimestamp + this.NITRO_REFUEL_COOLDOWN
+    ) {
       return;
     }
 
@@ -238,12 +242,12 @@ class PhysicsBasedController {
       finish: () => {
         this.resetToDefaultSpeedAndAcceleration();
         this.isNitroActive = false;
-        this.currentRefuelingTimestamp = Date.now();
+        this.currentRefuelingTimestamp = GameTimeline.now();
         if (onRefuel) {
-          setTimeout(onRefuel, this.NITRO_REFUEL_COOLDOWN);
+          GameTimeline.setTimeout(onRefuel, this.NITRO_REFUEL_COOLDOWN);
         }
       },
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       update: () => {},
     });
   }

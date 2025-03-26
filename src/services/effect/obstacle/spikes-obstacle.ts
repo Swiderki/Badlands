@@ -3,6 +3,7 @@ import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
 import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class SpikesObstacle extends EffectObject {
   private readonly FORCE_MODIFIER = 0.2;
@@ -24,7 +25,7 @@ export default class SpikesObstacle extends EffectObject {
 
     const effect: TimedEffect = {
       canBeOverrided: true,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: Infinity,
       finish: () => {
         car.currentMaxSpeedForward /= this.FORCE_MODIFIER;

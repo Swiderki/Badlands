@@ -4,6 +4,7 @@ import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
 import DisplayDriver from "../display-driver/display-driver";
 import { sign } from "crypto";
+import GameTimeline from "../game-logic/game-timeline";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't perform physics inside the controller, it's 'cause it uses information that single controller has no access to
@@ -119,7 +120,7 @@ class PhysicsDriver {
     controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
     controller.setCurrentSprite();
-    setTimeout(() => {
+    GameTimeline.setTimeout(() => {
       this.isColliding = false;
     }, 50);
   }

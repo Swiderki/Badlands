@@ -43,6 +43,21 @@ body {
   isolation: isolate;
 }
 
+#game-pause-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  background-color: #0008;
+  color: #fff;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font: bold 4rem monospace, monospace;
+}
+
 .speed-meter__wrapper {
   position: absolute;
   width: 60%;

@@ -3,6 +3,7 @@ import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
 import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class BananaPeelObstacle extends EffectObject {
   constructor(position: Vec2D) {
@@ -20,7 +21,7 @@ export default class BananaPeelObstacle extends EffectObject {
     // TODO: Zostawiłbym w bananie ten smieszny skręt bo to w sumie pasuje do komizmu skórki od banana
     const effect: TimedEffect = {
       canBeOverrided: true,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: 700,
       finish() {},
       update() {
