@@ -4,6 +4,7 @@ import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
 import GameScene from "@/src/scenes/GameScene";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class InvisiblePerk extends EffectObject {
   constructor(position: Vec2D) {
@@ -13,6 +14,7 @@ export default class InvisiblePerk extends EffectObject {
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
     // car.timedEffectDriver.finishEffect("damaged");
+    console.log("start niewidzialnosc");
     GameScene.instance.opponentControllersList.forEach((opponent) => {
       opponent.invisible = true;
     });
@@ -20,9 +22,10 @@ export default class InvisiblePerk extends EffectObject {
 
     const effect: TimedEffect = {
       canBeOverrided: false,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: 2000,
       finish: () => {
+        console.log("koniec niewidzialnosc");
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
         GameScene.instance.opponentControllersList.forEach((opponent) => {

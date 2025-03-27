@@ -5,6 +5,7 @@ import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
 import GameScene from "@/src/scenes/GameScene";
 import PlayerController from "@/src/controllers/player-controller";
+import GameTimeline from "../../game-logic/game-timeline";
 const audio = new Audio("assets/sounds/no_collision.wav");
 
 export default class NoCollisionPerk extends EffectObject {
@@ -22,7 +23,7 @@ export default class NoCollisionPerk extends EffectObject {
 
     const effect: TimedEffect = {
       canBeOverrided: false,
-      startTimestamp: Date.now(),
+      startTimestamp: GameTimeline.now(),
       duration: 5000,
       finish: () => {
         if (!GameScene.instance || !GameScene.instance.playerController) return;
