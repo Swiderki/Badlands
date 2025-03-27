@@ -5,7 +5,7 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 import PlayerController from "@/src/controllers/player-controller";
-const audio = new Audio("assets/sounds/oil-spill.wav");
+const audio = new Audio("assets/sounds/oil_spill.wav");
 
 export default class OilSpillObstacle extends EffectObject {
   private readonly ADHESION_MODIFIER = 0.002;
