@@ -19,10 +19,7 @@ export default class BananaPeelObstacle extends EffectObject {
 
     // playerController.currentAdhesionModifier *= 0.002;
 
-    if (car instanceof PlayerController) {
-      console.log("muzyjka");
-      audio.play();
-    }
+    if (car instanceof PlayerController) audio.play();
 
     // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     // TODO: Zostawiłbym w bananie ten smieszny skręt bo to w sumie pasuje do komizmu skórki od banana

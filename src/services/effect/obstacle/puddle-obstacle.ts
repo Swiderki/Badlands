@@ -2,6 +2,8 @@ import EffectObject from "../effect-object";
 import { Vec2D } from "@/types/physics";
 import { Obstacles } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import PlayerController from "@/src/controllers/player-controller";
+const audio = new Audio("assets/sounds/puddle.wav");
 
 export default class PuddleObstacle extends EffectObject {
   private readonly FORCE_MODIFIER = 0.4;
@@ -13,7 +15,8 @@ export default class PuddleObstacle extends EffectObject {
 
   /** Slow down the player when entering the puddle */
   override onEnter(car: PhysicsBasedController) {
-    console.log("enter");
+    if (car instanceof PlayerController) audio.play();
+
     // const playerController = PlayerController.currentInstance;
     // if (!playerController) return;
     car.actualForce.x *= this.FORCE_MODIFIER;

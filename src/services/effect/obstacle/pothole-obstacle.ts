@@ -4,6 +4,8 @@ import { Obstacles } from "@/src/util/effects-utils";
 import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameTimeline from "../../game-logic/game-timeline";
+import PlayerController from "@/src/controllers/player-controller";
+const audio = new Audio("assets/sounds/pothole.wav");
 
 export default class PotholeObstacle extends EffectObject {
   private readonly FORCE_MODIFIER = 0.1;
@@ -19,6 +21,7 @@ export default class PotholeObstacle extends EffectObject {
     // const playerController = PlayerController.currentInstance;
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
+    if (car instanceof PlayerController) audio.play();
 
     car.actualForce.x *= this.FORCE_MODIFIER;
     car.actualForce.y *= this.FORCE_MODIFIER;
