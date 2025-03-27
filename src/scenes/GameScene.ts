@@ -279,7 +279,7 @@ class GameScene extends Scene {
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,
-        currentSprite: 0,
+        currentSprite: obstacle.randomSprite,
       });
     });
     if (!this.playerController!.finished && !this.playerController!.invisible) {
