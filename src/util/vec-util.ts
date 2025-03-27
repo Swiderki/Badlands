@@ -68,4 +68,28 @@ export namespace Vector {
     }
     return vector;
   }
+
+  export function round(v: Vec2D) : Vec2D{
+    return {x: Math.round(v.x), y: Math.round(v.y)} as Vec2D;
+  }
+
+  //* Returns distance between lineVec treated as line and pointVec treated as point
+  export function distanceToLine(lineVec: Vec2D, pointVec: Vec2D): number {
+    const cross = Math.abs(lineVec.x * pointVec.y - lineVec.y * pointVec.x);
+    const lineLength = Math.sqrt(lineVec.x ** 2 + lineVec.y ** 2);
+  
+    return cross / lineLength;
+  }
+
+  export function cosineSimilarity(a: Vec2D, b: Vec2D): number {
+    const dotProduct = a.x * b.x + a.y * b.y;
+    const magnitudeA = Math.sqrt(a.x ** 2 + a.y ** 2);
+    const magnitudeB = Math.sqrt(b.x ** 2 + b.y ** 2);
+  
+    if (magnitudeA === 0 || magnitudeB === 0) {
+      throw new Error("Cannot calculate cosine similarity with zero-length vector.");
+    }
+  
+    return dotProduct / (magnitudeA * magnitudeB);
+  }
 }

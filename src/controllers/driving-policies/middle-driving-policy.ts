@@ -12,8 +12,8 @@ import { Vector } from "@/src/util/vec-util";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 190;
-  private corneringSpeed = 30;
+  private maxSpeed = 300;
+  private corneringSpeed = 70;
 
   constructor(trackPath: EnemyPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
@@ -44,11 +44,10 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
 
   //* On the other hand this one is responsible for progression in the actual path
   private updateActualPath(car_position: Vec2D) {
-    // console.log(this._enemyPath.actualPath.length);
     if (this.parentRef !== null) this._enemyPath.updateActualTrackPathIfIntersects(this.parentRef);
     const distanceToNextCheckpoint = this._enemyPath.getDistanceToActualPoint(car_position);
 
-    if (distanceToNextCheckpoint < 30) {
+    if (distanceToNextCheckpoint < 20) {
       this._enemyPath.actualPathCurrentPoint += 1;
     }
   }

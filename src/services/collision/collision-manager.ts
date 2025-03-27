@@ -12,7 +12,7 @@ import OpponentController from "@/src/controllers/opponents-controller";
 import EffectObject from "../effect/effect-object";
 import BoostPerk from "../effect/perk/boost-perk";
 
-const SOME_ARBITRARY_THRESHOLD = 30;
+const SOME_ARBITRARY_THRESHOLD = 100;
 
 class CollisionManager {
   scalingFactor: number;
@@ -91,7 +91,7 @@ class CollisionManager {
     return bestIntersection;
   }
 
-  getActualPathIntersections(actualPath: CheckPoint[], controllerToSkip: OpponentController) {
+  getActualPathIntersections(actualPath: CheckPoint[], sampledPoints: CheckPoint[], controllerToSkip: OpponentController) {
     const gameSceneRef = Game.getInstance().currentScene as GameScene;
     if (!(gameSceneRef instanceof GameScene)) {
       return [];
@@ -103,11 +103,11 @@ class CollisionManager {
       //* I swear to god, I WILL personally find the person how decided to randomly add undefined to the effectObjects array
       if (effectObject === undefined || effectObject === null) continue;
       if (effectObject instanceof BoostPerk) continue;
-      const intersectionObject = {
+      const intersectionObject : PathIntersection = {
         objectCorners: this.getRotatedCorners(effectObject.collision),
         intersectionStartIndex: -1,
         intersectionEndIndex: -1,
-        distance: 0,
+        distance: 0
       };
       const corners = this.getRotatedCorners(effectObject.collision);
       for (let i = 0; i < actualPath.length - 1; i++) {
@@ -123,15 +123,16 @@ class CollisionManager {
         if (distance > SOME_ARBITRARY_THRESHOLD && intersectionObject.intersectionStartIndex !== -1) {
           intersectionObject.intersectionEndIndex = i;
           intersectionObject.distance = distance;
-          intersections.push(intersectionObject);
           break;
         }
 
         if (i === actualPath.length - 2 && intersectionObject.intersectionStartIndex !== -1) {
           intersectionObject.intersectionEndIndex = i;
-          intersections.push(intersectionObject);
+          break;
         }
       }
+    
+      if(intersectionObject.intersectionStartIndex != -1 && intersectionObject.intersectionEndIndex != -1) intersections.push(intersectionObject);
     }
 
     return intersections;
@@ -278,7 +279,7 @@ class CollisionManager {
     ) {
       return true;
     }
-    if (radius === 1) return trackCollider[gridPos.y][gridPos.y] !== 0;
+    if (radius === 1) return trackCollider[gridPos.y][gridPos.x] !== 0;
 
     for (let i = 0; i < numSamples; i++) {
       const angle = i * angleStep;
