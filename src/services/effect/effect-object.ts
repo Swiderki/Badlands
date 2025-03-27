@@ -13,8 +13,7 @@ export default class EffectObject {
   readonly collision: CollisionObject;
   readonly position: Vec2D;
   readonly sprite: Sprite;
-  readonly randomSprite = Math.floor(Math.random() * 4);
-
+  readonly randomSprite = Math.floor(Math.random() * 5);
 
   constructor(position: Vec2D, sprite: EffectSprites) {
     const spriteObject = DisplayDriver.currentInstance?.getSprite(sprite);
