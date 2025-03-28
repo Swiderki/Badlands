@@ -3,7 +3,7 @@ import { Perks } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import GameTimeline from "../../game-logic/game-timeline";
 
 export default class InvisiblePerk extends EffectObject {

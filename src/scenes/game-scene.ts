@@ -4,7 +4,7 @@ import MiddleDrivingPolicy from "../controllers/driving-policies/middle-driving-
 import OpponentController from "../controllers/opponents-controller";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
-import Scene from "./Scene";
+import Scene from "./_scene";
 import { StartPosition } from "@/types/track-driver";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";

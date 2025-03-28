@@ -1,4 +1,4 @@
-import Scene from "./Scene";
+import Scene from "./_scene";
 import Game from "@/src/services/game";
 import assert from "../util/assert";
 

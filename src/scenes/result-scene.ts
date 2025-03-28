@@ -1,6 +1,6 @@
 import { Scoreboard } from "../services/scoreboard/scoreboard";
-import GameScene from "./GameScene";
-import Scene from "./Scene";
+import GameScene from "./game-scene";
+import Scene from "./_scene";
 import Game from "@/src/services/game";
 import assert from "../util/assert";
 

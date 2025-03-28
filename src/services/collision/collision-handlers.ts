@@ -1,5 +1,5 @@
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import { getCarCorners } from "@/src/util/collision-util";
 
 export default class CollisionHandlers {
@@ -77,7 +77,8 @@ export default class CollisionHandlers {
       physicsDriver.handleCollision(
         playerController,
         collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
-        trackCollider, deltaTime
+        trackCollider,
+        deltaTime
       );
     }
 
@@ -93,7 +94,8 @@ export default class CollisionHandlers {
         physicsDriver.handleCollision(
           opponent,
           collisionManager.isCollidingWithTrack(opponentCorners, trackCollider)!,
-          trackCollider, deltaTime
+          trackCollider,
+          deltaTime
         );
       }
     });

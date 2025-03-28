@@ -1,11 +1,11 @@
-import { AboutScene } from "../scenes/AboutScene";
+import { AboutScene } from "../scenes/about-scene";
 import DisplayDriver from "./display-driver/display-driver";
-import GameScene from "../scenes/GameScene";
-import MainMenuScene from "../scenes/MainMenuScene";
-import { ResultScene } from "../scenes/ResultScene";
-import Scene from "../scenes/Scene";
-import { SelectionScene } from "../scenes/SelectionScene";
-import { StartScene } from "../scenes/StartScene";
+import GameScene from "../scenes/game-scene";
+import MainMenuScene from "../scenes/main-menu-scene";
+import { ResultScene } from "../scenes/result-scene";
+import Scene from "../scenes/_scene";
+import { SelectionScene } from "../scenes/selection-scene";
+import { StartScene } from "../scenes/start-scene";
 import { Scoreboard } from "./scoreboard/scoreboard";
 import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 import GameTimeline from "./game-logic/game-timeline";

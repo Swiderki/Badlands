@@ -5,7 +5,7 @@ import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
 import DisplayDriver from "../services/display-driver/display-driver";
 import { Vector } from "../util/vec-util";
-import GameScene from "../scenes/GameScene";
+import GameScene from "../scenes/game-scene";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
 
 class OpponentController extends PhysicsBasedController {

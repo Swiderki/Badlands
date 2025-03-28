@@ -1,4 +1,4 @@
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import Game from "../game";
 
 export class Scoreboard {

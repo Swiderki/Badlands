@@ -1,6 +1,6 @@
 import OpponentController from "@/src/controllers/opponents-controller";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import { getCarCorners, lineToRectDistance, rayCast } from "@/src/util/collision-util";
 import { Vector } from "@/src/util/vec-util";
 import { CollisionObject, PathIntersection } from "@/types/collision";

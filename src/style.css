@@ -78,7 +78,7 @@ body {
 
 .speed-meter__wrapper div#nitro-indicator {
   --current-sprite: 0;
-  background-image: url("/assets/ui/nitro_sprite.png");
+  background-image: url("/assets/ui/nitro-sprite.png");
   --icon-size: 18px;
   background-position-x: calc(var(--current-sprite) * var(--icon-size));
   width: var(--icon-size);
