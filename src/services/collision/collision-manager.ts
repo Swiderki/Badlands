@@ -166,7 +166,6 @@ class CollisionManager {
       ) {
         return { x: gridPos.x, y: gridPos.y };
       }
-      console.log(gridPos.x, gridPos.y);
 
       if (trackCollider[gridPos.y][gridPos.x] !== 0) {
         return { x: gridPos.x, y: gridPos.y };

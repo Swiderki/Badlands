@@ -13,7 +13,6 @@ export default class InvisiblePerk extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
-    console.log("start niewidzialnosc");
     GameScene.instance.opponentControllersList.forEach((opponent) => {
       opponent.invisible = true;
     });
@@ -24,7 +23,6 @@ export default class InvisiblePerk extends EffectObject {
       startTimestamp: GameTimeline.now(),
       duration: 2000,
       finish: () => {
-        console.log("koniec niewidzialnosc");
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
         GameScene.instance.opponentControllersList.forEach((opponent) => {

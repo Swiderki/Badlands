@@ -162,7 +162,7 @@ abstract class PhysicsBasedController {
       const angle =
         (3 * this.steeringForce * (Vector.length(this.actualForce) + this.maxSpeedForward)) /
         (this.maxSpeedForward * 2);
-      this.rotate(angle * deltaTime);
+      this.rotate(angle * deltaTime * 60);
     }
   }
 

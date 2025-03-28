@@ -8,10 +8,6 @@ export function getCarCorners(position: Vec2D, width: number, height: number, an
   const cosA = Math.cos(radianAngle);
   const sinA = Math.sin(radianAngle);
 
-  console.log(`position: ${position.x}, ${position.y}`);
-  console.log(`width: ${width}, height: ${height}`);
-  console.log(`angle: ${angle}`);
-
   //* Center the position of the car
   //* So here we have a problem with out center point of the car
   //* We need to add some offset to the position of the car
