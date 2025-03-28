@@ -7,8 +7,6 @@ const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
-import CollisionManager from "@/src/services/collision/collision-manager";
-import { Vector } from "@/src/util/vec-util";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class MiddleDrivingPolicy extends BaseDrivingPolicy {

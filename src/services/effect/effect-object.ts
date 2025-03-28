@@ -5,10 +5,11 @@ import { EffectSprites } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
+import { getCarCorners } from "@/src/util/collision-util";
+import GameScene from "@/src/scenes/GameScene";
 
 /** This is a class representing physical object on the truck like pothole, puddle etc. */
-export default class EffectObject {
-  // protected isColliding: boolean = false;
+export default abstract class EffectObject {
   protected previouslyCollidingCars: PhysicsBasedController[] = [];
   readonly collision: CollisionObject;
   readonly position: Vec2D;
@@ -53,30 +54,6 @@ export default class EffectObject {
     exitingCars.forEach((car) => this.onExit(car));
 
     this.previouslyCollidingCars = currentlyCollidingCars;
-
-    // collidingCars.forEach((car) => {
-    //   const isFirstContact = !this.previouslyCollidingCars.some((prevCar) => Object.is(prevCar, car))
-    //   if () {
-    //     if (car.isCollidingWithEffectObject) {
-    //       return this.onColliding(car);
-    //     }
-    //     if (isFirstContact) {
-    //       car.isCollidingWithEffectObject = true;
-    //       return this.onEnter(car);
-    //     }
-    //   }
-    //   // if (isNowColliding) {
-    //   //   if (this.isColliding) {
-    //   //     return this.onColliding();
-    //   //   }
-    //   //   this.isColliding = true;
-    //   //   return this.onEnter();
-    //   // }
-    //   // if (this.isColliding) {
-    //   //   this.isColliding = false;
-    //   //   return this.onExit();
-    //   // }
-    // });
   }
 
   /** This method should be overriden in GameScene allowing it to remove perk after it has been used since perks are dynamic, single-use objects */

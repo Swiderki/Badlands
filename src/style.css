@@ -415,6 +415,7 @@ h1 {
 
 #start-scene {
   position: relative;
+  display: none;
 }
 
 #countdown-scene {
@@ -470,4 +471,30 @@ h1 {
   background-color: black;
   border: 3px solid white;
   font-family: "Pixelify Sans", sans-serif;
+}
+
+#loading-screen > * {
+  margin: 0;
+  padding: 0;
+}
+
+#loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+#loading-screen img {
+  animation: rotate ease-in-out 2s forwards infinite;
+}
+
+@keyframes rotate {
+  0% {
+    rotate: 0deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
 }

@@ -1,13 +1,5 @@
 [
   {
-    "name": "red_vehicle",
-    "src": "/assets/sprites/red_vehicles.png",
-    "config": {
-      "spriteWidth": 32,
-      "spriteHeight": 32
-    }
-  },
-  {
     "name": "gravel-track-collider",
     "src": "/assets/tracks/gravel/gravel-track-data.png",
     "config": {

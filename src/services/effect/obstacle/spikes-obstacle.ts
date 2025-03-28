@@ -16,9 +16,6 @@ export default class SpikesObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    // const playerController = PlayerController.currentInstance;
-    // const timedEffectDriver = TimedEffectDriver.currentInstance;
-    // if (!timedEffectDriver) return;
     if (car instanceof PlayerController) audio.play();
 
     car.actualForce.x *= this.FORCE_MODIFIER;

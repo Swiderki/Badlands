@@ -18,26 +18,34 @@ import EffectObject from "../services/effect/effect-object";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import PhysicsBasedController from "../controllers/physics-based-controller";
 import { EnemyPath } from "../services/track-driver/enemy-path";
+import { startGameWithCountdown } from "../services/game-logic/countdown";
+import CollisionHandlers from "../services/collision/collision-handlers";
+import assert from "../util/assert";
 
 class GameScene extends Scene {
-  private displayDriver: DisplayDriver;
+  displayDriver: DisplayDriver;
   playerController: PlayerController | null = null;
-  effectObjects: EffectObject[] = [];
-  //! It Should be private
   opponentControllersList: OpponentController[] = [];
-  private track: Track | null = null;
-  private collisionManager: CollisionManager;
-  private physicsDriver: PhysicsDriver;
-  private UiService: UIService;
+  track: Track | null = null;
+  effectObjects: EffectObject[] = [];
+  collisionManager: CollisionManager;
+  physicsDriver: PhysicsDriver;
+  UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  // private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
   private map: string;
   static instance: GameScene;
+  static getInstance(): GameScene {
+    if (!GameScene.instance) {
+      throw new Error("Game instance not initialized");
+    }
+    return GameScene.instance;
+  }
 
   //* Element ref
   sceneRef: HTMLElement | null = null;
+
   constructor(displayDriver: DisplayDriver, car: string, color: string, map: string) {
     super();
     GameScene.instance = this;
@@ -58,7 +66,7 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "block";
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
-    this.startCoundown();
+    startGameWithCountdown();
 
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
@@ -70,62 +78,13 @@ class GameScene extends Scene {
       this.track.checkPointPath!,
       this.displayDriver.scaler
     );
-    await this.loadEffectObjects();
+    await this.initEffectObjects();
     this.initListeners();
   }
 
-  static getInstance(): GameScene {
-    if (!GameScene.instance) {
-      throw new Error("Game instance not initialized");
-    }
-    return GameScene.instance;
-  }
-
-  startCoundown() {
-    Game.getInstance().pauseGame(true);
-    const countdownDialog = document.querySelector("#countdown-scene");
-    const countdown = document.querySelector(".countdown");
-    const text = document.querySelector(".countdown_text");
-    const speedMeter = document.querySelector(".speed-meter__inner");
-
-    if (!countdown || !text || !countdownDialog || !speedMeter) {
-      throw Error("Countdown scene not initialized");
-    }
-    countdown.innerHTML = "3";
-    text.innerHTML = "GET READY!";
-    countdownDialog.setAttribute("style", "display: block");
-    speedMeter.setAttribute("style", "display: none");
-    const audio = new Audio("/assets/sounds/3.wav");
-    audio.play();
-    setTimeout(() => {
-      countdown.innerHTML = "2";
-      text.innerHTML = "START YOUR ENGINES!";
-      const audio2 = new Audio("/assets/sounds/2.wav");
-      audio2.play();
-      setTimeout(() => {
-        countdown.innerHTML = "1";
-        text.innerHTML = "GO!";
-        const audio3 = new Audio("/assets/sounds/1.wav");
-        audio3.play();
-        setTimeout(() => {
-          const audio3 = new Audio("/assets/sounds/start.wav");
-          audio3.play();
-          countdownDialog.setAttribute("style", "display: none");
-          speedMeter.setAttribute("style", "display: block");
-          Game.getInstance().resumeGame();
-        }, 1000);
-      }, 1000);
-    }, 1000);
-  }
-
-  get player(): PlayerController {
-    if (!this.playerController) {
-      throw new Error("Player not initialized");
-    }
-    return this.playerController;
-  }
-
   private initListeners() {
+    const game = Game.getInstance();
+
     //* i've added keypress listener instead of keydown to prevent just holding key
     document.addEventListener("keypress", (e) => {
       if (e.key === " ") {
@@ -134,9 +93,9 @@ class GameScene extends Scene {
         this.effectObjects.push(obstacle);
       }
     });
+
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
-        const game = Game.getInstance();
         if (game.pauseDetails.isPaused) {
           game.resumeGame();
         } else {
@@ -144,55 +103,41 @@ class GameScene extends Scene {
         }
       }
     });
-    window.addEventListener("focus", () => {
-      const game = Game.getInstance();
 
+    window.addEventListener("focus", () => {
       // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
       if (game.pauseDetails.isWindowActive === null) return;
-
       game.pauseDetails.isWindowActive = true;
       game.resumeGame();
     });
 
     window.addEventListener("blur", () => {
-      const game = Game.getInstance();
-
       game.pauseDetails.isWindowActive = false;
-
       game.pauseGame();
     });
   }
 
   override onMount() {
     this.sceneRef = document.querySelector("#game-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Game scene not initialized");
     this.sceneRef.style.display = "block";
   }
 
   override onDisMount() {
-    this.sceneRef = document.querySelector("#game-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Game scene not initialized");
     this.sceneRef.style.display = "none";
   }
 
   private async loadPlayer(startPosition: StartPosition) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
     const playerSprite = this.displayDriver.getSprite(spriteName);
-    if (!playerSprite) {
-      throw new Error("Failed to get player sprite");
-    }
+    assert(playerSprite, "Failed to get player sprite");
     this.playerController = new PlayerController(playerSprite, startPosition);
   }
 
   private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
     const opponentSprite = this.displayDriver.getSprite("peugeot_blue");
-    if (!opponentSprite) {
-      throw new Error("Failed to get opponent sprite");
-    }
+    assert(opponentSprite, "Failed to get opponent sprite");
 
     //* Create Middle driving enemy
     this.opponentControllersList.push(
@@ -235,7 +180,7 @@ class GameScene extends Scene {
     );
   }
 
-  private async loadEffectObjects() {
+  private async initEffectObjects() {
     const randomObstacles = getRandomObstacles(3, this.effectObjects);
     this.effectObjects.push(...randomObstacles);
 
@@ -243,8 +188,7 @@ class GameScene extends Scene {
       const randomPerks = getRandomPerks(1, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        perk._onEnter = (car) => {
+        perk._onEnter = () => {
           delete this.effectObjects[index];
           addPerk();
         };
@@ -255,18 +199,18 @@ class GameScene extends Scene {
     addPerk();
   }
 
-  update(deltaTime: number) {
+  override update(deltaTime: number) {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
     this.opponentsUpdate(deltaTime);
-    this.collisionUpdate();
-    this.effectUpdate();
-    this.scoreUpdate();
+    this.collisionUpdate(deltaTime);
+    this.effectUpdate(deltaTime);
+    this.scoreboard.update(this);
     this.uiUpdate();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  render(_ctx: CanvasRenderingContext2D) {
+  override render(_ctx: CanvasRenderingContext2D) {
     if (this.displayDriver === null || this.track === null) {
       return;
     }
@@ -290,6 +234,8 @@ class GameScene extends Scene {
     this.displayDriver.displayTrackFgLayers(this.track);
     this.track.displayCheckpoints(this.displayDriver);
     this.track.renderGates();
+
+    //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
     this.displayDriver.performDrawCalls();
   }
 
@@ -349,132 +295,20 @@ class GameScene extends Scene {
     }
   }
 
-  private collisionUpdate() {
-    this.handleTrackCollisions();
-    this.handleControllerCollisions();
+  private collisionUpdate(deltaTime: number) {
+    CollisionHandlers.handleCollisionsBetweenControllers(this);
+    CollisionHandlers.handleCollisionChecks(this, deltaTime);
   }
 
-  private handleTrackCollisions() {
-    if (!this.track || !this.track.colliderImage || !this.playerController) {
-      return;
-    }
-
-    const playerCorners = getCarCorners(
-      this.playerController.displayData.position,
-      this.playerController.colliderHeight,
-      this.playerController.colliderWidth,
-      this.playerController.angle
-    );
-
-    this.displayDriver.displayColliderCorners(
-      playerCorners,
-      this.playerController.centerPosition,
-      this.playerController.angle
-    );
-
-    const trackCollider = this.track.colliderImage;
-    if (this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider) !== null) {
-      this.displayDriver.displayCollisionEffect();
-      this.physicsDriver.handleCollision(
-        this.playerController,
-        this.collisionManager.isCollidingWithTrack(playerCorners, trackCollider)!,
-        trackCollider
-      );
-    }
-
-    this.opponentControllersList.forEach((opponent) => {
-      const opponentCorners = getCarCorners(
-        opponent.displayData.position,
-        opponent.colliderHeight,
-        opponent.colliderWidth,
-        opponent.angle
-      );
-
-      if (this.collisionManager.isCollidingWithTrack(opponentCorners, trackCollider) !== null) {
-        this.physicsDriver.handleCollision(
-          opponent,
-          this.collisionManager.isCollidingWithTrack(opponentCorners, trackCollider)!,
-          trackCollider
-        );
-      }
-    });
-  }
-
-  private handleControllerCollisions() {
+  private effectUpdate(deltaTime: number) {
     if (!this.playerController) {
       return;
     }
 
-    //* Take note that if we check all collisions of the opponents we dont need to bother with player collisions
-    for (const opponent of this.opponentControllersList) {
-      //* Handle player enemy collisions
-      if (
-        this.collisionManager.isCollidingWithAnotherObject(
-          this.playerController.collision,
-          opponent.collision
-        ) &&
-        !this.playerController.no_collision &&
-        !opponent.no_collision
-      ) {
-        this.physicsDriver.handleCollisionBetweenControllers(this.playerController, opponent);
-      }
+    CollisionHandlers.handleEffectObjectsCollisions(this);
 
-      //* Handle enemy enemy collisions
-      this.opponentControllersList.forEach((opponent2) => {
-        if (opponent === opponent2 || opponent.no_collision || opponent2.no_collision) {
-          return;
-        }
-        if (this.collisionManager.isCollidingWithAnotherObject(opponent.collision, opponent2.collision)) {
-          this.physicsDriver.handleCollisionBetweenControllers(opponent, opponent2);
-        }
-      });
-    }
-  }
-
-  private effectUpdate() {
-    if (!this.playerController) {
-      return;
-    }
-
-    this.effectObjects.forEach((obstacle) => {
-      const playerCorners = getCarCorners(
-        this.playerController!.displayData.position,
-        this.playerController!.colliderHeight,
-        this.playerController!.colliderWidth,
-        this.playerController!.angle
-      );
-
-      const collidingCars: PhysicsBasedController[] = [];
-
-      const isPlayerColliding = this.collisionManager.isCollidingWithAnotherObject(
-        playerCorners,
-        obstacle.collision
-      );
-
-      if (isPlayerColliding && !this.playerController!.no_collision) {
-        collidingCars.push(this.playerController!);
-      }
-
-      this.opponentControllersList.forEach((opponent) => {
-        const opponentCorners = getCarCorners(
-          opponent.displayData.position,
-          opponent.colliderHeight,
-          opponent.colliderWidth,
-          opponent.angle
-        );
-
-        if (
-          this.collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision) &&
-          !opponent.no_collision
-        ) {
-          collidingCars.push(opponent);
-        }
-      });
-      obstacle._update(collidingCars);
-    });
-
-    this.playerController.timedEffectDriver.update();
-    this.opponentControllersList.forEach((opponent) => opponent.timedEffectDriver.update());
+    this.playerController.timedEffectDriver.update(deltaTime);
+    this.opponentControllersList.forEach((opponent) => opponent.timedEffectDriver.update(deltaTime));
   }
 
   private uiUpdate() {
@@ -487,61 +321,6 @@ class GameScene extends Scene {
     this.UiService.setSpeedMeterValue(t);
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
-
-    // draw obstacle drop loading
-    this.displayDriver.drawFillingCircle(
-      { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
-      16,
-      "red",
-      "yellowgreen",
-      this.playerController.obstacleDropLoadFraction
-    );
-  }
-
-  private scoreUpdate() {
-    if (!this.playerController || !this.track || !this.track.checkPointPath) {
-      return;
-    }
-    const distanceToNextCheckpoint = this.track.checkPointPath.getDistanceToPoint(
-      this.playerController.centerPosition,
-      this.scoreboard.currentCheckpoint
-    );
-
-    if (
-      (distanceToNextCheckpoint < 30 &&
-        this.scoreboard.currentCheckpoint !== this.track.checkPointPath.sampledPoints.length) ||
-      (distanceToNextCheckpoint < 2 &&
-        this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) ||
-      isNaN(distanceToNextCheckpoint)
-    ) {
-      this.scoreboard.currentCheckpoint++;
-    }
-
-    this.UiService.setCurrentTime(this.scoreboard.currentTime);
-    this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
-
-    if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {
-      this.scoreboard.currentLap++;
-      this.scoreboard.currentCheckpoint = 1;
-    }
-
-    if (this.scoreboard.currentLap === this.UiService.lapCount) {
-      if (this.playerController.finished) return;
-      const nickname = Game.instance.nickname;
-
-      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.scoreboard.currentTime });
-      this.playerController.finished = true;
-      this.playerController.finishedTime = this.scoreboard.currentTime;
-      this.UiService.showSkipButton();
-
-      if (
-        this.playerController.finished &&
-        this.opponentControllersList.every((opponent) => opponent.finished)
-      ) {
-        Game.instance.startResultScene();
-      }
-      // Game.instance.startResultScene();
-    }
   }
 }
 

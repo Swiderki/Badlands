@@ -11,9 +11,7 @@ class PlayerController extends PhysicsBasedController {
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.02;
   private _lastAcceleration: number = 0;
-  private _accelerationCooldown: number = 0.2;
   private _lastBrake: number = 0;
-  private _brakeCooldown: number = 0.04;
   private _lastObstacleDropTimestamp: number = -1;
   private readonly OBSTACLE_DROP_COOLDOWN = 3000;
   finished = false;
@@ -24,7 +22,7 @@ class PlayerController extends PhysicsBasedController {
     this.setPosition(startPosition.position);
     this.angle = startPosition.angle;
 
-    this.setCurrentSprite();
+    this.updateCurrentSprite();
 
     this._addInputListeners();
     PlayerController._instance = this;
@@ -71,7 +69,7 @@ class PlayerController extends PhysicsBasedController {
 
     const angleInRad = (this.angle * Math.PI) / 180;
     const someMagicalValue = 0.5 as const;
-    const largerDimension = Math.max(this._sprite!.config.spriteHeight, this._sprite!.config.spriteWidth);
+    const largerDimension = Math.max(this.sprite!.config.spriteHeight, this.sprite!.config.spriteWidth);
     const positionBehindCar = {
       x: this.centerPosition.x - Math.cos(angleInRad) * largerDimension * someMagicalValue,
       y: this.centerPosition.y - Math.sin(angleInRad) * largerDimension * someMagicalValue,
@@ -83,39 +81,26 @@ class PlayerController extends PhysicsBasedController {
   }
 
   override update(deltaTime: number) {
-    // console.log(
-    //   this._currentMaxSpeedForward,
-    //   this._currentMaxSpeedBackwards,
-    //   this._currentAccelerationPowerForward,
-    //   this._currentAccelerationPowerBackwards
-    // );
     //* This one is just for testing purposes
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
 
-    /*if (
-      (this.getInput("ArrowUp") || this.getInput("w")) &&
-      this._lastAcceleration >= this._accelerationCooldown
-    )*/
     if (this.getInput("arrowup") || this.getInput("w")) {
       this.accelerateForward();
       this._lastAcceleration = 0;
     }
-
     if ((this.getInput("arrowright") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
       this.isTurning = true;
       this.addSteeringForce(0.2);
       this._lastRotation = 0;
     }
-
     if ((this.getInput("arrowleft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
       this.isTurning = true;
       this.addSteeringForce(-0.2);
       this._lastRotation = 0;
     }
-    //if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
     if (this.getInput("arrowdown") || this.getInput("s")) {
       this.brake();
       this._lastBrake = 0;

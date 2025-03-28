@@ -15,11 +15,9 @@ export default class NoCollisionPerk extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
-    // car.timedEffectDriver.finishEffect("damaged");
     if (car instanceof PlayerController) audio.play();
 
-
-    car.no_collision = true;
+    car.noCollision = true;
 
     const effect: TimedEffect = {
       canBeOverrided: false,
@@ -28,12 +26,11 @@ export default class NoCollisionPerk extends EffectObject {
       finish: () => {
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
-        car.no_collision = false;
+        car.noCollision = false;
       },
       update() {},
     };
 
-    // TODO change effect to no_colission
-    car.timedEffectDriver.addEffect("slip", effect);
+    car.timedEffectDriver.addEffect("no-collision", effect);
   }
 }

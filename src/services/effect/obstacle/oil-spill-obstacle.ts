@@ -15,14 +15,10 @@ export default class OilSpillObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    // const playerController = PlayerController.currentInstance;
-    // const timedEffectDriver = TimedEffectDriver.currentInstance;
-    // if (!timedEffectDriver) return;
     if (car instanceof PlayerController) audio.play();
 
     car.currentAdhesionModifier *= this.ADHESION_MODIFIER;
 
-    // TODO: niech ktos madry zrobi tak zeby autko tracilo grip pls
     const effect: TimedEffect = {
       canBeOverrided: true,
       startTimestamp: GameTimeline.now(),

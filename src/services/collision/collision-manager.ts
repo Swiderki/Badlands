@@ -1,16 +1,15 @@
+import OpponentController from "@/src/controllers/opponents-controller";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
+import GameScene from "@/src/scenes/GameScene";
+import { getCarCorners, lineToRectDistance, rayCast } from "@/src/util/collision-util";
+import { Vector } from "@/src/util/vec-util";
 import { CollisionObject, PathIntersection } from "@/types/collision";
 import { Vec2D } from "@/types/physics";
-import { Vector } from "@/src/util/vec-util";
-import PhysicsBasedController from "@/src/controllers/physics-based-controller";
-import { getCarCorners, lineToRectDistance, rayCast } from "@/src/util/collision-util";
-import GameScene from "@/src/scenes/GameScene";
-import Game from "../game";
-import DisplayDriver from "../display-driver/display-driver";
-import { debug } from "console";
 import { CheckPoint } from "@/types/track-driver";
-import OpponentController from "@/src/controllers/opponents-controller";
-import EffectObject from "../effect/effect-object";
+import DisplayDriver from "../display-driver/display-driver";
 import BoostPerk from "../effect/perk/boost-perk";
+import Game from "../game";
+import CollisionHandlers from "./collision-handlers";
 
 const SOME_ARBITRARY_THRESHOLD = 100;
 
@@ -91,7 +90,11 @@ class CollisionManager {
     return bestIntersection;
   }
 
-  getActualPathIntersections(actualPath: CheckPoint[], sampledPoints: CheckPoint[], controllerToSkip: OpponentController) {
+  getActualPathIntersections(
+    actualPath: CheckPoint[],
+    sampledPoints: CheckPoint[],
+    controllerToSkip: OpponentController
+  ) {
     const gameSceneRef = Game.getInstance().currentScene as GameScene;
     if (!(gameSceneRef instanceof GameScene)) {
       return [];
@@ -103,11 +106,11 @@ class CollisionManager {
       //* I swear to god, I WILL personally find the person how decided to randomly add undefined to the effectObjects array
       if (effectObject === undefined || effectObject === null) continue;
       if (effectObject instanceof BoostPerk) continue;
-      const intersectionObject : PathIntersection = {
+      const intersectionObject: PathIntersection = {
         objectCorners: this.getRotatedCorners(effectObject.collision),
         intersectionStartIndex: -1,
         intersectionEndIndex: -1,
-        distance: 0
+        distance: 0,
       };
       const corners = this.getRotatedCorners(effectObject.collision);
       for (let i = 0; i < actualPath.length - 1; i++) {
@@ -131,8 +134,9 @@ class CollisionManager {
           break;
         }
       }
-    
-      if(intersectionObject.intersectionStartIndex != -1 && intersectionObject.intersectionEndIndex != -1) intersections.push(intersectionObject);
+
+      if (intersectionObject.intersectionStartIndex !== -1 && intersectionObject.intersectionEndIndex !== -1)
+        intersections.push(intersectionObject);
     }
 
     return intersections;
@@ -162,6 +166,7 @@ class CollisionManager {
       ) {
         return { x: gridPos.x, y: gridPos.y };
       }
+      console.log(gridPos.x, gridPos.y);
 
       if (trackCollider[gridPos.y][gridPos.x] !== 0) {
         return { x: gridPos.x, y: gridPos.y };

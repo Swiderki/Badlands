@@ -1,10 +1,10 @@
-import { TrackPath } from "@/src/services/track-driver/track-path";
-import BaseDrivingPolicy from "./base-driving-policy";
-import { Vec2D, Action } from "@/types/physics";
-import { PhysicsUtils } from "../../util/physics-util";
 import DisplayDriver from "@/src/services/display-driver/display-driver";
-import PlayerController from "../player-controller";
+import { EnemyPath } from "@/src/services/track-driver/enemy-path";
+import { Action, Vec2D } from "@/types/physics";
 import { CheckPoint } from "@/types/track-driver";
+import { PhysicsUtils } from "../../util/physics-util";
+import PlayerController from "../player-controller";
+import BaseDrivingPolicy from "./base-driving-policy";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 190;
@@ -12,7 +12,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   _visitedCheckpoint: number = 1;
   private attackRange = 50; // Odległość, w której próbuje uderzyć gracza
 
-  constructor(trackPath: TrackPath, scaling_factor: number) {
+  constructor(trackPath: EnemyPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
   }
 

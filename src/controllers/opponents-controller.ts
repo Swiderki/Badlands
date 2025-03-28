@@ -8,7 +8,6 @@ import { Vector } from "../util/vec-util";
 import GameScene from "../scenes/GameScene";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
 
-
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.04;
@@ -31,11 +30,11 @@ class OpponentController extends PhysicsBasedController {
     super(sprite);
 
     // Temporary, bacause he cant deal with greater values
-    this._currentMaxSpeedForward = 200;
-    this._accelerationPowerForward = 40;
+    this.currentMaxSpeedForward = 200;
+    this.accelerationPowerForward = 40;
 
     this.angle = startPosition.angle;
-    this.setCurrentSprite();
+    this.updateCurrentSprite();
     this._drivingPolicy = drivingPolicy;
     this._drivingPolicy.parentRef = this;
     this.setPosition(Vector.subtract(this._drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
@@ -59,7 +58,7 @@ class OpponentController extends PhysicsBasedController {
       this._lastAcceleration = 0;
     }
     if (action.rotation && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(action.rotation);
+      this.rotate(action.rotation, deltaTime);
       this._lastRotation = 0;
     }
     if (action.brake && this._lastBrake >= this._brakeCooldown) {
@@ -69,11 +68,11 @@ class OpponentController extends PhysicsBasedController {
 
     if (this.currentLap >= 3) {
       this.finished = true;
-      this.finishedTime = Scoreboard.instance.currentTime
+      this.finishedTime = Scoreboard.instance.currentTime;
 
       if (
         GameScene.instance.opponentControllersList.every((opponent) => opponent.finished) &&
-        GameScene.instance.player.finished
+        GameScene.instance.playerController!.finished
       ) {
         Game.getInstance().startResultScene();
       }

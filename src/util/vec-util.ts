@@ -61,10 +61,10 @@ export namespace Vector {
     };
   }
 
-  export function maxLenght(v: Vec2D, maxLenght: number): Vec2D {
+  export function maxLength(v: Vec2D, maxLength: number): Vec2D {
     let vector = v;
-    if (length(v) > maxLenght) {
-      vector = generateVectorFromAngle(maxLenght, angle(v));
+    if (length(v) > maxLength) {
+      vector = generateVectorFromAngle(maxLength, angle(v));
     }
     return vector;
   }

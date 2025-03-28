@@ -1,14 +1,12 @@
 import Scene from "./Scene";
 import Game from "@/src/services/game";
+import assert from "../util/assert";
 
 export class StartScene extends Scene {
   private sceneRef: HTMLElement | null = null;
 
   override init(): void | Promise<void> {
-    this.sceneRef = document.querySelector("#start-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Start scene not initialized");
     this.sceneRef.style.display = "block";
 
     const playBtnRef = this.sceneRef.querySelector("button:nth-of-type(2)");
@@ -57,16 +55,12 @@ export class StartScene extends Scene {
 
   override onMount() {
     this.sceneRef = document.querySelector("#start-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Start scene not initialized");
     this.sceneRef.style.display = "block";
   }
 
   override onDisMount() {
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Start scene not initialized");
     this.sceneRef.style.display = "none";
   }
 }

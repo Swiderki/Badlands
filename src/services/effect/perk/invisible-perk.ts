@@ -13,7 +13,6 @@ export default class InvisiblePerk extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
-    // car.timedEffectDriver.finishEffect("damaged");
     console.log("start niewidzialnosc");
     GameScene.instance.opponentControllersList.forEach((opponent) => {
       opponent.invisible = true;
@@ -36,7 +35,6 @@ export default class InvisiblePerk extends EffectObject {
       update() {},
     };
 
-    // TODO change effect to invisible
-    car.timedEffectDriver.addEffect("slip", effect);
+    car.timedEffectDriver.addEffect("invisible", effect);
   }
 }

@@ -15,3 +15,10 @@ export const htmlHidePauseOverlay = () => {
   const pauseOverlay = getPauseOverlay();
   pauseOverlay.style.display = "none";
 };
+
+export const htmlHideLoadingScreen = () => {
+  const loadingScreen = document.querySelector("#loading-screen") as HTMLElement;
+  if (loadingScreen) {
+    loadingScreen.style.display = "none";
+  }
+};

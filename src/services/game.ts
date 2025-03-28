@@ -7,8 +7,9 @@ import Scene from "../scenes/Scene";
 import { SelectionScene } from "../scenes/SelectionScene";
 import { StartScene } from "../scenes/StartScene";
 import { Scoreboard } from "./scoreboard/scoreboard";
-import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 import GameTimeline from "./game-logic/game-timeline";
+import assert from "../util/assert";
 
 class Game {
   //* Drivers
@@ -35,9 +36,7 @@ class Game {
   }
 
   get currentScene() {
-    if (!this._currentScene) {
-      throw new Error("Current scene not initialized");
-    }
+    assert(this._currentScene, "Current scene not initialized");
     return this._currentScene;
   }
 
@@ -59,17 +58,12 @@ class Game {
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
-    this.currentScene = new StartScene();
-    this.currentScene.init();
 
     Game.instance = this;
-    window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
   static getInstance(): Game {
-    if (!Game.instance) {
-      throw new Error("Game instance not initialized");
-    }
+    assert(Game.instance, "Game instance not initialized");
     return Game.instance;
   }
 
@@ -77,8 +71,11 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    const aa = await this.displayDriver.autoLoadSprites();
+    await this.displayDriver.autoLoadSprites();
+    htmlHideLoadingScreen();
 
+    this.startStartScene();
+    window.addEventListener("keydown", this.handleKeyDown.bind(this));
 
     //* Start the game loop
     this._update();

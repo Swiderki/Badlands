@@ -18,9 +18,6 @@ export default class PotholeObstacle extends EffectObject {
 
   /** Slow down the player when entering the hole and due to car damage it acceleration is reduced */
   override onEnter(car: PhysicsBasedController) {
-    // const playerController = PlayerController.currentInstance;
-    // const timedEffectDriver = TimedEffectDriver.currentInstance;
-    // if (!timedEffectDriver) return;
     if (car instanceof PlayerController) audio.play();
 
     car.actualForce.x *= this.FORCE_MODIFIER;
