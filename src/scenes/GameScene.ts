@@ -92,16 +92,24 @@ class GameScene extends Scene {
       throw Error("Countdown scene not initialized");
     }
     countdown.innerHTML = "3";
-    text.innerHTML = "READY";
+    text.innerHTML = "GET READY!";
     countdownDialog.setAttribute("style", "display: block");
     speedMeter.setAttribute("style", "display: none");
+    const audio = new Audio("/assets/sounds/3.wav");
+    audio.play();
     setTimeout(() => {
       countdown.innerHTML = "2";
-      text.innerHTML = "STEADY";
+      text.innerHTML = "START YOUR ENGINES!";
+      const audio2 = new Audio("/assets/sounds/2.wav");
+      audio2.play();
       setTimeout(() => {
         countdown.innerHTML = "1";
         text.innerHTML = "GO!";
+        const audio3 = new Audio("/assets/sounds/1.wav");
+        audio3.play();
         setTimeout(() => {
+          const audio3 = new Audio("/assets/sounds/start.wav");
+          audio3.play();
           countdownDialog.setAttribute("style", "display: none");
           speedMeter.setAttribute("style", "display: block");
           Game.getInstance().resumeGame();
@@ -268,7 +276,7 @@ class GameScene extends Scene {
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,
-        currentSprite: 0,
+        currentSprite: obstacle.randomSprite,
       });
     });
     if (!this.playerController!.finished && !this.playerController!.invisible) {
