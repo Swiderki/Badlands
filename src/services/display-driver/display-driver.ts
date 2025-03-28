@@ -4,6 +4,7 @@ import { CheckPoint } from "@/types/track-driver";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
+import { Vector } from "@/src/util/vec-util";
 
 class DisplayDriver {
   private static _instance: DisplayDriver;
@@ -117,7 +118,6 @@ class DisplayDriver {
 
   displayTrackFgLayers(track: Track) {
     for (const layer of track.fgLayers) {
-      // console.log(layer);
       if (!layer) {
         continue;
       }
@@ -222,6 +222,12 @@ class DisplayDriver {
       this._ctx.fill();
       this._ctx.closePath();
     });
+  }
+
+  displayActualPath(actualPath: CheckPoint[], color: string) {
+    for (let i = 0; i < actualPath.length - 1; i++) {
+      this.drawLineBetweenVectors(actualPath[i].point, actualPath[i + 1].point, color);
+    }
   }
 
   performDrawCalls() {

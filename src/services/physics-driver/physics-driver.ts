@@ -183,7 +183,6 @@ class PhysicsDriver {
             deltatimeMultiplicator) *
           1000
       ) / 1000;
-    // console.log(frictionFactor);
 
     controller.brakingForce = 0;
     return frictionFactor;

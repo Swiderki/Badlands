@@ -22,6 +22,7 @@ import { EnemyPath } from "../services/track-driver/enemy-path";
 class GameScene extends Scene {
   private displayDriver: DisplayDriver;
   playerController: PlayerController | null = null;
+  effectObjects: EffectObject[] = [];
   //! It Should be private
   opponentControllersList: OpponentController[] = [];
   private track: Track | null = null;
@@ -29,7 +30,6 @@ class GameScene extends Scene {
   private physicsDriver: PhysicsDriver;
   private UiService: UIService;
   private scoreboard: Scoreboard = Scoreboard.instance;
-  private effectObjects: EffectObject[] = [];
   // private timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
   private playerCar: string;
   private playerColor: string;
@@ -173,7 +173,6 @@ class GameScene extends Scene {
 
   private async loadPlayer(startPosition: StartPosition) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
-    // console.log(spriteName);
     const playerSprite = this.displayDriver.getSprite(spriteName);
     if (!playerSprite) {
       throw new Error("Failed to get player sprite");
@@ -188,7 +187,6 @@ class GameScene extends Scene {
     }
 
     //* Create Middle driving enemy
-    //*
     this.opponentControllersList.push(
       new OpponentController(
         opponentSprite,
@@ -239,7 +237,6 @@ class GameScene extends Scene {
         const index = this.effectObjects.length;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         perk._onEnter = (car) => {
-          // console.log("_onEnter");
           delete this.effectObjects[index];
           addPerk();
         };
@@ -483,7 +480,6 @@ class GameScene extends Scene {
 
     this.UiService.setAccMeterValue(Math.min(t, 240) + 30);
 
-    // console.log(this.playerController.obstacleDropLoadFraction);
     // draw obstacle drop loading
     this.displayDriver.drawFillingCircle(
       { x: (this.displayDriver.normalizedDisplayWidth / 2) * this.displayDriver.scaler, y: 20 },
@@ -514,7 +510,6 @@ class GameScene extends Scene {
     }
 
     this.UiService.setCurrentTime(this.scoreboard.currentTime);
-    // console.log(this.scoreboard.currentLapTime);
     this.UiService.setCurrentLapTime(this.scoreboard.currentLapTime);
 
     if (this.scoreboard.currentCheckpoint === this.track.checkPointPath.sampledPoints.length) {

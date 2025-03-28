@@ -90,8 +90,6 @@ class PlayerController extends PhysicsBasedController {
     //   this._currentAccelerationPowerBackwards
     // );
     //* This one is just for testing purposes
-    // console.log(deltaTime);
-    // console.log(this._lastRotation);
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
