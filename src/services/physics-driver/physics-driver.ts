@@ -21,11 +21,8 @@ class PhysicsDriver {
 
     //* This is a simple physics loop
     this.calculateActualForce(controller, deltaTime);
-    controller.actualForce = Vector.scale(
-      controller.actualForce,
-      this.calculateFriction(controller, deltaTime)
-    );
-    controller.actualForce = Vector.scale(controller.actualForce, this.engineBraking(controller, deltaTime));
+    controller.actualForce = this.calculateFriction(controller, deltaTime);
+    controller.actualForce = this.engineBraking(controller, deltaTime);
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
     controller.turning(deltaTime);
@@ -164,44 +161,34 @@ class PhysicsDriver {
     controller.acceleration = { x: 0, y: 0 };
   }
 
-  calculateFriction(controller: PhysicsBasedController, deltaTime: number) {
-    let deltatimeMultiplicator = 1;
-    if (deltaTime !== 0) {
-      deltatimeMultiplicator = 1 / (60 * deltaTime);
-    }
-
+  calculateFriction(controller: PhysicsBasedController, deltaTime: number): Vec2D {
     const differenceInAngle =
       Math.floor(((Math.abs(Vector.angle(controller.actualForce) - controller.angle) % 180) / 180) * 100) /
       100;
+
     const noFrictionValue = 0;
     const frictionAmount =
       Math.round(
         Math.max(0, Math.sin(differenceInAngle * (3.14 + 2 * noFrictionValue) - noFrictionValue)) * 100
       ) / 100;
 
-    const frictionFactor =
-      Math.round(
-        (1 -
-          (0.002 +
-            controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
-            controller.brakingForce) *
-            deltatimeMultiplicator) *
-          1000
-      ) / 1000;
+    const frictionForce =
+      0.002 +
+      controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
+      controller.brakingForce;
 
     controller.brakingForce = 0;
-    return frictionFactor;
+    return Vector.subtractFromLength(
+      controller.actualForce,
+      Vector.length(controller.actualForce) * frictionForce * 60 * deltaTime
+    );
   }
 
-  engineBraking(controller: PhysicsBasedController, deltaTime: number) {
-    const curSpeed = Vector.length(controller.actualForce);
-    const engineBrakingForce = 1 * deltaTime * 60;
-    let engineBrakingValue = 1;
-    if (curSpeed !== 0) {
-      engineBrakingValue =
-        1 - (controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce) / curSpeed;
-    }
-    return engineBrakingValue;
+  engineBraking(controller: PhysicsBasedController, deltaTime: number): Vec2D {
+    const engineBrakingForce = 2 * deltaTime * 60;
+    const brakingAmount = controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce;
+
+    return Vector.subtractFromLength(controller.actualForce, brakingAmount);
   }
 }
 

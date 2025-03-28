@@ -92,4 +92,11 @@ export namespace Vector {
   
     return dotProduct / (magnitudeA * magnitudeB);
   }
+  export function subtractFromLength(v: Vec2D, amount: number): Vec2D {
+    const len = length(v);
+    if (len === 0) return v;
+
+    const newLength = Math.max(0, len - amount);
+    return scale(normalize(v), newLength);
+  }
 }
