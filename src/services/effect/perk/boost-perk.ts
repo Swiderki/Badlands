@@ -4,8 +4,11 @@ import { TimedEffect } from "../timed-effect-driver";
 // import PerkObject from "./perk-object";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
+import GameTimeline from "../../game-logic/game-timeline";
 
 export default class BoostPerk extends EffectObject {
+  private readonly ACCELERATION_MODIFIER = 2;
+
   constructor(position: Vec2D) {
     super(position, Perks.BOOST_STAR);
   }
@@ -15,14 +18,16 @@ export default class BoostPerk extends EffectObject {
     // const timedEffectDriver = TimedEffectDriver.currentInstance;
     // if (!timedEffectDriver) return;
 
-    car.currentAccelerationPowerForward *= 2;
-    car.currentAccelerationPowerBackwards *= 2;
+    car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
+    car.currentAccelerationPowerBackwards *= this.ACCELERATION_MODIFIER;
 
     const effect: TimedEffect = {
-      startTimestamp: Date.now(),
+      canBeOverrided: true,
+      startTimestamp: GameTimeline.now(),
       duration: 5000,
-      finish() {
-        car.resetToDefaultSpeedAndAcceleration();
+      finish: () => {
+        car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
+        car.currentAccelerationPowerBackwards /= this.ACCELERATION_MODIFIER;
       },
       update() {},
     };

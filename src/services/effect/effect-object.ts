@@ -16,6 +16,7 @@ export default class EffectObject {
 
   constructor(position: Vec2D, sprite: EffectSprites) {
     const spriteObject = DisplayDriver.currentInstance?.getSprite(sprite);
+    console.log(sprite);
     if (!spriteObject) {
       throw new Error("Sprite not found");
     }
@@ -47,8 +48,8 @@ export default class EffectObject {
       this._onEnter(car);
       this.onEnter(car);
     });
-    collidingCars.forEach(this.onColliding);
-    exitingCars.forEach(this.onExit);
+    collidingCars.forEach((car) => this.onColliding(car));
+    exitingCars.forEach((car) => this.onExit(car));
 
     this.previouslyCollidingCars = currentlyCollidingCars;
 

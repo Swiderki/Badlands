@@ -1,3 +1,4 @@
+import Game from "../game";
 import { Scoreboard } from "../scoreboard/scoreboard";
 
 export class UIService {
@@ -10,6 +11,7 @@ export class UIService {
   private _scoreboardRef: HTMLElement | null = null;
   private _scoreboardTotalTimeRef: HTMLElement | null = null;
   private _scoreboardListRef: HTMLElement | null = null;
+  private _skipWrapper: HTMLElement | null = null;
 
   lapCount: number = 3;
 
@@ -39,6 +41,14 @@ export class UIService {
     return this._speedTipRef;
   }
 
+  private get nitroIndicator(): HTMLElement {
+    const nitroIndicator = document.querySelector<HTMLElement>("#nitro-indicator");
+    if (!nitroIndicator) {
+      throw new Error("cannot find element for nitro indicator");
+    }
+    return nitroIndicator;
+  }
+
   private createLapHTML(num: number): HTMLLIElement {
     const lapHTML = document.createElement("li");
     lapHTML.id = `lap-${num}`;
@@ -61,8 +71,10 @@ export class UIService {
     this._scoreboardRef = document.querySelector(".scoreboard__wrapper");
     this._scoreboardListRef = document.querySelector(".scoreboard__wrapper ul");
     this._scoreboardTotalTimeRef = document.querySelector(".scoreboard__wrapper h3 .highlight");
+    this._skipWrapper = document.querySelector(".skip__wrapper");
     this.setAccMeterValue(0);
     this.setSpeedMeterValue(0);
+    this.addSkipButtonListener();
   }
 
   public static getInstance(): UIService {
@@ -88,10 +100,12 @@ export class UIService {
     if (!this._scoreboardListRef) {
       throw new Error("Scoreboard not initialized");
     }
+    if (Scoreboard.instance.currentLap === this.lapCount) return;
     const minutes = Math.floor(time / 60000);
     const seconds = ((time % 60000) / 1000).toFixed(0);
     const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
-    this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap} span`)!.innerHTML =
+    // console.log(Scoreboard.instance.currentLap);
+    this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap + 1} span`)!.innerHTML =
       currentTime;
   }
 
@@ -101,5 +115,21 @@ export class UIService {
 
   setSpeedMeterValue(value: number) {
     this.speedTipRef.style.setProperty("--speed-rotation", `${value.toPrecision(2)}deg`);
+  }
+
+  setIsNitroIndicatorActive(active: boolean) {
+    this.nitroIndicator.style.setProperty("--current-sprite", active ? "0" : "1");
+  }
+
+  showSkipButton() {
+    if (!this._skipWrapper) return;
+    this._skipWrapper.style.display = "block";
+  }
+
+  addSkipButtonListener() {
+    if (!this._skipWrapper) return;
+    this._skipWrapper.addEventListener("click", () => {
+      Game.instance.startResultScene();
+    });
   }
 }

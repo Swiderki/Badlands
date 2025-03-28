@@ -16,6 +16,12 @@
   <body>
     <div id="app">
       <div id="game-scene">
+        <div id="countdown-scene" class="scene">
+          <div class="inner">
+            <h1 class="countdown_text">Get Ready!</h1>
+            <p class="countdown"></p>
+          </div>
+        </div>
         <canvas id="game-canvas"></canvas>
         <div class="scoreboard__wrapper">
           <ul></ul>
@@ -23,37 +29,41 @@
         </div>
         <div class="speed-meter__wrapper">
           <div class="speed-meter__inner">
-            <img src="/assets/ui/speedmeter.png" alt="speed-meter" />
+            <img src="/assets/ui/speedmeter.png" alt="speed-meter" id="speed-meter" />
+            <div id="nitro-indicator"></div>
           </div>
         </div>
         <div class="countdown__wrapper">
           <p class="countdown"></p>
+        </div>
+        <div class="skip__wrapper">
+          <button id="skip-btn">SKIP</button>
         </div>
       </div>
       <div id="start-scene" class="scene">
         <div class="inner">
           <h1>Zloziemie</h1>
           <button>About</button>
-          <button>Start</button>
+          <button class="mainBtn">Start</button>
         </div>
         <div class="dialog">
           <div class="dialog__inner">
-            <input type="text" name="nickname" placeholder="Your nickname..." id="nickname">
+            <input type="text" name="nickname" placeholder="Your nickname..." id="nickname" value="noname" />
             <div class="btn_wrapper">
               <button>Return</button>
-              <button>Submit</button>
+              <button class="mainBtn">Submit</button>
             </div>
           </div>
-
         </div>
+        <img class="start-scene__bg" src="/public/assets/ui/lannding-screen.png" alt="landing-screen" />
       </div>
+
       <div id="selection-scene" class="scene">
         <div class="inner">
           <h2>Choose Your Map</h2>
           <div class="options">
-            <div class="option selected" data-map="desert">Desert</div>
-            <div class="option" data-map="city">City</div>
-            <div class="option" data-map="forest">Forest</div>
+            <div class="option selected" data-map="grass">Grass</div>
+            <div class="option" data-map="gravel">Gravel</div>
           </div>
 
           <h2>Choose Your Car</h2>
@@ -70,30 +80,32 @@
             <div class="option" data-color="yellow">Yellow</div>
             <div class="option" data-color="black">Black</div>
             <!-- <div class="option" data-color="white">white</div> -->
-
           </div>
 
-          <button id="play-btn">Play</button>
+          <div class="flex">
+            <button id="back-btn">Back</button>
+            <button id="play-btn" class="mainBtn">Play</button>
+          </div>
         </div>
       </div>
       <div id="about-scene" class="scene">
         <div class="inner">
           <h2>About</h2>
           <p>
-            Zloziemie is a simple racing game where you can choose your map, car
-            and color. The goal is to reach the finish line as fast as possible.
-
+            Zloziemie is a simple racing game where you can choose your map, car and color. The goal is to
+            reach the finish line as fast as possible.
           </p>
           <button>Back</button>
+          <img class="start-scene__bg" src="/public/assets/ui/lannding-screen.png" alt="landing-screen" />
         </div>
       </div>
       <div id="result-scene" class="scene">
         <div class="inner">
           <div class="winner-section">
             <h2>Winner!</h2>
-            <img src="/public/assets/car.png" alt="">
-            <p><strong>Place:</strong> 1st</p>
-            <p><strong>Time:</strong> 7.3 sec</p>
+            <img src="/public/assets/car.png" alt="" />
+            <p><strong class="winner_nickname"></strong></p>
+            <p class="winner_time"></p>
           </div>
           <div class="wrapper">
             <div class="race-results">
@@ -104,20 +116,21 @@
                 <li>3rd - Player 3 - 12.0 sec</li>
               </ul>
             </div>
-            
+
             <!-- Historia wyników gracza -->
             <div class="player-history">
               <h3>Player History</h3>
-              <ul class="player-results">
-
-              </ul>
+              <ul class="player-results"></ul>
             </div>
           </div>
 
-          
           <button>Back</button>
         </div>
       </div>
+    </div>
+
+    <div id="game-pause-overlay">PAUSED</div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

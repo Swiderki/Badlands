@@ -1,11 +1,12 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
+
+import { CollisionObject } from "@/types/collision";
 import { PhysicsUtils } from "../util/physics-util";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
 import { getDeltaTime } from "../util/delta-time";
-
-import { CollisionObject } from "@/types/collision";
+import GameTimeline from "../services/game-logic/game-timeline";
 
 const spriteCount = 60;
 class PhysicsBasedController {
@@ -18,6 +19,9 @@ class PhysicsBasedController {
   protected _acceleration: Vec2D = { x: 0, y: 0 };
   protected _angle: number = 0;
   protected _brakingForce: number = 0;
+
+  protected _steeringForce: number = 0;
+  protected _isTurning: boolean = false;
 
   // dodać wartości przyeczpnosci pojazdu, jego przyspieszenia do przodu i do tylu, maksymalna prredkosc do przodu i do tylu, i te wartosci mają być jakoś osobno zapisywane żeby można je łatwo zamienić na wartości domyślne
 
@@ -38,6 +42,14 @@ class PhysicsBasedController {
   colliderHeight: number = 4; //* Car height
 
   timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
+
+  private readonly NITRO_DURATION: number = 200; // ms
+  private readonly NITRO_REFUEL_COOLDOWN: number = 3000; // ms
+  private currentRefuelingTimestamp: number = -1;
+  private isNitroActive = false;
+
+  invisible = false;
+  no_collision = false;
 
   constructor(sprite: Sprite) {
     this._sprite = sprite;
@@ -89,6 +101,22 @@ class PhysicsBasedController {
 
   get actualForce() {
     return this._actualForce;
+  }
+
+  set steeringForce(steeringForce: number) {
+    this._steeringForce = steeringForce;
+  }
+
+  get steeringForce() {
+    return this._steeringForce;
+  }
+
+  set isTurning(isTurning: boolean) {
+    this._isTurning = isTurning;
+  }
+
+  get isTurning() {
+    return this._isTurning;
   }
 
   set actualForce(force: Vec2D) {
@@ -185,21 +213,61 @@ class PhysicsBasedController {
     this.acceleration = Vector.generateVectorFromAngle(magnitude, this.angle);
   }
 
-  enterNitroMode() {
-    const nitroModifier = 1.5;
+  /**
+   * Nitro is an effect activated by holding a key.
+   *  - cooldown starts counting when level is 0, it will not be refueled when
+   *    player have used 0.5 of total capacity or sth
+   */
+  enterNitroMode(onRefuel?: () => void) {
+    if (
+      this.isNitroActive ||
+      GameTimeline.now() < this.currentRefuelingTimestamp + this.NITRO_REFUEL_COOLDOWN
+    ) {
+      return;
+    }
+
+    // console.log("enter nitro");
+
+    const nitroModifier = 2;
+    this.isNitroActive = true;
     this.currentMaxSpeedForward = this._maxSpeedForward * nitroModifier;
     this.currentMaxSpeedBackwards = this._maxSpeedBackwards * nitroModifier;
     this.currentAccelerationPowerForward = this._accelerationPowerForward * nitroModifier;
     this.currentAccelerationPowerBackwards = this._accelerationPowerBackwards * nitroModifier;
     // aby wyłączyć nitro służy funkcja resetToDefaultSpeedAndAcceleration()
+
+    this.timedEffectDriver.addEffect("nitro", {
+      canBeOverrided: false,
+      duration: this.NITRO_DURATION,
+      finish: () => {
+        this.resetToDefaultSpeedAndAcceleration();
+        this.isNitroActive = false;
+        this.currentRefuelingTimestamp = GameTimeline.now();
+        if (onRefuel) {
+          GameTimeline.setTimeout(onRefuel, this.NITRO_REFUEL_COOLDOWN);
+        }
+      },
+      startTimestamp: GameTimeline.now(),
+      update: () => {},
+    });
   }
 
-  turning(value: number) {
+  addSteeringForce(value: number) {
+    this.steeringForce += value;
+    if (this.steeringForce > 1) {
+      this.steeringForce = 1;
+    }
+    if (this.steeringForce < -1) {
+      this.steeringForce = -1;
+    }
+  }
+
+  turning() {
     const turningThreshold = 10;
     if (Vector.length(this.actualForce) > turningThreshold) {
       this.rotate(
-        (6 * value * (Vector.length(this.actualForce) + this.currentMaxSpeedForward)) /
-          (this.currentMaxSpeedForward * 2)
+        (3 * this.steeringForce * (Vector.length(this.actualForce) + this._maxSpeedForward)) /
+          (this._maxSpeedForward * 2)
       );
     }
   }

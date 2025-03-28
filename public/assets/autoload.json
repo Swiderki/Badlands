@@ -64,6 +64,30 @@
     }
   },
   {
+    "name": "snow-track-collider",
+    "src": "/assets/tracks/snow/snow-track-data.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "snow-track-layer-1",
+    "src": "/assets/tracks/snow/snow-track-layer1.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
+    "name": "snow-track-layer-2",
+    "src": "/assets/tracks/snow/snow-track-layer2.png",
+    "config": {
+      "spriteWidth": 320,
+      "spriteHeight": 182
+    }
+  },
+  {
     "name": "peugeot_black",
     "src": "/assets/sprites/peugeot_black.png",
     "config": {
@@ -184,6 +208,14 @@
     }
   },
   {
+    "name": "ice_cube",
+    "src": "/assets/effect_objects/ice_cube.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
     "name": "spikes",
     "src": "/assets/effect_objects/spikes.png",
     "config": {
@@ -192,8 +224,57 @@
     }
   },
   {
+    "name": "invisible",
+    "src": "/assets/effect_objects/invisible.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "no_collision",
+    "src": "/assets/effect_objects/no_collision.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
     "name": "oil_spill",
     "src": "/assets/effect_objects/oil_spill.png",
+    "config": {
+      "spriteWidth": 24,
+      "spriteHeight": 24
+    }
+  },
+  {
+    "name": "nitro_icon",
+    "src": "/assets/ui/nitro_sprite.png",
+    "config": {
+      "spriteWidth": 18,
+      "spriteHeight": 18
+    }
+  },
+  {
+    "name": "gate_horizontal",
+    "src": "/assets/sprites/gate_horizontal.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
+    "name": "gate_vertical",
+    "src": "/assets/sprites/gate_vertical.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+
+  {
+    "name": "wrench",
+    "src": "/assets/effect_objects/obs1.jpg",
     "config": {
       "spriteWidth": 24,
       "spriteHeight": 24

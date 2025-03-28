@@ -5,6 +5,9 @@ import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
 import DisplayDriver from "../services/display-driver/display-driver";
 import { Vector } from "../util/vec-util";
+import GameScene from "../scenes/GameScene";
+import { Scoreboard } from "../services/scoreboard/scoreboard";
+
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
@@ -16,6 +19,7 @@ class OpponentController extends PhysicsBasedController {
   private _drivingPolicy: DrivingPolicyBase;
   nickname: string;
   finished = false;
+  finishedTime = 0;
   currentLap = 0;
 
   constructor(
@@ -34,7 +38,6 @@ class OpponentController extends PhysicsBasedController {
     this.setCurrentSprite();
     this._drivingPolicy = drivingPolicy;
     this._drivingPolicy.parentRef = this;
-    console.log(this._drivingPolicy.enemyPath.sampledPoints[0]);
     this.setPosition(Vector.subtract(this._drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
     this.nickname = nickname;
   }
@@ -65,7 +68,15 @@ class OpponentController extends PhysicsBasedController {
     }
 
     if (this.currentLap >= 3) {
-      Game.instance?.startResultScene();
+      this.finished = true;
+      this.finishedTime = Scoreboard.instance.currentTime
+
+      if (
+        GameScene.instance.opponentControllersList.every((opponent) => opponent.finished) &&
+        GameScene.instance.player.finished
+      ) {
+        Game.getInstance().startResultScene();
+      }
     }
 
     const displayDriver = DisplayDriver.currentInstance;

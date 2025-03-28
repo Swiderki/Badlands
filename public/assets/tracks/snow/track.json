@@ -1,0 +1,21 @@
+{
+  "traction": 0.5,
+  "lapCount": 3,
+  "bonuses": [],
+  "startPositions": [
+    { "x": 80, "y": 290, "angle": 90 },
+    { "x": 110, "y": 290, "angle": 270 },
+    { "x": 140, "y": 290, "angle": 270 },
+    { "x": 170, "y": 290, "angle": 270 },
+    { "x": 210, "y": 290, "angle": 270 }
+  ],
+  "bgLayers": ["snow-track-layer-1"],
+  "fgLayers": ["snow-track-layer-2"],
+  "colliderImage": "snow-track-collider",
+
+  "comment": "trzeba zmienić punkciki",
+
+  "checkPointPath": "M3 98V29C5.53053 -0.119545 18.5 -6.00002 54 19.5C89.5 45 157.5 99.0001 203 121C248.5 143 254.463 117.771 236.5 91C218.537 64.2295 232.594 43.2039 236.5 31C240.406 18.7961 231.5 -7.49999 203 6.50004C174.5 20.5001 84 93.0001 54 116C24 139 7.47007 132.453 3 98Z",
+  "pathOffset": { "x": 0, "y": -12 },
+  "finishLine": { "x": 132, "y": 250 }
+}

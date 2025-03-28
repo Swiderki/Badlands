@@ -1,10 +1,9 @@
 import { Sprite } from "@/types/display-driver";
 import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
-import {
-  getEffectObjectByName,
-  getRandomObstacleSprite,
-} from "../util/effects-utils";
+import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-utils";
+import { UIService } from "../services/ui-service/ui-service";
+import GameTimeline from "../services/game-logic/game-timeline";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -18,7 +17,7 @@ class PlayerController extends PhysicsBasedController {
   private _lastObstacleDropTimestamp: number = -1;
   private readonly OBSTACLE_DROP_COOLDOWN = 3000;
   finished = false;
-  finishedTime = "";
+  finishedTime = 0;
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
@@ -40,16 +39,21 @@ class PlayerController extends PhysicsBasedController {
 
   /** @returns what fraction of obstacle drop was recovered (value between 0 - unrecovered and 1 - fully recovered) */
   get obstacleDropLoadFraction() {
-    return Math.min(1, (Date.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
+    return Math.min(1, (GameTimeline.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
   }
 
   private _addInputListeners() {
     document.addEventListener("keydown", (e) => {
-      this._playerInput[e.key] = true;
+      this._playerInput[e.key.toLowerCase()] = true;
+      if (e.key === "Shift") {
+        UIService.getInstance().setIsNitroIndicatorActive(false);
+        const onRefuel = () => UIService.getInstance().setIsNitroIndicatorActive(true);
+        this.enterNitroMode(onRefuel);
+      }
     });
 
     document.addEventListener("keyup", (e) => {
-      this._playerInput[e.key] = false;
+      this._playerInput[e.key.toLowerCase()] = false;
     });
   }
 
@@ -58,7 +62,7 @@ class PlayerController extends PhysicsBasedController {
   }
 
   dropObstacle() {
-    if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > Date.now()) {
+    if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > GameTimeline.now()) {
       return;
     }
 
@@ -74,11 +78,17 @@ class PlayerController extends PhysicsBasedController {
     };
 
     const obstacle = new EffectObject(positionBehindCar);
-    this._lastObstacleDropTimestamp = Date.now();
+    this._lastObstacleDropTimestamp = GameTimeline.now();
     return obstacle;
   }
 
   override update(deltaTime: number) {
+    // console.log(
+    //   this._currentMaxSpeedForward,
+    //   this._currentMaxSpeedBackwards,
+    //   this._currentAccelerationPowerForward,
+    //   this._currentAccelerationPowerBackwards
+    // );
     //* This one is just for testing purposes
 
     this._lastRotation += deltaTime;
@@ -89,22 +99,24 @@ class PlayerController extends PhysicsBasedController {
       (this.getInput("ArrowUp") || this.getInput("w")) &&
       this._lastAcceleration >= this._accelerationCooldown
     )*/
-    if (this.getInput("ArrowUp") || this.getInput("w")) {
+    if (this.getInput("arrowup") || this.getInput("w")) {
       this.accelerateForward();
       this._lastAcceleration = 0;
     }
 
-    if ((this.getInput("ArrowRight") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
-      this.turning(1);
+    if ((this.getInput("arrowright") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
+      this.isTurning = true;
+      this.addSteeringForce(0.2);
       this._lastRotation = 0;
     }
 
-    if ((this.getInput("ArrowLeft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
-      this.turning(-1);
+    if ((this.getInput("arrowleft") || this.getInput("a")) && this._lastRotation >= this._rotationCooldown) {
+      this.isTurning = true;
+      this.addSteeringForce(-0.2);
       this._lastRotation = 0;
     }
     //if ((this.getInput("ArrowDown") || this.getInput("s")) && this._lastBrake >= this._brakeCooldown) {
-    if (this.getInput("ArrowDown") || this.getInput("s")) {
+    if (this.getInput("arrowdown") || this.getInput("s")) {
       this.brake();
       this._lastBrake = 0;
     }

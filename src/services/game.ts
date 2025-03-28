@@ -1,12 +1,14 @@
+import { AboutScene } from "../scenes/AboutScene";
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/GameScene";
 import MainMenuScene from "../scenes/MainMenuScene";
 import { ResultScene } from "../scenes/ResultScene";
 import Scene from "../scenes/Scene";
-import { StartScene } from "../scenes/StartScene";
-import { AboutScene } from "../scenes/AboutScene";
 import { SelectionScene } from "../scenes/SelectionScene";
+import { StartScene } from "../scenes/StartScene";
 import { Scoreboard } from "./scoreboard/scoreboard";
+import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+import GameTimeline from "./game-logic/game-timeline";
 
 class Game {
   //* Drivers
@@ -22,6 +24,16 @@ class Game {
 
   deltaTime: number = 0;
 
+  private _pauseDetails = {
+    isPaused: false,
+    isWindowActive: null as boolean | null,
+    documentTimeline: new DocumentTimeline(),
+  };
+
+  get pauseDetails() {
+    return this._pauseDetails;
+  }
+
   get currentScene() {
     if (!this._currentScene) {
       throw new Error("Current scene not initialized");
@@ -31,7 +43,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    console.log(scene);
+    // console.log(scene);
     this._currentScene = scene;
 
     this._currentScene.onMount();
@@ -65,7 +77,8 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    await this.displayDriver.autoLoadSprites();
+    const aa = await this.displayDriver.autoLoadSprites();
+
 
     //* Start the game loop
     this._update();
@@ -90,6 +103,12 @@ class Game {
     }
     if (event.key === "i") {
       Scoreboard.instance.currentLap += 1;
+      const gameScene = Game.instance.currentScene;
+      if (gameScene instanceof GameScene) {
+        gameScene.opponentControllersList.forEach((opponent) => {
+          opponent.currentLap += 1;
+        });
+      }
     }
   }
 
@@ -123,6 +142,21 @@ class Game {
     this.currentScene.init();
   }
 
+  pauseGame(skipOverlayUpdate = false): void {
+    if (!skipOverlayUpdate && this.currentScene instanceof GameScene) {
+      htmlShowPauseOverlay();
+    }
+    this._pauseDetails.isPaused = true;
+  }
+
+  resumeGame(): void {
+    htmlHidePauseOverlay();
+    this._pauseDetails.isPaused = false;
+    this._lastRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
+    this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
+    this._update();
+  }
+
   //* This method is called every frame, but it should be free of any game logic
   //* It's only purpose is to keep FPS stable
   //* It prevents the game from running too fast or too slow
@@ -130,8 +164,13 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
+    GameTimeline.update(this.deltaTime);
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
+
+    // pause render if window isn't active
+    // returns here to allow last render before pause
+    if (this._pauseDetails.isPaused === true) return;
 
     requestAnimationFrame((renderTime) => {
       this._penultimateRenderTime = this._lastRenderTime;
