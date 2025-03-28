@@ -117,7 +117,7 @@ class PhysicsDriver {
     // console.log("actualForce przed odbiciem:", controller.actualForce);
     // console.log("normal vector:", normal);
     console.log(angleDifference, "angleDifference");
-    controller.rotate(angleDifference * 3, deltaTime);
+    controller.rotate(angleDifference * 3);
 
     controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 

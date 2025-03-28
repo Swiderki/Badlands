@@ -21,7 +21,7 @@ export default class BananaPeelObstacle extends EffectObject {
       duration: 700,
       finish() {},
       update(deltaTime) {
-        car.rotate(-2, deltaTime);
+        car.rotate(-2);
       },
     };
 

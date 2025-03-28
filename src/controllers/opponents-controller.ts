@@ -58,7 +58,7 @@ class OpponentController extends PhysicsBasedController {
       this._lastAcceleration = 0;
     }
     if (action.rotation && this._lastRotation >= this._rotationCooldown) {
-      this.rotate(action.rotation, deltaTime);
+      this.rotate(action.rotation);
       this._lastRotation = 0;
     }
     if (action.brake && this._lastBrake >= this._brakeCooldown) {

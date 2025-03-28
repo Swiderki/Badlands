@@ -162,12 +162,12 @@ abstract class PhysicsBasedController {
       const angle =
         (3 * this.steeringForce * (Vector.length(this.actualForce) + this.maxSpeedForward)) /
         (this.maxSpeedForward * 2);
-      this.rotate(angle, deltaTime);
+      this.rotate(angle * deltaTime);
     }
   }
 
-  rotate(angle: number, deltaTime: number) {
-    this.angle = PhysicsUtils.normalizeAngle(this.angle + angle * deltaTime * 60);
+  rotate(angle: number) {
+    this.angle = PhysicsUtils.normalizeAngle(this.angle + angle);
     this.updateCurrentSprite();
   }
 
