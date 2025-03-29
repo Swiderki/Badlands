@@ -13,7 +13,7 @@ export const TRACTION_MAP: Record<number, number> = {
 };
 
 export type SVGCommand =
-  | { type: "M" | "L" | "V"; x: number; y: number }
+  | { type: "M" | "L" | "V" | "H"; x: number; y: number }
   | { type: "C"; cp1x: number; cp1y: number; cp2x: number; cp2y: number; x: number; y: number }
   | { type: "Q"; cp1x: number; cp1y: number; x: number; y: number }
   | { type: "Z" };

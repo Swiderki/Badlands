@@ -31,11 +31,11 @@ export class TrackPath {
     // Obliczanie odległości między pos a closestPoint
     const distance = Vector.length(Vector.subtract(pos, closestPoint));
 
-//     const dd = DisplayDriver.currentInstance;
-//     if (dd) {
-//       dd.drawLineBetweenVectors(p1, p2, "red");
-//       dd.drawLineBetweenVectors(pos, closestPoint, "blue"); // Rysuje linię od pos do najbliższego punktu
-//     }
+    //     const dd = DisplayDriver.currentInstance;
+    //     if (dd) {
+    //       dd.drawLineBetweenVectors(p1, p2, "red");
+    //       dd.drawLineBetweenVectors(pos, closestPoint, "blue"); // Rysuje linię od pos do najbliższego punktu
+    //     }
 
     return distance;
   }
@@ -51,9 +51,6 @@ export class TrackPath {
     // Calculate the offset for the x and y coordinates
     const offsetX = (canvasWidth - width) / 2 + pathOffset.x;
     const offsetY = (canvasHeight - height) / 2 + pathOffset.y;
-
-    // console.log(width, height);
-    // console.log(offsetX, offsetY);
 
     // Loop through all sampled points and update the x and y coordinates
     for (const checkpoint of this.sampledPoints) {
@@ -86,7 +83,14 @@ export class TrackPath {
     return { width, height };
   }
 
-  static createFromPath(path: string, numPoints: number, displayDriver: DisplayDriver, pathOffset: Vec2D) {
+  static createFromPath(
+    path: string,
+    numPoints: number,
+    displayDriver: DisplayDriver,
+    pathOffset: Vec2D,
+    scale: number,
+    pointOffset: number = 20
+  ) {
     const trackPath = new TrackPath(path, numPoints);
     trackPath.centerTrackPath(
       displayDriver.normalizedDisplayWidth,
@@ -96,8 +100,19 @@ export class TrackPath {
     trackPath.reverse();
     trackPath.reduce(10);
     trackPath.sampledPoints.forEach((p) => {
-      p.point = Vector.scale(p.point, displayDriver.scaler);
+      p.point = Vector.scale(p.point, scale);
     });
+
+    //* Offset point backwards to line up finish line with the end of the track
+    const firstPart = trackPath.sampledPoints.slice(
+      trackPath.sampledPoints.length - pointOffset,
+      trackPath.sampledPoints.length
+    );
+    trackPath.sampledPoints = [
+      ...firstPart,
+      ...trackPath.sampledPoints.slice(0, trackPath.sampledPoints.length - pointOffset),
+    ];
+    console.log("TrackPath", trackPath.sampledPoints);
     return trackPath;
   }
 

@@ -64,6 +64,7 @@ body {
   margin-inline: auto;
   transform: translate(-50%, -70%);
   left: 50%;
+  display: none;
 }
 
 .speed-meter__inner {

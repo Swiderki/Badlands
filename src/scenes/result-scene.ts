@@ -57,7 +57,6 @@ export class ResultScene extends Scene {
       );
 
       const topResults = results.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      // console.log(topResults);
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");
 

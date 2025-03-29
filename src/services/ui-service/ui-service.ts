@@ -101,7 +101,6 @@ export class UIService {
     const minutes = Math.floor(time / 60000);
     const seconds = ((time % 60000) / 1000).toFixed(0);
     const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
-    // console.log(Scoreboard.instance.currentLap);
     this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap + 1} span`)!.innerHTML =
       currentTime;
   }

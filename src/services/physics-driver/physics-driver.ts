@@ -106,17 +106,6 @@ class PhysicsDriver {
       Math.sin(impactAngle - normalAngle),
       Math.cos(impactAngle - normalAngle)
     );
-    // console.log(
-    //   "impactAngle:",
-    //   impactAngle,
-    //   "normalAngle:",
-    //   normalAngle,
-    //   "angleDifference:",
-    //   angleDifference
-    // );
-    // console.log("actualForce przed odbiciem:", controller.actualForce);
-    // console.log("normal vector:", normal);
-    console.log(angleDifference, "angleDifference");
     controller.rotate(angleDifference * 3);
 
     controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));

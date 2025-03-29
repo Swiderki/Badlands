@@ -4,6 +4,7 @@ import { StartPosition } from "@/types/track-driver";
 import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-utils";
 import { UIService } from "../services/ui-service/ui-service";
 import GameTimeline from "../services/game-logic/game-timeline";
+import { Vector } from "../util/vec-util";
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -19,7 +20,7 @@ class PlayerController extends PhysicsBasedController {
 
   constructor(sprite: Sprite, startPosition: StartPosition) {
     super(sprite);
-    this.setPosition(startPosition.position);
+    this.setPosition(Vector.subtract(startPosition.position, { x: 30, y: 15 }));
     this.angle = startPosition.angle;
 
     this.updateCurrentSprite();

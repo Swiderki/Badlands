@@ -42,9 +42,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    // console.log(scene);
     this._currentScene = scene;
-
     this._currentScene.onMount();
   }
 
@@ -96,7 +94,7 @@ class Game {
 
     if (event.key === "o") {
       this.nickname = "Player";
-      this.startGameScene("peugeot", "pink", "gravel");
+      this.startGameScene("peugeot", "pink", "grass");
     }
     if (event.key === "i") {
       Scoreboard.instance.currentLap += 1;
