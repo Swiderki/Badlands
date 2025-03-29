@@ -39,7 +39,7 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const playerDirection = PlayerController.currentInstance!.angle;
 
-      const nextPlayerStep = Vector.generateVectorFromAngle(this.attackRange, playerDirection);
+      const nextPlayerStep = Vector.generateVectorFromAngle(this.distanceBeforePlayer, playerDirection);
 
       const positionBeforePlayer = Vector.add(playerPosition, nextPlayerStep);
 

@@ -17,9 +17,6 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private corneringSpeed = 100;
   
   private attackRange = 70;
-  private tooCloseRange = 10;
-  private distanceBeforePlayer = 70;
-  private maxDegreeToAttack = 70;  
   
   private furtherDistanceToCheckpointTreshold = 40;
   private closerDistanceToCheckpointTreshold = 20;
