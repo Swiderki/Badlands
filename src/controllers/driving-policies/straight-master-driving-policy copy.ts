@@ -9,9 +9,9 @@ const breakPrecision = 0.01;
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
-class MiddleDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 200;
-  private corneringSpeed = 100;
+class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
+  private maxSpeed = 500;
+  private corneringSpeed = 50;
 
   private distanceToCheckpointTreshold = 20;
 
@@ -108,4 +108,4 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
   }
 }
 
-export default MiddleDrivingPolicy;
+export default StraightMasterDrivingPolicy;
