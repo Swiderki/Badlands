@@ -266,7 +266,7 @@
 
   {
     "name": "wrench",
-    "src": "/assets/effect_objects/obs1.jpg",
+    "src": "/assets/effect_objects/wrench.png",
     "config": {
       "spriteWidth": 24,
       "spriteHeight": 24
