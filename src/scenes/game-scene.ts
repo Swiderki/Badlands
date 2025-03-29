@@ -20,6 +20,8 @@ import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
 import { displayGameDebugInfo } from "../services/display-driver/display-debug";
+import AggressiveDrivingPolicy from "../controllers/driving-policies/aggresive-dricing-policy";
+import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-agressive-driving-policy";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -165,7 +167,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[2],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
+        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
         "NormcnkZJXnvkxjzcnvknjxcal"
       )
     );
@@ -175,7 +177,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[3],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Middle"
       )
     );

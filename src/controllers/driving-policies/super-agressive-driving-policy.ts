@@ -71,7 +71,7 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
 
   private getTarget(current_position: Vec2D): { shouldAttack: boolean; speed: number; target: CheckPoint } {
     // this.updateActualPath(current_position);
-    // this.updateCurrentCheckPoint(current_position);
+    this.updateCurrentCheckPoint(current_position);
     
     if (PlayerController.currentInstance !== null) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
