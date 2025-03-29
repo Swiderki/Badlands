@@ -3,8 +3,8 @@ import { PhysicsUtils } from "@/src/util/physics-util";
 import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
 import DisplayDriver from "../display-driver/display-driver";
-import { sign } from "crypto";
 import GameTimeline from "../game-logic/game-timeline";
+import { getDeltaTime } from "@/src/util/delta-time";
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't perform physics inside the controller, it's 'cause it uses information that single controller has no access to
@@ -25,7 +25,7 @@ class PhysicsDriver {
     controller.actualForce = this.engineBraking(controller, deltaTime);
     const newPosition = Vector.add(controller.position, Vector.scale(controller.actualForce, deltaTime));
     controller.position = newPosition;
-    controller.turning();
+    controller.turning(deltaTime);
     if (controller.steeringForce !== 0 && !controller.isTurning) {
       controller.steeringForce =
         Math.round(
@@ -36,7 +36,12 @@ class PhysicsDriver {
     //controller.enterNitroMode()
   }
 
-  handleCollision(controller: PhysicsBasedController, collisionPoint: Vec2D, trackCollider: number[][]) {
+  handleCollision(
+    controller: PhysicsBasedController,
+    collisionPoint: Vec2D,
+    trackCollider: number[][],
+    deltaTime: number
+  ) {
     if (!collisionPoint) {
       return;
     }
@@ -101,22 +106,11 @@ class PhysicsDriver {
       Math.sin(impactAngle - normalAngle),
       Math.cos(impactAngle - normalAngle)
     );
-    // console.log(
-    //   "impactAngle:",
-    //   impactAngle,
-    //   "normalAngle:",
-    //   normalAngle,
-    //   "angleDifference:",
-    //   angleDifference
-    // );
-    // console.log("actualForce przed odbiciem:", controller.actualForce);
-    // console.log("normal vector:", normal);
-
     controller.rotate(angleDifference * 3);
 
     controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
 
-    controller.setCurrentSprite();
+    controller.updateCurrentSprite();
     GameTimeline.setTimeout(() => {
       this.isColliding = false;
     }, 50);

@@ -1,7 +1,8 @@
 import { Scoreboard } from "../services/scoreboard/scoreboard";
-import GameScene from "./GameScene";
-import Scene from "./Scene";
+import GameScene from "./game-scene";
+import Scene from "./_scene";
 import Game from "@/src/services/game";
+import assert from "../util/assert";
 
 export class ResultScene extends Scene {
   private sceneRef: HTMLElement | null = null;
@@ -12,9 +13,7 @@ export class ResultScene extends Scene {
 
   override init(): void | Promise<void> {
     this.sceneRef = document.querySelector("#result-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Result scene not initialized");
     this.sceneRef.style.display = "block";
     this.overwritePlayerResults();
     this.overWriteRaceResults();
@@ -36,16 +35,12 @@ export class ResultScene extends Scene {
 
   override onMount() {
     this.sceneRef = document.querySelector("#result-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Result scene not initialized");
     this.sceneRef.style.display = "block";
   }
 
   override onDisMount() {
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Result scene not initialized");
     this.sceneRef.style.display = "none";
   }
 
@@ -62,7 +57,6 @@ export class ResultScene extends Scene {
       );
 
       const topResults = results.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      // console.log(topResults);
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");
 
@@ -93,7 +87,7 @@ export class ResultScene extends Scene {
 
     const playerResults = {
       nickname: Game.instance.nickname,
-      time: GameScene.instance.player.finishedTime,
+      time: GameScene.instance.playerController!.finishedTime,
     };
 
     this.results = [...opponentsResults, playerResults];

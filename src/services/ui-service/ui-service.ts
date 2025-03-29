@@ -1,5 +1,6 @@
 import Game from "../game";
 import { Scoreboard } from "../scoreboard/scoreboard";
+import assert from "@/src/util/assert";
 
 export class UIService {
   private static instance: UIService;
@@ -16,9 +17,7 @@ export class UIService {
   lapCount: number = 3;
 
   private get accTipRef(): HTMLElement {
-    if (!this.speedMeterRef) {
-      throw new Error("Speed meter not initialized");
-    }
+    assert(this.speedMeterRef, "Speed meter not initialized");
     if (!this._accTipRef) {
       this._accTipRef = document.createElement("div");
       this._accTipRef.classList.add("acc-tip");
@@ -29,9 +28,7 @@ export class UIService {
   }
 
   private get speedTipRef(): HTMLElement {
-    if (!this.speedMeterRef) {
-      throw new Error("Speed meter not initialized");
-    }
+    assert(this.speedMeterRef, "Speed meter not initialized");
     if (!this._speedTipRef) {
       this._speedTipRef = document.createElement("div");
       this._speedTipRef.classList.add("speed-tip");
@@ -104,7 +101,6 @@ export class UIService {
     const minutes = Math.floor(time / 60000);
     const seconds = ((time % 60000) / 1000).toFixed(0);
     const currentTime = `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
-    // console.log(Scoreboard.instance.currentLap);
     this._scoreboardListRef.querySelector(`#lap-${Scoreboard.instance.currentLap + 1} span`)!.innerHTML =
       currentTime;
   }

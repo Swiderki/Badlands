@@ -48,8 +48,6 @@ export namespace PhysicsUtils {
     const varianceX = sumXX / n - meanX ** 2;
     const varianceY = sumYY / n - meanY ** 2;
 
-    // console.log("VarianceX:", varianceX, "VarianceY:", varianceY);
-
     const denominator = n * sumXX - sumX ** 2;
     if (denominator === 0 || (varianceY > varianceX && n * sumXY - sumX * sumY === 0)) {
       //! here we handle the case of a vertical line

@@ -3,7 +3,7 @@ import { Perks } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import PlayerController from "@/src/controllers/player-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 const audio = new Audio("assets/sounds/no_collision.wav");
@@ -15,11 +15,9 @@ export default class NoCollisionPerk extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
-    // car.timedEffectDriver.finishEffect("damaged");
     if (car instanceof PlayerController) audio.play();
 
-
-    car.no_collision = true;
+    car.noCollision = true;
 
     const effect: TimedEffect = {
       canBeOverrided: false,
@@ -28,12 +26,11 @@ export default class NoCollisionPerk extends EffectObject {
       finish: () => {
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
-        car.no_collision = false;
+        car.noCollision = false;
       },
       update() {},
     };
 
-    // TODO change effect to no_colission
-    car.timedEffectDriver.addEffect("slip", effect);
+    car.timedEffectDriver.addEffect("no-collision", effect);
   }
 }

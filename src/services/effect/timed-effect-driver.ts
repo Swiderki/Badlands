@@ -1,4 +1,3 @@
-import { getDeltaTime } from "@/src/util/delta-time";
 import GameTimeline from "../game-logic/game-timeline";
 
 export interface TimedEffect {
@@ -9,27 +8,15 @@ export interface TimedEffect {
   finish(): void;
 }
 
-type EffectType = "boost" | "slip" | "damaged" | "nitro"; // | "slow" | "freeze" // TODO: Implement other effects
+type EffectType = "boost" | "slip" | "damaged" | "nitro" | "freeze" | "invisible" | "no-collision";
 
 /** This is a class managing time effect like a weaker grip after driving into banana peel, boost after collecting a boost-star etc. */
 export default class TimedEffectDriver {
-  // private static _instance: TimedEffectDriver;
   private _effects: Map<EffectType, TimedEffect> = new Map();
 
-  // constructor() {
-  //   TimedEffectDriver._instance = this;
-  // }
-
-  // static get currentInstance(): TimedEffectDriver | null {
-  //   if (!TimedEffectDriver._instance) {
-  //     return null;
-  //   }
-  //   return TimedEffectDriver._instance;
-  // }
-
-  update() {
+  update(deltaTime: number) {
     this._effects.forEach((effect, type) => {
-      effect.update(getDeltaTime());
+      effect.update(deltaTime);
       if (GameTimeline.now() > effect.startTimestamp + effect.duration) {
         effect.finish();
         this.cancelEffect(type);

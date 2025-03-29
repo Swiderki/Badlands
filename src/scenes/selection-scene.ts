@@ -1,5 +1,6 @@
-import Scene from "./Scene";
+import Scene from "./_scene";
 import Game from "@/src/services/game";
+import assert from "../util/assert";
 
 export class SelectionScene extends Scene {
   private sceneRef: HTMLElement | null = null;
@@ -9,9 +10,7 @@ export class SelectionScene extends Scene {
 
   override init(): void | Promise<void> {
     this.sceneRef = document.querySelector("#selection-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "block";
 
     this.sceneRef.querySelectorAll(".options div").forEach((el) => {
@@ -58,16 +57,12 @@ export class SelectionScene extends Scene {
 
   override onMount() {
     this.sceneRef = document.querySelector("#selection-scene");
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "block";
   }
 
   override onDisMount() {
-    if (!this.sceneRef) {
-      throw Error("Start scene not initialized");
-    }
+    assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "none";
   }
 }

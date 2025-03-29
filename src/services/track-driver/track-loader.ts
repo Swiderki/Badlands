@@ -41,10 +41,15 @@ class TrackLoader {
         const gates = data.gates ?? [];
 
         const pathOffset = data.pathOffset;
-        const checkPointPath = TrackPath.createFromPath(data.checkPointPath, 100, displayDriver, pathOffset);
-
-        checkPointPath.sampledPoints.push({ point: data.finishLine, curvature: 0, tangent: { x: 0, y: -1 } });
-        // console.log(checkPointPath.sampledPoints);
+        const scale = data.scale ?? displayDriver.scaler;
+        const checkPointPath = TrackPath.createFromPath(
+          data.checkPointPath,
+          100,
+          displayDriver,
+          pathOffset,
+          scale,
+          data.pointOffset
+        );
 
         return new Track(
           data.bonuses,
@@ -107,7 +112,6 @@ class TrackLoader {
         colliderData.push(row);
       }
 
-      // console.log(debug);
       resolve(colliderData);
     });
   }

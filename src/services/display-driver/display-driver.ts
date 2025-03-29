@@ -5,6 +5,7 @@ import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
+import assert from "@/src/util/assert";
 
 class DisplayDriver {
   private static _instance: DisplayDriver;
@@ -25,9 +26,7 @@ class DisplayDriver {
     //* Set the canvas and context
     this._canvas = canvas;
     const ctx = this._canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to get 2d context");
-    }
+    assert(ctx, "Failed to get 2d context");
 
     this._ctx = ctx;
 

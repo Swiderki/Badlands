@@ -1,14 +1,15 @@
-import { AboutScene } from "../scenes/AboutScene";
+import { AboutScene } from "../scenes/about-scene";
 import DisplayDriver from "./display-driver/display-driver";
-import GameScene from "../scenes/GameScene";
-import MainMenuScene from "../scenes/MainMenuScene";
-import { ResultScene } from "../scenes/ResultScene";
-import Scene from "../scenes/Scene";
-import { SelectionScene } from "../scenes/SelectionScene";
-import { StartScene } from "../scenes/StartScene";
+import GameScene from "../scenes/game-scene";
+import MainMenuScene from "../scenes/main-menu-scene";
+import { ResultScene } from "../scenes/result-scene";
+import Scene from "../scenes/_scene";
+import { SelectionScene } from "../scenes/selection-scene";
+import { StartScene } from "../scenes/start-scene";
 import { Scoreboard } from "./scoreboard/scoreboard";
-import { htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 import GameTimeline from "./game-logic/game-timeline";
+import assert from "../util/assert";
 
 class Game {
   //* Drivers
@@ -35,17 +36,13 @@ class Game {
   }
 
   get currentScene() {
-    if (!this._currentScene) {
-      throw new Error("Current scene not initialized");
-    }
+    assert(this._currentScene, "Current scene not initialized");
     return this._currentScene;
   }
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    // console.log(scene);
     this._currentScene = scene;
-
     this._currentScene.onMount();
   }
 
@@ -59,17 +56,12 @@ class Game {
 
   constructor(canvas: HTMLCanvasElement) {
     this.displayDriver = new DisplayDriver(canvas);
-    this.currentScene = new StartScene();
-    this.currentScene.init();
 
     Game.instance = this;
-    window.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
   static getInstance(): Game {
-    if (!Game.instance) {
-      throw new Error("Game instance not initialized");
-    }
+    assert(Game.instance, "Game instance not initialized");
     return Game.instance;
   }
 
@@ -77,8 +69,11 @@ class Game {
     this.displayDriver.setResolution(320, 182);
     this.displayDriver.clear();
 
-    const aa = await this.displayDriver.autoLoadSprites();
+    await this.displayDriver.autoLoadSprites();
+    htmlHideLoadingScreen();
 
+    this.startStartScene();
+    window.addEventListener("keydown", this.handleKeyDown.bind(this));
 
     //* Start the game loop
     this._update();
@@ -99,7 +94,7 @@ class Game {
 
     if (event.key === "o") {
       this.nickname = "Player";
-      this.startGameScene("peugeot", "pink", "gravel");
+      this.startGameScene("peugeot", "pink", "grass");
     }
     if (event.key === "i") {
       Scoreboard.instance.currentLap += 1;

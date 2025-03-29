@@ -1,3 +1,6 @@
+import GameScene from "@/src/scenes/game-scene";
+import Game from "../game";
+
 export class Scoreboard {
   static _instance: Scoreboard | null = null;
   private currentPlayerStartTime: Date | null = null;
@@ -47,5 +50,48 @@ export class Scoreboard {
     }
 
     return now.getTime() - lastLapTime.getTime();
+  }
+
+  update(gameScene: GameScene) {
+    const { playerController, track, opponentControllersList, UiService } = gameScene;
+    if (!playerController || !track || !track.checkPointPath) {
+      return;
+    }
+    const distanceToNextCheckpoint = track.checkPointPath.getDistanceToPoint(
+      playerController.centerPosition,
+      this.currentCheckpoint
+    );
+
+    if (
+      (distanceToNextCheckpoint < 30 &&
+        this.currentCheckpoint !== track.checkPointPath.sampledPoints.length) ||
+      (distanceToNextCheckpoint < 2 &&
+        this.currentCheckpoint === track.checkPointPath.sampledPoints.length) ||
+      isNaN(distanceToNextCheckpoint)
+    ) {
+      this.currentCheckpoint++;
+    }
+
+    UiService.setCurrentTime(this.currentTime);
+    UiService.setCurrentLapTime(this.currentLapTime);
+
+    if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
+      this.currentLap++;
+      this.currentCheckpoint = 1;
+    }
+
+    if (this.currentLap === UiService.lapCount) {
+      if (playerController.finished) return;
+      const nickname = Game.instance.nickname;
+
+      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime });
+      playerController.finished = true;
+      playerController.finishedTime = this.currentTime;
+      UiService.showSkipButton();
+
+      if (playerController.finished && opponentControllersList.every((opponent) => opponent.finished)) {
+        Game.instance.startResultScene();
+      }
+    }
   }
 }

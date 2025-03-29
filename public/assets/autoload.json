@@ -1,13 +1,5 @@
 [
   {
-    "name": "red_vehicle",
-    "src": "/assets/sprites/red_vehicles.png",
-    "config": {
-      "spriteWidth": 32,
-      "spriteHeight": 32
-    }
-  },
-  {
     "name": "gravel-track-collider",
     "src": "/assets/tracks/gravel/gravel-track-data.png",
     "config": {
@@ -248,8 +240,8 @@
     }
   },
   {
-    "name": "nitro_icon",
-    "src": "/assets/ui/nitro_sprite.png",
+    "name": "nitro-sprite",
+    "src": "/assets/ui/indicators/nitro-sprite.png",
     "config": {
       "spriteWidth": 18,
       "spriteHeight": 18
@@ -274,7 +266,7 @@
 
   {
     "name": "wrench",
-    "src": "/assets/effect_objects/obs1.jpg",
+    "src": "/assets/effect_objects/wrench.png",
     "config": {
       "spriteWidth": 24,
       "spriteHeight": 24

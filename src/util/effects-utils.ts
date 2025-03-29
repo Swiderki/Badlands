@@ -11,7 +11,6 @@ import WrenchPerk from "../services/effect/perk/wrench-perk";
 import IceObstacle from "../services/effect/obstacle/ice-cube-obstacle";
 import InvisiblePerk from "../services/effect/perk/invisible-perk";
 import NoCollisionPerk from "../services/effect/perk/no-collision-perk";
-// import PerkObject from "../services/effect/perk/perk-object";
 
 export enum Obstacles {
   POTHOLE = "pothole",

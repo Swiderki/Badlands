@@ -23,11 +23,11 @@ export class EnemyPath extends TrackPath {
   }
 
   get actualPathCurrentPoint(): number {
-    return this._actualPathCurrentPoint;// + this._pathOffset;
+    return this._actualPathCurrentPoint; // + this._pathOffset;
   }
 
   get currentTargetCheckPoint(): CheckPoint {
-    return this.actualPath[this._pathOffset-1];
+    return this.actualPath[this._pathOffset - 1];
   }
 
   get nextTargetCheckPoint(): CheckPoint {
@@ -113,7 +113,11 @@ export class EnemyPath extends TrackPath {
     if (!collisionManager) return;
 
     // Get intersections of the actual path with obstacles.
-    const intersections = collisionManager.getActualPathIntersections(this.actualPath, this.sampledPoints, parentController);
+    const intersections = collisionManager.getActualPathIntersections(
+      this.actualPath,
+      this.sampledPoints,
+      parentController
+    );
 
     if (intersections.length === 0) return;
 
@@ -123,10 +127,10 @@ export class EnemyPath extends TrackPath {
       const intersectionEndIndex =
         intersection.intersectionEndIndex + 3
           ? intersection.intersectionEndIndex
-          : intersection.intersectionEndIndex + 3; 
-      const intersectionEndPoint = this.actualPath[intersectionEndIndex].point; 
+          : intersection.intersectionEndIndex + 3;
+      const intersectionEndPoint = this.actualPath[intersectionEndIndex].point;
 
-      let positionOfObstacle = Vector.add(
+      const positionOfObstacle = Vector.add(
         Vector.scale(Vector.add(intersection.objectCorners[0], intersection.objectCorners[2]), 0.5),
         { x: 12, y: 12 } //! It will work only for obstacles that are 24x24
       );
@@ -135,27 +139,24 @@ export class EnemyPath extends TrackPath {
         .slice(intersectionStartIndex, intersectionEndIndex + 1)
         .map((point) => point.point);
 
-      let safeDistance = 55;
+      const safeDistance = 55;
       const newPoints: Vec2D[] = [];
 
-      for (let i = 0; i < pointsToReconsider.length-1; i++) {
+      for (let i = 0; i < pointsToReconsider.length - 1; i++) {
         const p1 = pointsToReconsider[i];
 
         const v = Vector.subtract(p1, positionOfObstacle);
         const distance = Vector.distance(p1, positionOfObstacle);
 
-        const offset = Vector.scale(
-          Vector.normalize(v),
-          Math.max((safeDistance - distance), 0)
-        );
+        const offset = Vector.scale(Vector.normalize(v), Math.max(safeDistance - distance, 0));
 
         let finalPoint = p1;
-        let offsetDiff = Vector.normalize(offset);
+        const offsetDiff = Vector.normalize(offset);
         let tempOffset = offsetDiff;
 
-        while(!this.isPointOnTrack(finalPoint, 1) && Vector.length(offset) > Vector.length(tempOffset)){
+        while (!this.isPointOnTrack(finalPoint, 1) && Vector.length(offset) > Vector.length(tempOffset)) {
           tempOffset = Vector.add(tempOffset, Vector.scale(offsetDiff, 10));
-          if(this.isPointOnTrack(Vector.add(p1, tempOffset), 1)) break;
+          if (this.isPointOnTrack(Vector.add(p1, tempOffset), 1)) break;
           finalPoint = Vector.add(p1, tempOffset);
         }
 
@@ -188,7 +189,7 @@ export class EnemyPath extends TrackPath {
       }, 0);
     }
   }
-  
+
   private isPointOnTrack(point: Vec2D, radius: number): boolean {
     const collisionManager = CollisionManager.instance;
     if (!collisionManager) return false;

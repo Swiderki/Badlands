@@ -3,7 +3,7 @@ import { Perks } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import GameTimeline from "../../game-logic/game-timeline";
 
 export default class InvisiblePerk extends EffectObject {
@@ -13,8 +13,6 @@ export default class InvisiblePerk extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     if (!GameScene.instance || !GameScene.instance.playerController) return;
-    // car.timedEffectDriver.finishEffect("damaged");
-    console.log("start niewidzialnosc");
     GameScene.instance.opponentControllersList.forEach((opponent) => {
       opponent.invisible = true;
     });
@@ -25,7 +23,6 @@ export default class InvisiblePerk extends EffectObject {
       startTimestamp: GameTimeline.now(),
       duration: 2000,
       finish: () => {
-        console.log("koniec niewidzialnosc");
         if (!GameScene.instance || !GameScene.instance.playerController) return;
 
         GameScene.instance.opponentControllersList.forEach((opponent) => {
@@ -36,7 +33,6 @@ export default class InvisiblePerk extends EffectObject {
       update() {},
     };
 
-    // TODO change effect to invisible
-    car.timedEffectDriver.addEffect("slip", effect);
+    car.timedEffectDriver.addEffect("invisible", effect);
   }
 }

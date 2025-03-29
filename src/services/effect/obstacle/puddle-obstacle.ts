@@ -17,17 +17,12 @@ export default class PuddleObstacle extends EffectObject {
   override onEnter(car: PhysicsBasedController) {
     if (car instanceof PlayerController) audio.play();
 
-    // const playerController = PlayerController.currentInstance;
-    // if (!playerController) return;
     car.actualForce.x *= this.FORCE_MODIFIER;
     car.actualForce.y *= this.FORCE_MODIFIER;
     car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
   }
 
   override onExit(car: PhysicsBasedController) {
-    console.log("exit");
-    // const playerController = PlayerController.currentInstance;
-    // if (!playerController) return;
     car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
   }
 }

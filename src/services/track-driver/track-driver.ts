@@ -50,7 +50,6 @@ class Track {
   ) {
     this._bonuses = bonuses;
     this._traction = traction;
-    this._startPositions = startPositions;
     this._fgLayers = fgLayers;
     this._bgLayers = bgLayers;
     this._colliderImages = [baseColliderImage];
@@ -65,7 +64,11 @@ class Track {
       }
       return { ...gate, sprite };
     });
+
     this._checkPointPath = checkPointPath;
+    this._startPositions = startPositions.map((startPosition) => {
+      return { position: checkPointPath.sampledPoints[0].point, angle: startPosition.angle };
+    });
     Track._instance = this;
   }
 
@@ -119,12 +122,6 @@ class Track {
       return null;
     }
     return Track._instance;
-  }
-
-  displayCheckpoints(displayDriver: DisplayDriver) {
-    if (!this._checkPointPath) return;
-
-    displayDriver.displayCheckpoints(this._checkPointPath.sampledPoints);
   }
 
   update() {
