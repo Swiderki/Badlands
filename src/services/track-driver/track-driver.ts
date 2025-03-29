@@ -124,12 +124,6 @@ class Track {
     return Track._instance;
   }
 
-  displayCheckpoints(displayDriver: DisplayDriver) {
-    if (!this._checkPointPath) return;
-
-    displayDriver.displayCheckpoints(this._checkPointPath.sampledPoints);
-  }
-
   update() {
     if (GameTimeline.now() > this.lastTrackObstacleSwitchTimestamp + this.TRACK_COLLIDER_SWITCH_COOLDOWN) {
       this._currentColliderImageIndex = (this._currentColliderImageIndex + 1) % this._colliderImages.length;

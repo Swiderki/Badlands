@@ -15,7 +15,7 @@ class OpponentController extends PhysicsBasedController {
   private _accelerationCooldown: number = 0.02;
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.02;
-  private _drivingPolicy: DrivingPolicyBase;
+  drivingPolicy: DrivingPolicyBase;
   nickname: string;
   finished = false;
   finishedTime = 0;
@@ -35,9 +35,9 @@ class OpponentController extends PhysicsBasedController {
 
     this.angle = startPosition.angle;
     this.updateCurrentSprite();
-    this._drivingPolicy = drivingPolicy;
-    this._drivingPolicy.parentRef = this;
-    this.setPosition(Vector.subtract(this._drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
+    this.drivingPolicy = drivingPolicy;
+    this.drivingPolicy.parentRef = this;
+    this.setPosition(Vector.subtract(this.drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
     this.nickname = nickname;
   }
 
@@ -47,7 +47,7 @@ class OpponentController extends PhysicsBasedController {
     this._lastBrake += deltaTime;
 
     //* Offset for x and y +30 and +15 is added for the same reason like in @/src/util/collision-util.ts
-    const action = this._drivingPolicy.getAction(
+    const action = this.drivingPolicy.getAction(
       { x: this.position.x + this.colliderWidth / 2 + 30, y: this.position.y + this.colliderHeight / 2 + 15 },
       this.angle,
       this.actualForce
@@ -76,12 +76,6 @@ class OpponentController extends PhysicsBasedController {
       ) {
         Game.getInstance().startResultScene();
       }
-    }
-
-    const displayDriver = DisplayDriver.currentInstance;
-    if (displayDriver) {
-      displayDriver.displayActualPath(this._drivingPolicy.enemyPath.actualPath, "green");
-      displayDriver.displayCheckpoints(this._drivingPolicy.enemyPath.sampledPoints, "red");
     }
   }
 }

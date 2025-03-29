@@ -19,6 +19,7 @@ import assert from "../util/assert";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
+import { displayGameDebugInfo } from "../services/display-driver/display-debug";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -29,6 +30,8 @@ class GameScene extends Scene {
   collisionManager: CollisionManager;
   physicsDriver: PhysicsDriver;
   UiService: UIService;
+
+  debugActive = true;
   private scoreboard: Scoreboard = Scoreboard.instance;
   private playerCar: string;
   private playerColor: string;
@@ -230,10 +233,10 @@ class GameScene extends Scene {
     });
 
     this.displayDriver.displayTrackFgLayers(this.track);
-    this.track.displayCheckpoints(this.displayDriver);
     this.track.renderGates();
 
     //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
+    displayGameDebugInfo(this);
     this.displayDriver.performDrawCalls();
   }
 

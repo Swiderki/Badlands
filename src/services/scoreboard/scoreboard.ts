@@ -75,7 +75,7 @@ export class Scoreboard {
     UiService.setCurrentTime(this.currentTime);
     UiService.setCurrentLapTime(this.currentLapTime);
 
-    if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length) {
+    if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
       this.currentLap++;
       this.currentCheckpoint = 1;
     }
