@@ -147,7 +147,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[0],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
         "Bob"
       )
     );
@@ -157,7 +157,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[1],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 5), scaler),
         "Jack"
       )
     );
@@ -167,7 +167,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[2],
-        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
+        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "NormcnkZJXnvkxjzcnvknjxcal"
       )
     );
@@ -177,7 +177,7 @@ class GameScene extends Scene {
       new OpponentController(
         opponentSprite,
         startPositions[3],
-        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -5), scaler),
         "Middle"
       )
     );

@@ -7,12 +7,13 @@ import PlayerController from "../player-controller";
 import { CheckPoint } from "@/types/track-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 import { Vector } from "@/src/util/vec-util";
+import { disconnect } from "process";
 
 class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 190;
   private corneringSpeed = 30;
   _visitedCheckpoint: number = 1;
-  private attackRange = 50; // Odległość, w której próbuje uderzyć gracza
+  private attackRange = 70; // Odległość, w której próbuje uderzyć gracza
 
   constructor(trackPath: EnemyPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
@@ -85,11 +86,13 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
       dd.drawLineBetweenVectors(playerPosition, positionBeforePlayer, "#ffffff");
 
       const distanceToPlayer = this.getDistance(current_position, positionBeforePlayer);
-      const shouldAttack = distanceToPlayer < this.attackRange;
-      if (shouldAttack) {
+      const isCloseEnough = distanceToPlayer < this.attackRange;
+      const isntTooClose = distanceToPlayer > 10;
+      const isDegreeGood = Vector.degreeBetweenVectors(Vector.subtract(positionBeforePlayer, current_position), nextPlayerStep) < 70;
+      if (isCloseEnough && isDegreeGood && isntTooClose) {
         return {
           shouldAttack: true,
-          speed: distanceToPlayer/this.attackRange,
+          speed: distanceToPlayer/this.attackRange*1.5,
           target: { point: positionBeforePlayer, curvature: 0, tangent: positionBeforePlayer },
         };
       }
