@@ -15,8 +15,8 @@ class DisplayDriver {
   private spriteLoader: SpriteLoader;
 
   private topQueue: DrawCall[] = [];
-  //* I should load this from config or set it dynamicly but it will be fixed 'cause im to lazy to bother
-  //* if this one causes u problems fixinf is up to u :*
+  //* I should load this from config or set it dynamic but it will be fixed 'cause im to lazy to bother
+  //* if this one causes u problems fixing is up to u :*
   scaler: number = 3;
 
   constructor(canvas: HTMLCanvasElement) {

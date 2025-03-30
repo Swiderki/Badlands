@@ -151,7 +151,6 @@ class Game {
     this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
     this._update();
   }
-
   //* This method is called every frame, but it should be free of any game logic
   //* It's only purpose is to keep FPS stable
   //* It prevents the game from running too fast or too slow

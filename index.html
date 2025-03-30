@@ -60,32 +60,49 @@
 
       <div id="selection-scene" class="scene">
         <div class="inner">
-          <h2>Choose Your Map</h2>
-          <div class="options">
-            <div class="option selected" data-map="grass">Grass</div>
-            <div class="option" data-map="gravel">Gravel</div>
-          </div>
-
-          <h2>Choose Your Car</h2>
-          <div class="options">
-            <div class="option selected" data-car="peugeot">Peugeot</div>
-            <div class="option" data-car="opel">Opel astra</div>
-          </div>
-
-          <h2>Color</h2>
-          <div class="options">
-            <div class="option selected" data-color="pink">Pink</div>
-            <div class="option" data-color="green">Green</div>
-            <div class="option" data-color="blue">Blue</div>
-            <div class="option" data-color="yellow">Yellow</div>
-            <div class="option" data-color="black">Black</div>
-            <!-- <div class="option" data-color="white">white</div> -->
+          <div class="selection-card__wrapper">
+            <div class="selection-card track-selection">
+              <img
+                class="selection-card__image"
+                src="/assets/ui/track-previews/snow-track-preview-v2.png"
+                alt="snow-track-preview"
+              />
+              <div class="selection__wrapper">
+                <button class="selection__button prev">⮜</button>
+                <div class="title">
+                  <div class="selection__option" data-id="1" data-map="snow">Snow</div>
+                  <div class="selection__option" data-id="2" data-map="grass">Grass</div>
+                  <div class="selection__option" data-id="3" data-map="gravel">Gravel</div>
+                </div>
+                <button class="selection__button next">⮞</button>
+              </div>
+            </div>
+            <div class="selection-card car-selection">
+              <div class="selection-card__image car-preview">
+                <div class="color-selection">
+                  <button class="color-box" data-color="black"></button>
+                  <button class="color-box selected" data-color="blue"></button>
+                  <button class="color-box" data-color="green"></button>
+                  <button class="color-box" data-color="pink"></button>
+                  <button class="color-box" data-color="yellow"></button>
+                </div>
+              </div>
+              <div class="selection__wrapper">
+                <button class="selection__button prev">⮜</button>
+                <div class="title">
+                  <span class="selection__option" data-id="1" data-car="opel">Opel</span>
+                  <span class="selection__option" data-id="2" data-car="peugeot">Pezio</span>
+                </div>
+                <button class="selection__button next">⮞</button>
+              </div>
+            </div>
           </div>
 
           <div class="flex">
             <button id="back-btn">Back</button>
             <button id="play-btn" class="mainBtn">Play</button>
           </div>
+          <img src="/assets/ui/level" alt="" />
         </div>
       </div>
       <div id="about-scene" class="scene">
@@ -96,7 +113,7 @@
             reach the finish line as fast as possible.
           </p>
           <button>Back</button>
-          <img class="start-scene__bg" src="/assets/ui/landing-screen.png" alt="landing-screen" />
+          <img class="start-scene__bg" src="/assets/ui/landing-screen-v2.png" alt="landing-screen" />
         </div>
       </div>
       <div id="result-scene" class="scene">
