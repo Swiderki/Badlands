@@ -12,7 +12,7 @@ class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
   private _rotationCooldown: number = 0.04;
   private _lastAcceleration: number = 0;
-  private _accelerationCooldown: number = 0.02;
+  private _accelerationCooldown: number = 0.00;
   private _lastBrake: number = 0;
   private _brakeCooldown: number = 0.02;
   drivingPolicy: DrivingPolicyBase;
@@ -30,7 +30,7 @@ class OpponentController extends PhysicsBasedController {
     super(sprite);
 
     // Temporary, bacause he cant deal with greater values
-    this.currentMaxSpeedForward = 500;
+    this.currentMaxSpeedForward = 200;
     this.accelerationPowerForward = 80;
 
     this.angle = startPosition.angle;
