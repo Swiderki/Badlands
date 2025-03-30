@@ -4,39 +4,40 @@ import assert from "../util/assert";
 
 export class SelectionScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private selectedMap: string = "grass";
-  private selectedCar: string = "peugeot";
-  private selectedColor: string = "pink";
+  private selectedMap: string = "snow";
+  private selectedCar: string = "opel";
+  private selectedColor: string = "blue";
 
   override init(): void | Promise<void> {
     this.sceneRef = document.querySelector("#selection-scene");
     assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "block";
 
-    this.sceneRef.querySelectorAll(".options div").forEach((el) => {
-      el.addEventListener("click", (event) => {
-        const target = event.currentTarget as HTMLElement;
+    const colorSelection = document.querySelector<HTMLElement>(".color-selection")!;
+    const colorBoxes = document.querySelectorAll<HTMLElement>(".color-selection .color-box")!;
 
-        if (target.hasAttribute("data-map")) {
-          this.sceneRef?.querySelectorAll("[data-map]").forEach((e) => e.classList.remove("selected"));
-          target.classList.add("selected");
-
-          this.selectedMap = target.getAttribute("data-map") || this.selectedMap;
-        }
-
-        if (target.hasAttribute("data-car")) {
-          this.sceneRef?.querySelectorAll("[data-car]").forEach((e) => e.classList.remove("selected"));
-          target.classList.add("selected");
-          this.selectedCar = target.getAttribute("data-car") || this.selectedCar;
-        }
-
-        if (target.hasAttribute("data-color")) {
-          this.sceneRef?.querySelectorAll("[data-color]").forEach((e) => e.classList.remove("selected"));
-          target.classList.add("selected");
-          this.selectedColor = target.getAttribute("data-color") || this.selectedColor;
+    //* Handle color selection
+    const carImage = this.sceneRef.querySelector<HTMLElement>(".car-preview")!;
+    console.log(carImage);
+    console.log(colorBoxes);
+    colorBoxes.forEach((box) => {
+      box.addEventListener("click", () => {
+        colorSelection.classList.toggle("active");
+        if (!box.classList.contains("selected")) {
+          this.selectedColor = box.dataset.color || "pink";
+          colorBoxes.forEach((b) => b.classList.remove("selected"));
+          box.classList.add("selected");
+          carImage.setAttribute(
+            "style",
+            `--image-url: url(/assets/sprites/${this.selectedCar}_${this.selectedColor}.png);`
+          );
+          console.log(carImage.style.backgroundImage);
         }
       });
     });
+
+    this.addMapSelectionHandling();
+    this.addCarSelectionHandling();
 
     const playBtnRef = this.sceneRef.querySelector("button#play-btn");
     playBtnRef?.addEventListener("click", () => {
@@ -64,5 +65,77 @@ export class SelectionScene extends Scene {
   override onDisMount() {
     assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "none";
+  }
+
+  addMapSelectionHandling() {
+    if (!this.sceneRef) return;
+    //* Handle map selection
+    const mapPreview = this.sceneRef.querySelector<HTMLElement>(".track-selection img")!;
+    const nextBtn = this.sceneRef.querySelector<HTMLElement>(".track-selection .selection__button.next")!;
+    const prevBtn = this.sceneRef.querySelector<HTMLElement>(".track-selection .selection__button.prev")!;
+    const mapOptions = this.sceneRef.querySelectorAll<HTMLElement>(".track-selection .selection__option")!;
+
+    const updateSelection = (newElement: HTMLElement | null) => {
+      if (!newElement) return;
+
+      const currentlySelected = document.querySelector(`.selection__option[data-map="${this.selectedMap}"]`);
+      if (currentlySelected) currentlySelected.classList.remove("selected");
+
+      newElement.classList.add("selected");
+      this.selectedMap = newElement.getAttribute("data-map") || "grass";
+      mapPreview.setAttribute("src", `/assets/ui/track-previews/${this.selectedMap}-track-preview.png`);
+
+      const id = parseInt(newElement.getAttribute("data-id") || "1") - 1;
+      mapOptions.forEach((option) => {
+        option.style.transform = `translateX(-${id * 100}%)`;
+      });
+    };
+
+    nextBtn.addEventListener("click", () => {
+      const currentlySelected = document.querySelector(`.selection__option[data-map="${this.selectedMap}"]`);
+      updateSelection(currentlySelected?.nextElementSibling as HTMLElement);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const currentlySelected = document.querySelector(`.selection__option[data-map="${this.selectedMap}"]`);
+      updateSelection(currentlySelected?.previousElementSibling as HTMLElement);
+    });
+  }
+
+  addCarSelectionHandling() {
+    if (!this.sceneRef) return;
+    //* Handle map selection
+    const carPreview = this.sceneRef.querySelector<HTMLElement>(".car-selection .car-preview")!;
+    const nextBtn = this.sceneRef.querySelector<HTMLElement>(".car-selection .selection__button.next")!;
+    const prevBtn = this.sceneRef.querySelector<HTMLElement>(".car-selection .selection__button.prev")!;
+    const carOptions = this.sceneRef.querySelectorAll<HTMLElement>(".car-selection .selection__option")!;
+
+    const updateSelection = (newElement: HTMLElement | null) => {
+      if (!newElement) return;
+      const currentlySelected = document.querySelector(`.selection__option[data-car="${this.selectedCar}"]`);
+      if (currentlySelected) currentlySelected.classList.remove("selected");
+
+      newElement.classList.add("selected");
+      this.selectedCar = newElement.getAttribute("data-car") || "opel";
+      carPreview.setAttribute(
+        "style",
+        `--image-url: url(/assets/sprites/${this.selectedCar}_${this.selectedColor}.png);`
+      );
+
+      const id = parseInt(newElement.getAttribute("data-id") || "1") - 1;
+      carOptions.forEach((option) => {
+        option.style.transform = `translateX(-${id * 100}%)`;
+      });
+    };
+
+    nextBtn.addEventListener("click", () => {
+      const currentlySelected = document.querySelector(`.selection__option[data-car="${this.selectedCar}"]`);
+      updateSelection(currentlySelected?.nextElementSibling as HTMLElement);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const currentlySelected = document.querySelector(`.selection__option[data-car="${this.selectedCar}"]`);
+      updateSelection(currentlySelected?.previousElementSibling as HTMLElement);
+    });
   }
 }

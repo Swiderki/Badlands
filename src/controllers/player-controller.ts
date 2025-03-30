@@ -89,7 +89,7 @@ class PlayerController extends PhysicsBasedController {
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
 
-    console.log(Vector.length(this.actualForce))
+    console.log(Vector.length(this.actualForce));
 
     if (this.getInput("arrowup") || this.getInput("w")) {
       this.accelerateForward();
