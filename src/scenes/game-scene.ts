@@ -20,6 +20,9 @@ import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
 import { displayGameDebugInfo } from "../services/display-driver/display-debug";
+import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
+import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
+import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -137,13 +140,20 @@ class GameScene extends Scene {
   }
 
   private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
-    const opponentSprite = this.displayDriver.getSprite("peugeot_blue");
-    assert(opponentSprite, "Failed to get opponent sprite");
+    const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
+    const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
+    const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
+    const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
+    
+    assert(opponentSprite1, "Failed to get opponent sprite");
+    assert(opponentSprite2, "Failed to get opponent sprite");
+    assert(opponentSprite3, "Failed to get opponent sprite");
+    assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* Create Middle driving enemy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite1,
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
         "Bob"
@@ -153,9 +163,9 @@ class GameScene extends Scene {
     //* It will later use BalancedDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite2,
         startPositions[1],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
         "Jack"
       )
     );
@@ -163,9 +173,9 @@ class GameScene extends Scene {
     //* It will later use AggressiveDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite3,
         startPositions[2],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
+        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "NormcnkZJXnvkxjzcnvknjxcal"
       )
     );
@@ -173,9 +183,9 @@ class GameScene extends Scene {
     //* It will later use SuperAggressiveDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite4,
         startPositions[3],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "Middle"
       )
     );

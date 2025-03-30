@@ -12,6 +12,7 @@ export class EnemyPath extends TrackPath {
   private _actualPathLength: number = 0;
   private _actualPathCurrentPointOffset: number = 0;
   private _pathOffset: number = 6;
+  private _safeDistance: number = 45;
   private readonly _maxActualPathLength: number = 500;
 
   private _actualPathCurrentPoint: number = 0;
@@ -139,7 +140,7 @@ export class EnemyPath extends TrackPath {
         .slice(intersectionStartIndex, intersectionEndIndex + 1)
         .map((point) => point.point);
 
-      const safeDistance = 55;
+      const safeDistance = this._safeDistance;
       const newPoints: Vec2D[] = [];
 
       for (let i = 0; i < pointsToReconsider.length - 1; i++) {

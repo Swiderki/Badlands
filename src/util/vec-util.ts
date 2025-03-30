@@ -99,4 +99,23 @@ export namespace Vector {
     const newLength = Math.max(0, len - amount);
     return scale(normalize(v), newLength);
   }
+
+  export function degreeBetweenVectors(a: Vec2D, b: Vec2D): number {
+    const dotProduct = a.x * b.x + a.y * b.y;
+    const magA = Math.sqrt(a.x ** 2 + a.y ** 2);
+    const magB = Math.sqrt(b.x ** 2 + b.y ** 2);
+  
+    if (magA === 0 || magB === 0) {
+      throw new Error("Cannot compute angle with zero-length vector");
+    }
+  
+    let cosTheta = dotProduct / (magA * magB);
+  
+    // Clamp cosTheta to avoid floating-point errors outside of valid range
+    cosTheta = Math.max(-1, Math.min(1, cosTheta));
+  
+    const angleRad = Math.acos(cosTheta);
+    const angleDeg = angleRad * (180 / Math.PI);
+    return angleDeg;
+  }
 }
