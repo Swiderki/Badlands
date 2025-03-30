@@ -22,17 +22,17 @@ export namespace Vector {
   }
 
 
-  // TODO ta funkcja była zła, wiec zmienilem, jesli beda bugi to zmienimy na stara
-  // export function angleBetween(v1: Vec2D, v2: Vec2D): number {
-  //   return Math.atan2(v2.y - v1.y, v2.x - v1.x);
-  // }
-
   export function angleBetween(v1: Vec2D, v2: Vec2D): number {
-    const dot = v1.x * v2.x + v1.y * v2.y; 
-    const mag1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
-    const mag2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y); 
-    return Math.acos(dot / (mag1 * mag2)); 
+    return Math.atan2(v2.y - v1.y, v2.x - v1.x);
   }
+
+  // ! Ta funkcja przechodzi testy
+  // export function angleBetween(v1: Vec2D, v2: Vec2D): number {
+  //   const dot = v1.x * v2.x + v1.y * v2.y; 
+  //   const mag1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
+  //   const mag2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y); 
+  //   return Math.acos(dot / (mag1 * mag2)); 
+  // }
 
   export function equals(v1: Vec2D, v2: Vec2D): boolean {
     return v1.x === v2.x && v1.y === v2.y;
