@@ -21,7 +21,10 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private furtherDistanceToCheckpointTreshold = 40;
   private closerDistanceToCheckpointTreshold = 20;
 
+  private playerInRangeSince: number = 0;
+
   private distanceToCheckpointTreshold = this.closerDistanceToCheckpointTreshold;
+  private brakeSound = new Audio("assets/sounds/horn.wav");
 
   constructor(trackPath: EnemyPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
@@ -32,11 +35,17 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   }
 
   private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
+    const now = Date.now();
+
     if (PlayerController.currentInstance !== null && !PlayerController.currentInstance.finished) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
+      if(distanceToPlayer < 22){
+        this.playerInRangeSince = now;
+      } 
       const shouldAttack = distanceToPlayer < this.attackRange;
-      if (shouldAttack) {
+      if (shouldAttack && now - this.playerInRangeSince > 3000) {
+        this.brakeSound.play();
         this.distanceToCheckpointTreshold = this.furtherDistanceToCheckpointTreshold;
         return {
           shouldAttack: true,

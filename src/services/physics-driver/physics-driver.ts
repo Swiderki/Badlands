@@ -6,6 +6,7 @@ import DisplayDriver from "../display-driver/display-driver";
 import GameTimeline from "../game-logic/game-timeline";
 import { getDeltaTime } from "@/src/util/delta-time";
 import PlayerController from "@/src/controllers/player-controller";
+
 const audioEngine = new Audio("assets/sounds/idle.wav");
 let isPlaying = false;
 
@@ -13,6 +14,7 @@ function playAudio() {
   if (!isPlaying) {
     isPlaying = true;
     audioEngine.currentTime = 0;
+    audioEngine.volume = 0.5;
     audioEngine
       .play()
       .then(() => {

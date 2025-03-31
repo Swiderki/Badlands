@@ -33,6 +33,8 @@ class Game {
     documentTimeline: new DocumentTimeline(),
   };
 
+  private menuMusic: HTMLAudioElement = new Audio("/assets/sounds/menu_theme.wav");
+
   get pauseDetails() {
     return this._pauseDetails;
   }
@@ -46,6 +48,32 @@ class Game {
     if (this._currentScene) this._currentScene.onDisMount();
     this._currentScene = scene;
     this._currentScene.onMount();
+
+    if (
+      scene instanceof AboutScene ||
+      scene instanceof MainMenuScene ||
+      scene instanceof SelectionScene ||
+      scene instanceof StartScene
+    ) {
+      if (this.menuMusic.paused) {
+        // Only perform transition if music is not already playing
+        this.menuMusic.loop = true;
+        this.menuMusic.volume = 0; // Start with zero volume
+        this.menuMusic.play().catch((err) => console.error("Failed to play menu music:", err));
+
+        // Gradually increase volume
+        const fadeInInterval = setInterval(() => {
+          if (this.menuMusic.volume < 1) {
+            this.menuMusic.volume = Math.min(this.menuMusic.volume + 0.1, 1);
+          } else {
+            clearInterval(fadeInInterval);
+          }
+        }, 200);
+      }
+    } else {
+      this.menuMusic.pause();
+      this.menuMusic.currentTime = 0;
+    }
   }
 
   get nickname() {

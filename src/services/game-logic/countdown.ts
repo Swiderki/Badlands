@@ -1,6 +1,6 @@
 import Game from "../game";
 
-export const startGameWithCountdown = () => {
+export const startGameWithCountdown = (): Promise<void> => {
   const game = Game.getInstance();
   game.pauseGame(true);
 
@@ -30,16 +30,19 @@ export const startGameWithCountdown = () => {
   if (elements.countdownDialog) elements.countdownDialog.style.display = "block";
   if (elements.speedMeter) elements.speedMeter.style.display = "none";
 
-  updateCountdown("3", "GET READY!", "/assets/sounds/3.wav", () => {
-    updateCountdown("2", "START YOUR ENGINES!", "/assets/sounds/2.wav", () => {
-      updateCountdown("1", "GO!", "/assets/sounds/1.wav", () => {
-        const startAudio = new Audio("/assets/sounds/start.wav");
-        startAudio.play();
+  return new Promise((resolve) => {
+    updateCountdown("3", "GET READY!", "/assets/sounds/3.wav", () => {
+      updateCountdown("2", "START YOUR ENGINES!", "/assets/sounds/2.wav", () => {
+        updateCountdown("1", "GO!", "/assets/sounds/1.wav", () => {
+          const startAudio = new Audio("/assets/sounds/start.wav");
+          startAudio.play();
 
-        if (elements.countdownDialog) elements.countdownDialog.style.display = "none";
-        if (elements.speedMeter) elements.speedMeter.style.display = "block";
+          if (elements.countdownDialog) elements.countdownDialog.style.display = "none";
+          if (elements.speedMeter) elements.speedMeter.style.display = "block";
 
-        game.resumeGame();
+          game.resumeGame();
+          resolve();
+        });
       });
     });
   });
