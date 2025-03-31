@@ -122,6 +122,11 @@ export class UIService {
     this._skipWrapper.style.display = "block";
   }
 
+  hideSkipButton() {
+    if (!this._skipWrapper) return;
+    this._skipWrapper.style.display = "none";
+  }
+
   addSkipButtonListener() {
     if (!this._skipWrapper) return;
     this._skipWrapper.addEventListener("click", () => {
