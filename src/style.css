@@ -7,7 +7,7 @@
 
 :root {
   --border-color: #aaa;
-  --border-dark-color: #0007;
+  --border-dark-color: #7777;
   --text-color: #eee;
   --text-color-hover: #eee;
   --text-color-active: #ddd;
@@ -43,6 +43,8 @@ body {
 }
 
 #app {
+  isolation: isolate;
+  position: relative;
   scale: 1.5;
 }
 
@@ -494,9 +496,15 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 0.7rem;
+  border: none;
+  background-color: #111;
+  font-size: 0.6rem;
 }
 
 #loading-screen img {
+  width: 3rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   animation: rotate ease-in-out 2s forwards infinite;
 }
 
