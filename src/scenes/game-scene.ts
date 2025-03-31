@@ -273,7 +273,6 @@ class GameScene extends Scene {
     if (!this.playerController) {
       return;
     }
-    // TODO: add this effect marking also to opponents
     //! DEV: Draw player has boost effect
     if (this.playerController.timedEffectDriver.effects) {
       const offset = 30;
