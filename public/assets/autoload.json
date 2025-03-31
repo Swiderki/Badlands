@@ -309,8 +309,8 @@
     "name": "ice",
     "src": "/assets/effect_objects/ice.png",
     "config": {
-      "spriteWidth": 100,
-      "spriteHeight": 100
+      "spriteWidth": 400,
+      "spriteHeight": 400
     }
   },
 
@@ -318,8 +318,16 @@
     "name": "gravel",
     "src": "/assets/effect_objects/gravel.png",
     "config": {
-      "spriteWidth": 200,
-      "spriteHeight": 200
+      "spriteWidth": 300,
+      "spriteHeight": 300
+    }
+  },
+  {
+    "name": "rain",
+    "src": "/assets/tracks/snow/rain.png",
+    "config": {
+      "spriteWidth": 640,
+      "spriteHeight": 364
     }
   }
 ]

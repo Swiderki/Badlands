@@ -269,6 +269,32 @@ class DisplayDriver {
     drawPath(controller.tracePoints.left);
     drawPath(controller.tracePoints.right);
   }
+
+  drawRain() {
+    this.topQueue.push(() => {
+      const now = GameTimeline.now() / 10;
+      const image = this.getSprite("rain")?.image;
+      assert(image, "add img with id='rain' in index.html");
+      const ptrn = this._ctx.createPattern(image, "repeat")!;
+      this._ctx.fillStyle = ptrn;
+
+      // Simulate rain falling at a 30-degree angle
+      const verticalOffset = now % (this._canvas.height * 2);
+      const angle = Math.PI / 6; // 30 degrees in radians
+      const xOffset = verticalOffset * Math.tan(angle);
+
+      this._ctx.save();
+      this._ctx.translate(-xOffset, verticalOffset);
+      this._ctx.rotate(-angle);
+      this._ctx.fillRect(
+        -this._canvas.width,
+        -this._canvas.height * 2,
+        this._canvas.width * 3,
+        this._canvas.height * 4
+      );
+      this._ctx.restore();
+    });
+  }
 }
 
 export default DisplayDriver;

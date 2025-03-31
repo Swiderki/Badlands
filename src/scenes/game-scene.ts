@@ -25,6 +25,7 @@ import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-
 import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
 import IceObstacle from "../services/effect/obstacle/ice-obstacle";
 import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
+import { getCarCorners } from "../util/collision-util";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -207,9 +208,11 @@ class GameScene extends Scene {
     const randomObstacles = getRandomObstacles(3, this.effectObjects);
     this.effectObjects.push(...randomObstacles);
     if (this.map === "snow") {
-      this.effectObjects.push(new IceObstacle({ x: 500, y: 120 }));
+      this.effectObjects.push(new IceObstacle({ x: 0, y: 0 }));
     } else if (this.map === "gravel") {
-      this.effectObjects.push(new GravelObstacle({ x: 500, y: 120 }));
+      this.effectObjects.push(new GravelObstacle({ x: 650, y: 0 }));
+      this.effectObjects.push(new GravelObstacle({ x: 650, y: 300 }));
+
     }
     console.log(this.effectObjects);
 
@@ -251,6 +254,8 @@ class GameScene extends Scene {
         position: obstacle.position,
         currentSprite: obstacle.randomSprite,
       });
+      // const corners = getCarCorners({x: obstacle.collision.x, y:obstacle.collision.y},obstacle.collision.width, obstacle.collision.height, obstacle.collision.angle)
+      // this.displayDriver.displayColliderCorners(corners,{x: obstacle.collision.x, y:obstacle.collision.y} ,obstacle.collision.angle)
     });
     if (!this.playerController!.finished && !this.playerController!.invisible) {
       this.renderPlayer();
@@ -273,7 +278,6 @@ class GameScene extends Scene {
     if (!this.playerController) {
       return;
     }
-    // TODO: add this effect marking also to opponents
     //! DEV: Draw player has boost effect
     if (this.playerController.timedEffectDriver.effects) {
       const offset = 30;
@@ -315,6 +319,9 @@ class GameScene extends Scene {
       return;
     }
     this.track.update();
+    if (this.track.isRainy) {
+      this.displayDriver.drawRain();
+    }
   }
 
   private playerUpdate(deltaTime: number) {

@@ -15,7 +15,7 @@ export default class CollisionHandlers {
       );
 
       const collidingCars: PhysicsBasedController[] = [];
-
+      
       const isPlayerColliding = collisionManager.isCollidingWithAnotherObject(
         playerCorners,
         obstacle.collision

@@ -5,6 +5,7 @@ import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-
 import { UIService } from "../services/ui-service/ui-service";
 import GameTimeline from "../services/game-logic/game-timeline";
 import { Vector } from "../util/vec-util";
+const audio = new Audio("assets/sounds/horn.wav");
 
 class PlayerController extends PhysicsBasedController {
   private static _instance: PlayerController;
@@ -92,8 +93,16 @@ class PlayerController extends PhysicsBasedController {
     this._lastBrake += deltaTime;
 
     if (this.getInput("arrowup") || this.getInput("w")) {
+      if (
+        Vector.length(this.actualForce) < 0.9 * this.currentMaxSpeedForward &&
+        this._lastAcceleration >= 0.4
+      ) {
+        const audio = new Audio("assets/sounds/gas.wav");
+        audio.volume = 0.5;
+        audio.play();
+        this._lastAcceleration = 0;
+      }
       this.accelerateForward();
-      this._lastAcceleration = 0;
     }
     if ((this.getInput("arrowright") || this.getInput("d")) && this._lastRotation >= this._rotationCooldown) {
       this.isTurning = true;
@@ -109,6 +118,11 @@ class PlayerController extends PhysicsBasedController {
       this.brake();
       this._lastBrake = 0;
     }
+    if(this.getInput("k")) {
+      audio.volume = 0.5;
+      audio.play();
+    }
+
   }
 }
 

@@ -94,6 +94,9 @@ export const getRandomPosition = (currentObstacles: EffectObject[]): Vec2D => {
       return distanceBetweenPointAndObstacle > minimumSpaceBetween;
     })
   );
+  if (!nonCollidingPoints.length) {
+    return sampledPoints[Math.floor(Math.random() * sampledPoints.length)].point;
+  }
 
   return nonCollidingPoints[Math.floor(Math.random() * nonCollidingPoints.length)].point;
 };
