@@ -71,6 +71,7 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
+    this.UiService.hideSkipButton();
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
     startGameWithCountdown();
@@ -78,6 +79,7 @@ class GameScene extends Scene {
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
+    
 
     await this.loadPlayer(this.track.startPositions[0], this.track.traction);
     await this.loadOpponents(
