@@ -4,6 +4,8 @@ import { Vec2D } from "@/types/physics";
 import GameTimeline from "../../game-logic/game-timeline";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
+import PlayerController from "@/src/controllers/player-controller";
+const audio = new Audio("assets/sounds/icecube.wav");
 
 export default class IceObstacle extends EffectObject {
   constructor(position: Vec2D) {
@@ -11,6 +13,8 @@ export default class IceObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
+    if (car instanceof PlayerController) audio.play();
+
     const oldMaxSpeed = car.currentMaxSpeedForward;
     const oldMaxSpeedBackward = car.currentMaxSpeedBackward;
     car.currentMaxSpeedForward = 0;
