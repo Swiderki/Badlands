@@ -309,8 +309,8 @@
     "name": "ice",
     "src": "/assets/effect_objects/ice.png",
     "config": {
-      "spriteWidth": 100,
-      "spriteHeight": 100
+      "spriteWidth": 400,
+      "spriteHeight": 400
     }
   },
 

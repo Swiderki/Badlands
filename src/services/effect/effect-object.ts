@@ -26,8 +26,8 @@ export default abstract class EffectObject {
     this.position = position;
     this.sprite = spriteObject;
     this.collision = {
-      x: position.x,
-      y: position.y,
+      x: position.x + spriteObject.config.spriteWidth/2,
+      y: position.y + spriteObject.config.spriteHeight/2,
       width: spriteObject.config.spriteWidth,
       height: spriteObject.config.spriteHeight,
       angle: 0,

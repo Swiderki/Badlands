@@ -4,7 +4,8 @@ import { Obstacles } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 
 export default class IceObstacle extends EffectObject {
-  private readonly ADHESION_MODIFIER = 0.002;
+  private readonly ADHESION_MODIFIER = 0.5;
+
 
   constructor(position: Vec2D) {
     super(position, Obstacles.ICE);
@@ -12,6 +13,12 @@ export default class IceObstacle extends EffectObject {
 
   override onEnter(car: PhysicsBasedController) {
     car.currentAdhesionModifier *= this.ADHESION_MODIFIER;
+    
+  }
+
+  override onColliding(car: PhysicsBasedController): void {
+    console.log("ice")
+    
   }
 
   override onExit(car: PhysicsBasedController) {
