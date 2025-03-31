@@ -13,8 +13,8 @@ import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 500;
-  private corneringSpeed = 100;
+  private maxSpeed = 350;
+  private corneringSpeed = 60;
   
   private attackRange = 70;
   
@@ -22,6 +22,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private closerDistanceToCheckpointTreshold = 20;
 
   private playerInRangeSince: number = 0;
+  private lastHorn: number = 0;
 
   private distanceToCheckpointTreshold = this.closerDistanceToCheckpointTreshold;
   private brakeSound = new Audio("assets/sounds/horn.wav");
@@ -40,12 +41,13 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
     if (PlayerController.currentInstance !== null && !PlayerController.currentInstance.finished) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
-      if(distanceToPlayer < 22){
-        this.playerInRangeSince = now;
+      if(distanceToPlayer < 22) this.playerInRangeSince = now;
+      if(distanceToPlayer < 40 && now - this.lastHorn > 3000){
+        this.brakeSound.play();
+        this.lastHorn = now;
       } 
       const shouldAttack = distanceToPlayer < this.attackRange;
-      if (shouldAttack && now - this.playerInRangeSince > 3000) {
-        this.brakeSound.play();
+      if (shouldAttack && now - this.playerInRangeSince > 2000) {
         this.distanceToCheckpointTreshold = this.furtherDistanceToCheckpointTreshold;
         return {
           shouldAttack: true,
