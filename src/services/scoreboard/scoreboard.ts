@@ -84,7 +84,7 @@ export class Scoreboard {
     }
 
     if (
-      (distanceToNextCheckpoint < 30 &&
+      (distanceToNextCheckpoint < 60 &&
         this.currentCheckpoint !== track.checkPointPath.sampledPoints.length) ||
       (distanceToNextCheckpoint < 2 &&
         this.currentCheckpoint === track.checkPointPath.sampledPoints.length) ||
