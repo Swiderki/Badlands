@@ -51,6 +51,14 @@ abstract class PhysicsBasedController {
   invisible = false;
   noCollision = false;
 
+  tracePaths: { left: Path2D; right: Path2D } = { left: new Path2D(), right: new Path2D() };
+  traceTimestamps: {
+    left: { position: Vec2D; timestamp: number; alpha?: number }[];
+    right: { position: Vec2D; timestamp: number; alpha?: number }[];
+  } = { left: [], right: [] };
+  private readonly TRACE_INTERVAL = 100; // ms
+  private _lastTraceTimestamp = 0;
+
   constructor(sprite: Sprite) {
     this.sprite = sprite;
 
@@ -60,10 +68,12 @@ abstract class PhysicsBasedController {
   }
 
   get centerPosition(): Vec2D {
-    return {
+    // Debugging center position
+    const center = {
       x: this.position.x + this.colliderWidth / 2 + 30,
       y: this.position.y + this.colliderHeight / 2 + 15,
     };
+    return center;
   }
 
   resetToDefaultSpeedAndAcceleration(): void {
@@ -195,7 +205,104 @@ abstract class PhysicsBasedController {
     };
   }
 
-  abstract update(deltaTime: number): void;
+  update(deltaTime: number): void {
+    const now = GameTimeline.now();
+
+    // Update trace paths if enough time has passed
+    if (now - this._lastTraceTimestamp >= this.TRACE_INTERVAL) {
+      this.updateTracePaths(now);
+      this._lastTraceTimestamp = now;
+    }
+
+    // Remove old trace points and rebuild paths if necessary
+    this.cleanupOldTraces(now);
+
+    // Update alpha values for fading effect
+    this.updateTraceAlphas(now);
+  }
+
+  private updateTracePaths(now: number): void {
+    const [leftWheel, rightWheel] = this.getWheelsPosition();
+
+    if (this.traceTimestamps.left.length === 0) {
+      this.tracePaths.left.moveTo(leftWheel.x, leftWheel.y);
+      this.tracePaths.right.moveTo(rightWheel.x, rightWheel.y);
+    } else {
+      this.tracePaths.left.lineTo(leftWheel.x, leftWheel.y);
+      this.tracePaths.right.lineTo(rightWheel.x, rightWheel.y);
+    }
+
+    this.traceTimestamps.left.push({ position: leftWheel, timestamp: now });
+    this.traceTimestamps.right.push({ position: rightWheel, timestamp: now });
+  }
+
+  private cleanupOldTraces(now: number): void {
+    const MAX_TRACE_AGE = 2000; // ms
+
+    const filterOldTraces = (traces: { position: Vec2D; timestamp: number; alpha?: number }[]) =>
+      traces.filter((trace) => now - trace.timestamp <= MAX_TRACE_AGE);
+
+    const initialLeftLength = this.traceTimestamps.left.length;
+    const initialRightLength = this.traceTimestamps.right.length;
+
+    this.traceTimestamps.left = filterOldTraces(this.traceTimestamps.left);
+    this.traceTimestamps.right = filterOldTraces(this.traceTimestamps.right);
+
+    if (initialLeftLength !== this.traceTimestamps.left.length) {
+      this.rebuildPath(this.tracePaths.left, this.traceTimestamps.left);
+    }
+    if (initialRightLength !== this.traceTimestamps.right.length) {
+      this.rebuildPath(this.tracePaths.right, this.traceTimestamps.right);
+    }
+  }
+
+  private updateTraceAlphas(now: number): void {
+    const MAX_TRACE_AGE = 2000; // ms
+
+    const calculateAlpha = (traces: { position: Vec2D; timestamp: number; alpha?: number }[]) =>
+      traces.forEach((trace, index) => {
+        const age = now - trace.timestamp;
+        const alpha = Math.max(0, 1 - age / MAX_TRACE_AGE); // Linear fade-out over MAX_TRACE_AGE
+        traces[index] = { ...trace, alpha };
+      });
+
+    calculateAlpha(this.traceTimestamps.left);
+    calculateAlpha(this.traceTimestamps.right);
+  }
+
+  private getWheelsPosition(): [Vec2D, Vec2D] {
+    const angleRad = (this.angle * Math.PI) / 180;
+    const halfWidth = this.colliderWidth / 2;
+    console.log(this.colliderWidth);
+    const offsetX = halfWidth * Math.sin(angleRad);
+    const offsetY = halfWidth * (Math.cos(angleRad) * -1);
+
+    const X_MAGIC_OFFSET = 1;
+    const Y_MAGIC_OFFSET = 7;
+
+    const leftWheel = {
+      x: this.centerPosition.x - offsetX + X_MAGIC_OFFSET,
+      y: this.centerPosition.y - offsetY + Y_MAGIC_OFFSET,
+    };
+
+    const rightWheel = {
+      x: this.centerPosition.x + offsetX + X_MAGIC_OFFSET,
+      y: this.centerPosition.y + offsetY + Y_MAGIC_OFFSET,
+    };
+
+    return [leftWheel, rightWheel];
+  }
+
+  private rebuildPath(path: Path2D, traces: { position: Vec2D; timestamp: number }[]) {
+    const newPath = new Path2D();
+    if (traces.length > 0) {
+      newPath.moveTo(traces[0].position.x, traces[0].position.y);
+      for (let i = 1; i < traces.length; i++) {
+        newPath.lineTo(traces[i].position.x, traces[i].position.y);
+      }
+    }
+    Object.assign(path, newPath);
+  }
 
   get collision(): CollisionObject {
     return {

@@ -42,6 +42,7 @@ class OpponentController extends PhysicsBasedController {
   }
 
   override update(deltaTime: number) {
+    super.update(deltaTime);
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;

@@ -1,14 +1,15 @@
+import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
+
 import { AboutScene } from "../scenes/about-scene";
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/game-scene";
+import GameTimeline from "./game-logic/game-timeline";
 import MainMenuScene from "../scenes/main-menu-scene";
 import { ResultScene } from "../scenes/result-scene";
 import Scene from "../scenes/_scene";
+import { Scoreboard } from "./scoreboard/scoreboard";
 import { SelectionScene } from "../scenes/selection-scene";
 import { StartScene } from "../scenes/start-scene";
-import { Scoreboard } from "./scoreboard/scoreboard";
-import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
-import GameTimeline from "./game-logic/game-timeline";
 import assert from "../util/assert";
 
 class Game {
@@ -20,6 +21,7 @@ class Game {
   private _penultimateRenderTime: number = 0;
   private _currentScene: Scene | null = null;
   private _nickname: string = "";
+  private _fps: number = 0;
 
   static instance: Game;
 
@@ -158,9 +160,20 @@ class Game {
   private _update() {
     this.displayDriver.clear();
     this.deltaTime = (this._lastRenderTime - this._penultimateRenderTime) / 1000;
+
+    // Calculate FPS
+    if (this.deltaTime > 0) {
+      this._fps = Math.round(1 / this.deltaTime);
+    }
+
     GameTimeline.update(this.deltaTime);
     this.currentScene.update(this.deltaTime);
     this.currentScene.render(this.displayDriver.ctx);
+
+    // Render FPS counter
+    this.displayDriver.ctx.fillStyle = "white";
+    this.displayDriver.ctx.font = "12px Arial";
+    this.displayDriver.ctx.fillText(`FPS: ${this._fps}`, 10, 20);
 
     // pause render if window isn't active
     // returns here to allow last render before pause

@@ -1,6 +1,8 @@
 import { DisplayData, DrawCall, SpriteData } from "@/types/display-driver";
 
 import { CheckPoint } from "@/types/track-driver";
+import GameTimeline from "../game-logic/game-timeline";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
@@ -238,6 +240,30 @@ class DisplayDriver {
 
   addDrawCall(call: () => void) {
     this.topQueue.push(call);
+  }
+
+  drawTraces(controller: PhysicsBasedController) {
+    const drawPath = (path: Path2D, timestamps: { position: Vec2D; timestamp: number; alpha?: number }[]) => {
+      if (timestamps.length > 1) {
+        this._ctx.lineWidth = 2;
+        for (let i = 0; i < timestamps.length - 1; i++) {
+          const start = timestamps[i];
+          const end = timestamps[i + 1];
+          const alpha = Math.min(start.alpha || 0, end.alpha || 0); // Use the lower alpha for the segment
+          if (alpha > 0) {
+            this._ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+            this._ctx.beginPath();
+            this._ctx.moveTo(start.position.x, start.position.y);
+            this._ctx.lineTo(end.position.x, end.position.y);
+            this._ctx.stroke();
+            this._ctx.closePath();
+          }
+        }
+      }
+    };
+
+    drawPath(controller.tracePaths.left, controller.traceTimestamps.left);
+    drawPath(controller.tracePaths.right, controller.traceTimestamps.right);
   }
 }
 

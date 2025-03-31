@@ -83,6 +83,8 @@ class PlayerController extends PhysicsBasedController {
   }
 
   override update(deltaTime: number) {
+    super.update(deltaTime);
+
     //* This one is just for testing purposes
 
     this._lastRotation += deltaTime;
