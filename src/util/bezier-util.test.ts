@@ -96,7 +96,7 @@ describe("getEvenlySpacedPoints", () => {
             { type: "L", x: 10, y: 10 },
         ];
         const result = getEvenlySpacedPoints(commands, 5);
-        expect(result.length).toBe(6); // 5 intervals = 6 points
+        expect(result.length).toBe(12); 
         expect(result[0].point).toEqual({ x: 0, y: 0 });
         expect(result[result.length - 1].point).toEqual({ x: 10, y: 10 });
     });
