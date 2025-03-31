@@ -271,5 +271,23 @@
       "spriteWidth": 24,
       "spriteHeight": 24
     }
+  },
+
+  {
+    "name": "ice",
+    "src": "/assets/effect_objects/ice.png",
+    "config": {
+      "spriteWidth": 100,
+      "spriteHeight": 100
+    }
+  },
+
+  {
+    "name": "gravel",
+    "src": "/assets/effect_objects/gravel.png",
+    "config": {
+      "spriteWidth": 200,
+      "spriteHeight": 200
+    }
   }
 ]

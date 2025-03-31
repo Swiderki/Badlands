@@ -23,6 +23,8 @@ import { displayGameDebugInfo } from "../services/display-driver/display-debug";
 import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
 import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
 import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
+import IceObstacle from "../services/effect/obstacle/ice-obstacle";
+import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -179,31 +181,37 @@ class GameScene extends Scene {
     );
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite3,
-        startPositions[2],
-        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "NormcnkZJXnvkxjzcnvknjxcal",
-        traction
-      )
-    );
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite3,
+    //     startPositions[2],
+    //     new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+    //     "NormcnkZJXnvkxjzcnvknjxcal",
+    //     traction
+    //   )
+    // );
     //* Create Middle driving enemy
     //* It will later use SuperAggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite4,
-        startPositions[3],
-        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-        "Middle",
-        traction
-      )
-    );
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite4,
+    //     startPositions[3],
+    //     new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
+    //     "Middle",
+    //     traction
+    //   )
+    // );
   }
 
   private async initEffectObjects() {
     const randomObstacles = getRandomObstacles(3, this.effectObjects);
     this.effectObjects.push(...randomObstacles);
+    if (this.map === "snow") {
+      this.effectObjects.push(new IceObstacle({ x: 500, y: 120 }));
+    } else if (this.map === "gravel") {
+      this.effectObjects.push(new GravelObstacle({ x: 500, y: 120 }));
+    }
+    console.log(this.effectObjects);
 
     const addPerk = () => {
       const randomPerks = getRandomPerks(1, this.effectObjects);

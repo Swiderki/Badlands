@@ -7,7 +7,7 @@ import { TimedEffect } from "../timed-effect-driver";
 import PlayerController from "@/src/controllers/player-controller";
 const audio = new Audio("assets/sounds/icecube.wav");
 
-export default class IceObstacle extends EffectObject {
+export default class IceCubeObstacle extends EffectObject {
   constructor(position: Vec2D) {
     super(position, Perks.ICE_CUBE);
   }
