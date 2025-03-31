@@ -163,7 +163,7 @@ class PhysicsDriver {
 
     const frictionForce =
       0.002 +
-      controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
+      controller.traction * controller.currentAdhesionModifier * frictionAmount * 0.03 +
       controller.brakingForce;
 
     controller.brakingForce = 0;
@@ -175,7 +175,7 @@ class PhysicsDriver {
 
   engineBraking(controller: PhysicsBasedController, deltaTime: number): Vec2D {
     const engineBrakingForce = 2 * deltaTime * 60;
-    const brakingAmount = controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce;
+    const brakingAmount = controller.currentAdhesionModifier * controller.traction * engineBrakingForce;
 
     return Vector.subtractFromLength(controller.actualForce, brakingAmount);
   }

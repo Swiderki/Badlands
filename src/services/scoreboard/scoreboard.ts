@@ -1,10 +1,16 @@
 import GameScene from "@/src/scenes/game-scene";
 import Game from "../game";
+import DisplayDriver from "../display-driver/display-driver";
+import { Vec2D } from "@/types/physics";
+import { Vector } from "@/src/util/vec-util";
+const audioLap = new Audio("assets/sounds/lap_finish.wav");
+const audioFinish = new Audio("assets/sounds/finish_line.wav");
 
 export class Scoreboard {
   static _instance: Scoreboard | null = null;
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
+  private clearCheckpointsCounter = 0;
   playerResults: { nickname: string; time: number }[] = [];
   _currentLap: number = 0;
   currentCheckpoint: number = 1;
@@ -62,6 +68,21 @@ export class Scoreboard {
       this.currentCheckpoint
     );
 
+    const dd = DisplayDriver.currentInstance!;
+    dd.drawPoint(track.checkPointPath.sampledPoints[this.currentCheckpoint].point, 5, "#f0f000")
+    for(const gate of track.gates){
+      const gatePosition = {x: (gate.x * dd.scaler)/2 + gate.sprite.config.spriteWidth/2, y: (gate.y * dd.scaler)/2 + gate.sprite.config.spriteHeight/3*2} as Vec2D;
+      const distanceToGate = Vector.length(Vector.subtract(
+        playerController.centerPosition,
+        gatePosition
+      ));
+      
+      if(distanceToGate < 32 && (track.currentTransitionFraction || !track.areShortcutsOpened) && this.clearCheckpointsCounter >= 10){
+        this.currentCheckpoint += 32;
+        this.clearCheckpointsCounter = 0;
+      }
+    }
+
     if (
       (distanceToNextCheckpoint < 30 &&
         this.currentCheckpoint !== track.checkPointPath.sampledPoints.length) ||
@@ -70,6 +91,7 @@ export class Scoreboard {
       isNaN(distanceToNextCheckpoint)
     ) {
       this.currentCheckpoint++;
+      this.clearCheckpointsCounter++;
     }
 
     UiService.setCurrentTime(this.currentTime);
@@ -78,10 +100,14 @@ export class Scoreboard {
     if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
       this.currentLap++;
       this.currentCheckpoint = 1;
+      if (this.currentLap !== UiService.lapCount) audioLap.play();
     }
 
     if (this.currentLap === UiService.lapCount) {
-      if (playerController.finished) return;
+      if (playerController.finished) {
+        audioFinish.play();
+        return;
+      }
       const nickname = Game.instance.nickname;
 
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime });

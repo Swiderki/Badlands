@@ -32,7 +32,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   }
 
   private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
-    if (PlayerController.currentInstance !== null) {
+    if (PlayerController.currentInstance !== null && !PlayerController.currentInstance.finished) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
       const shouldAttack = distanceToPlayer < this.attackRange;

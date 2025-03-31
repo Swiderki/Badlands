@@ -23,6 +23,8 @@ import { displayGameDebugInfo } from "../services/display-driver/display-debug";
 import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
 import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
 import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
+import IceObstacle from "../services/effect/obstacle/ice-obstacle";
+import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -76,11 +78,12 @@ class GameScene extends Scene {
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
 
-    await this.loadPlayer(this.track.startPositions[0]);
+    await this.loadPlayer(this.track.startPositions[0], this.track.traction);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
       this.track.checkPointPath!,
-      this.displayDriver.scaler
+      this.displayDriver.scaler,
+      this.track.traction
     );
     await this.initEffectObjects();
     this.initListeners();
@@ -132,14 +135,19 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "none";
   }
 
-  private async loadPlayer(startPosition: StartPosition) {
+  private async loadPlayer(startPosition: StartPosition, traction: number) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
     const playerSprite = this.displayDriver.getSprite(spriteName);
     assert(playerSprite, "Failed to get player sprite");
-    this.playerController = new PlayerController(playerSprite, startPosition);
+    this.playerController = new PlayerController(playerSprite, startPosition, traction);
   }
 
-  private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
+  private async loadOpponents(
+    startPositions: StartPosition[],
+    checkPointPath: TrackPath,
+    scaler: number,
+    traction: number
+  ) {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
@@ -156,7 +164,8 @@ class GameScene extends Scene {
         opponentSprite1,
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
-        "Bob"
+        "Bob",
+        traction
       )
     );
     //* Create Middle driving enemy
@@ -166,34 +175,43 @@ class GameScene extends Scene {
         opponentSprite2,
         startPositions[1],
         new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack"
+        "Jack",
+        traction
       )
     );
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite3,
-        startPositions[2],
-        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "NormcnkZJXnvkxjzcnvknjxcal"
-      )
-    );
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite3,
+    //     startPositions[2],
+    //     new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+    //     "NormcnkZJXnvkxjzcnvknjxcal",
+    //     traction
+    //   )
+    // );
     //* Create Middle driving enemy
     //* It will later use SuperAggressiveDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite4,
-        startPositions[3],
-        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-        "Middle"
-      )
-    );
+    // this.opponentControllersList.push(
+    //   new OpponentController(
+    //     opponentSprite4,
+    //     startPositions[3],
+    //     new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
+    //     "Middle",
+    //     traction
+    //   )
+    // );
   }
 
   private async initEffectObjects() {
     const randomObstacles = getRandomObstacles(3, this.effectObjects);
     this.effectObjects.push(...randomObstacles);
+    if (this.map === "snow") {
+      this.effectObjects.push(new IceObstacle({ x: 500, y: 120 }));
+    } else if (this.map === "gravel") {
+      this.effectObjects.push(new GravelObstacle({ x: 500, y: 120 }));
+    }
+    console.log(this.effectObjects);
 
     const addPerk = () => {
       const randomPerks = getRandomPerks(1, this.effectObjects);
@@ -239,6 +257,7 @@ class GameScene extends Scene {
     }
     this.opponentControllersList.forEach((opponent) => {
       if (opponent.finished || opponent.invisible) return;
+      this.displayDriver.drawTraces(opponent);
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
@@ -287,6 +306,7 @@ class GameScene extends Scene {
       }
       this.displayDriver.ctx.fill();
     }
+    this.displayDriver.drawTraces(this.playerController);
     this.displayDriver.drawSprite(this.playerController.displayData);
   }
 

@@ -5,6 +5,8 @@ import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
 import GameScene from "@/src/scenes/game-scene";
 import GameTimeline from "../../game-logic/game-timeline";
+import PlayerController from "@/src/controllers/player-controller";
+const audio = new Audio("assets/sounds/invisible.wav");
 
 export default class InvisiblePerk extends EffectObject {
   constructor(position: Vec2D) {
@@ -12,6 +14,7 @@ export default class InvisiblePerk extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
+    if (car instanceof PlayerController) audio.play();
     if (!GameScene.instance || !GameScene.instance.playerController) return;
     GameScene.instance.opponentControllersList.forEach((opponent) => {
       opponent.invisible = true;

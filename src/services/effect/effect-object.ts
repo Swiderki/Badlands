@@ -14,7 +14,8 @@ export default abstract class EffectObject {
   readonly collision: CollisionObject;
   readonly position: Vec2D;
   readonly sprite: Sprite;
-  readonly randomSprite = Math.floor(Math.random() * 5);
+  // readonly randomSprite = Math.floor(Math.random() * 5);
+  readonly randomSprite: number = 0;
 
   constructor(position: Vec2D, sprite: EffectSprites) {
     const spriteObject = DisplayDriver.currentInstance?.getSprite(sprite);
@@ -31,6 +32,7 @@ export default abstract class EffectObject {
       height: spriteObject.config.spriteHeight,
       angle: 0,
     };
+    console.log(spriteObject.config.spriteWidth);
   }
 
   /** Should be called only when player is colliding with Obstacle  */

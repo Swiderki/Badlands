@@ -78,6 +78,10 @@ class Track {
     return this._bonuses;
   }
 
+  get gates(): Gate[]{
+    return this._gates;
+  }
+
   get startPositions(): StartPosition[] {
     return this._startPositions;
   }
@@ -92,6 +96,10 @@ class Track {
 
   get colliderImage(): number[][] {
     return this._colliderImages[this._currentColliderImageIndex];
+  }
+
+  get traction(): number {
+    return this._traction;
   }
 
   /**

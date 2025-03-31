@@ -18,11 +18,11 @@ class PlayerController extends PhysicsBasedController {
   finished = false;
   finishedTime = 0;
 
-  constructor(sprite: Sprite, startPosition: StartPosition) {
-    super(sprite);
+  constructor(sprite: Sprite, startPosition: StartPosition, traction: number) {
+    super(sprite, traction);
     this.setPosition(Vector.subtract(startPosition.position, { x: 30, y: 15 }));
     this.angle = startPosition.angle;
-    this.currentMaxSpeedForward = 100;
+    this.currentMaxSpeedForward = 200;
 
     this.updateCurrentSprite();
 
@@ -83,13 +83,13 @@ class PlayerController extends PhysicsBasedController {
   }
 
   override update(deltaTime: number) {
+    super.update(deltaTime);
+
     //* This one is just for testing purposes
 
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
-
-    console.log(Vector.length(this.actualForce));
 
     if (this.getInput("arrowup") || this.getInput("w")) {
       this.accelerateForward();

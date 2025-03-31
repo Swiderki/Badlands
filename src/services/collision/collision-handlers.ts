@@ -1,5 +1,5 @@
-import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameScene from "@/src/scenes/game-scene";
+import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { getCarCorners } from "@/src/util/collision-util";
 
 export default class CollisionHandlers {
