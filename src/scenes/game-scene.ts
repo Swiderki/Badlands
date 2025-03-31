@@ -76,11 +76,12 @@ class GameScene extends Scene {
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
 
-    await this.loadPlayer(this.track.startPositions[0]);
+    await this.loadPlayer(this.track.startPositions[0], this.track.traction);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
       this.track.checkPointPath!,
-      this.displayDriver.scaler
+      this.displayDriver.scaler,
+      this.track.traction
     );
     await this.initEffectObjects();
     this.initListeners();
@@ -132,19 +133,24 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "none";
   }
 
-  private async loadPlayer(startPosition: StartPosition) {
+  private async loadPlayer(startPosition: StartPosition, traction: number) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
     const playerSprite = this.displayDriver.getSprite(spriteName);
     assert(playerSprite, "Failed to get player sprite");
-    this.playerController = new PlayerController(playerSprite, startPosition);
+    this.playerController = new PlayerController(playerSprite, startPosition, traction);
   }
 
-  private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
+  private async loadOpponents(
+    startPositions: StartPosition[],
+    checkPointPath: TrackPath,
+    scaler: number,
+    traction: number
+  ) {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
-    
+
     assert(opponentSprite1, "Failed to get opponent sprite");
     assert(opponentSprite2, "Failed to get opponent sprite");
     assert(opponentSprite3, "Failed to get opponent sprite");
@@ -156,7 +162,8 @@ class GameScene extends Scene {
         opponentSprite1,
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
-        "Bob"
+        "Bob",
+        traction
       )
     );
     //* Create Middle driving enemy
@@ -166,7 +173,8 @@ class GameScene extends Scene {
         opponentSprite2,
         startPositions[1],
         new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack"
+        "Jack",
+        traction
       )
     );
     //* Create Middle driving enemy
@@ -176,7 +184,8 @@ class GameScene extends Scene {
         opponentSprite3,
         startPositions[2],
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "NormcnkZJXnvkxjzcnvknjxcal"
+        "NormcnkZJXnvkxjzcnvknjxcal",
+        traction
       )
     );
     //* Create Middle driving enemy
@@ -186,7 +195,8 @@ class GameScene extends Scene {
         opponentSprite4,
         startPositions[3],
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-        "Middle"
+        "Middle",
+        traction
       )
     );
   }
