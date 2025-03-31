@@ -315,6 +315,9 @@ class GameScene extends Scene {
       return;
     }
     this.track.update();
+    if (this.track.isRainy) {
+      this.displayDriver.drawRain();
+    }
   }
 
   private playerUpdate(deltaTime: number) {

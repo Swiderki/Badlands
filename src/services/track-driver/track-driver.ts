@@ -1,11 +1,11 @@
 import BonusBase from "@/src/services/bonus/bonus-base";
 import DisplayDriver from "../display-driver/display-driver";
+import GameTimeline from "../game-logic/game-timeline";
 import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import { TrackPath } from "./track-path";
 import { Vec2D } from "@/types/physics";
 import type track from "@/public/assets/tracks/grass/track.json";
-import GameTimeline from "../game-logic/game-timeline";
 
 type GateConfig = (typeof track.gates)[number];
 type Gate = Omit<GateConfig, "sprite"> & { sprite: Sprite };
@@ -15,6 +15,7 @@ class Track {
   private _bonuses: BonusBase[];
 
   private _traction: number;
+  isRainy: boolean;
 
   //* Start positions (list of 5 starting positions for each car)
   private _startPositions: StartPosition[];
@@ -46,7 +47,8 @@ class Track {
     baseColliderImage: number[][],
     openedShortcutColliderImage: number[][] | null,
     gates: GateConfig[],
-    checkPointPath: TrackPath
+    checkPointPath: TrackPath,
+    isRainy: boolean
   ) {
     this._bonuses = bonuses;
     this._traction = traction;
@@ -66,6 +68,7 @@ class Track {
     });
 
     this._checkPointPath = checkPointPath;
+    this.isRainy = isRainy;
     this._startPositions = startPositions.map((startPosition) => {
       return { position: checkPointPath.sampledPoints[0].point, angle: startPosition.angle };
     });
@@ -78,7 +81,7 @@ class Track {
     return this._bonuses;
   }
 
-  get gates(): Gate[]{
+  get gates(): Gate[] {
     return this._gates;
   }
 

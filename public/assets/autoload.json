@@ -321,5 +321,13 @@
       "spriteWidth": 200,
       "spriteHeight": 200
     }
+  },
+  {
+    "name": "rain",
+    "src": "/assets/tracks/snow/rain.png",
+    "config": {
+      "spriteWidth": 640,
+      "spriteHeight": 364
+    }
   }
 ]
