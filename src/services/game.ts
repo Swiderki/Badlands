@@ -86,7 +86,6 @@ class Game {
       this.startResultScene();
 
       if (this.currentScene instanceof MainMenuScene) {
-        //TODO Implement ingame menu
         // this.startGameScene();
         // this.currentScene = this.
       } else if (this.currentScene instanceof GameScene) {
