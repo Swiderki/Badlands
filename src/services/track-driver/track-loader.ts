@@ -1,18 +1,36 @@
 import { Color, Sprite } from "@/types/display-driver";
 
-import DisplayDriver from "../display-driver/display-driver";
+import { mapPixelToCollisionType } from "@/src/util/misc-utils";
+import { Vec2D } from "@/types/physics";
 import { StartPosition } from "@/types/track-driver";
+import DisplayDriver from "../display-driver/display-driver";
 import Track from "./track-driver";
 import { TrackPath } from "./track-path";
-import { Vec2D } from "@/types/physics";
-import { mapPixelToCollisionType } from "@/src/util/misc-utils";
-import type track from "@/public/assets/tracks/grass/track.json";
+
+//* import types for track intellisense
+import type grassTrack from "@/public/assets/tracks/grass/track.json";
+import type gravelTrack from "@/public/assets/tracks/gravel/track.json";
+import type snowTrack from "@/public/assets/tracks/snow/track.json";
+
+type Normalize<T> = {
+  [K in keyof T]: T[K] extends number ? number : T[K];
+} & Partial<{
+  openedShortcutColliderImage: string;
+  gates: Array<{ x: number; y: number; sprite: string }>;
+  isRainy: boolean;
+}>;
+
+type NormalizedGrassTrack = Normalize<typeof grassTrack>;
+type NormalizedGravelTrack = Normalize<typeof gravelTrack>;
+type NormalizedSnowTrack = Normalize<typeof snowTrack>;
+
+type TrackDefinition = NormalizedGrassTrack | NormalizedGravelTrack | NormalizedSnowTrack;
 
 class TrackLoader {
   static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
     return fetch(location.origin + src)
       .then((response) => response.json())
-      .then(async (data: typeof track) => {
+      .then(async (data: TrackDefinition) => {
         //* fetch all needed sprites
         const fgLayers = data.fgLayers.map((layerName: string) =>
           displayDriver.getSprite(layerName)
@@ -39,7 +57,7 @@ class TrackLoader {
           : null;
 
         const gates = data.gates ?? [];
-
+        const isRainy = data.isRainy ?? false;
         const pathOffset = data.pathOffset;
         const scale = data.scale ?? displayDriver.scaler;
         const checkPointPath = TrackPath.createFromPath(
@@ -60,12 +78,10 @@ class TrackLoader {
           baseColliderImageData,
           openedShortcutColliderImage,
           gates,
-          checkPointPath
+          checkPointPath,
+          isRainy
         );
       });
-    // .catch((error) => {
-    //   throw new Error(`Failed to load track: ${error}`);
-    // });
   }
 
   static extractColliderFromImage(displayDriver: DisplayDriver, spriteName: string): Promise<number[][]> {

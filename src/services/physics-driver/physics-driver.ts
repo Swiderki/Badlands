@@ -5,13 +5,31 @@ import { Vec2D } from "@/types/physics";
 import DisplayDriver from "../display-driver/display-driver";
 import GameTimeline from "../game-logic/game-timeline";
 import { getDeltaTime } from "@/src/util/delta-time";
+import PlayerController from "@/src/controllers/player-controller";
+const audioEngine = new Audio("assets/sounds/idle.wav");
+let isPlaying = false;
+
+function playAudio() {
+  if (!isPlaying) {
+    isPlaying = true;
+    audioEngine.currentTime = 0;
+    audioEngine
+      .play()
+      .then(() => {
+        setTimeout(() => {
+          isPlaying = false;
+        }, audioEngine.duration * 900);
+      })
+      .catch((err) => console.error("Audio playback error:", err));
+  }
+}
 
 //* We use separate drivers for physics and display to separate concerns
 //* Also we don't perform physics inside the controller, it's 'cause it uses information that single controller has no access to
 //* Such as track information, enemies etc.
 class PhysicsDriver {
   private isColliding: boolean = false; // Flaga kolizji, aby zapobiec wielokrotnemu przetwarzaniu kolizji
-
+  private soundPlayed: boolean = false;
   //* TRACK INFO REF WILL BE HERE
 
   updateController(controller: PhysicsBasedController, deltaTime: number) {
@@ -31,6 +49,11 @@ class PhysicsDriver {
         Math.round(
           (controller.steeringForce - 60 * deltaTime * 0.05 * Math.sign(controller.steeringForce)) * 100
         ) / 100;
+    }
+    if (controller instanceof PlayerController) {
+      if (!this.soundPlayed) {
+        playAudio();
+      }
     }
     controller.isTurning = false;
     //controller.enterNitroMode()

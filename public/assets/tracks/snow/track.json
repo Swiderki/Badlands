@@ -12,6 +12,7 @@
   "bgLayers": ["snow-track-layer-1"],
   "fgLayers": ["snow-track-layer-2"],
   "colliderImage": "snow-track-collider",
+  "isRainy": true,
 
   "comment": "trzeba zmienić punkciki",
   "scale": 1.5,
