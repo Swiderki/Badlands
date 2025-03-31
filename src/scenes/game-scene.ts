@@ -210,7 +210,9 @@ class GameScene extends Scene {
     if (this.map === "snow") {
       this.effectObjects.push(new IceObstacle({ x: 0, y: 0 }));
     } else if (this.map === "gravel") {
-      this.effectObjects.push(new GravelObstacle({ x: 500, y: 120 }));
+      this.effectObjects.push(new GravelObstacle({ x: 650, y: 0 }));
+      this.effectObjects.push(new GravelObstacle({ x: 650, y: 300 }));
+
     }
     console.log(this.effectObjects);
 

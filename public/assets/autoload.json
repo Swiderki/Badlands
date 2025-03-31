@@ -318,8 +318,8 @@
     "name": "gravel",
     "src": "/assets/effect_objects/gravel.png",
     "config": {
-      "spriteWidth": 200,
-      "spriteHeight": 200
+      "spriteWidth": 300,
+      "spriteHeight": 300
     }
   },
   {
