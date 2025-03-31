@@ -271,5 +271,38 @@
       "spriteWidth": 24,
       "spriteHeight": 24
     }
+  },
+
+  {
+    "name": "repair-effect",
+    "src": "/assets/ui/indicators/repair-effect.png",
+    "config": {
+      "spriteWidth": 16,
+      "spriteHeight": 16
+    }
+  },
+  {
+    "name": "freeze-effect",
+    "src": "/assets/ui/indicators/effect-freeze.png",
+    "config": {
+      "spriteWidth": 16,
+      "spriteHeight": 16
+    }
+  },
+  {
+    "name": "check-engine",
+    "src": "/assets/ui/indicators/check-engine.png",
+    "config": {
+      "spriteWidth": 16,
+      "spriteHeight": 16
+    }
+  },
+  {
+    "name": "slip-effect",
+    "src": "/assets/ui/indicators/slip-effect.png",
+    "config": {
+      "spriteWidth": 16,
+      "spriteHeight": 16
+    }
   }
 ]

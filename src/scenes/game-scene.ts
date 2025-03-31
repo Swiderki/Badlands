@@ -144,7 +144,7 @@ class GameScene extends Scene {
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
-    
+
     assert(opponentSprite1, "Failed to get opponent sprite");
     assert(opponentSprite2, "Failed to get opponent sprite");
     assert(opponentSprite3, "Failed to get opponent sprite");
@@ -257,20 +257,33 @@ class GameScene extends Scene {
     // TODO: add this effect marking also to opponents
     //! DEV: Draw player has boost effect
     if (this.playerController.timedEffectDriver.effects) {
-      this.displayDriver.ctx.rect(
-        this.playerController.displayData.position.x,
-        this.playerController.displayData.position.y,
-        10,
-        10
-      );
+      const offset = 30;
       if (this.playerController.timedEffectDriver.hasEffect("nitro")) {
-        this.displayDriver.ctx.fillStyle = "blue";
+        console.log("nitro");
       } else if (this.playerController.timedEffectDriver.hasEffect("boost")) {
-        this.displayDriver.ctx.fillStyle = "green";
+        this.displayDriver.drawSprite({
+          sprite: this.displayDriver.getSprite("repair-effect")!,
+          position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),
+          currentSprite: 0,
+        });
       } else if (this.playerController.timedEffectDriver.hasEffect("slip")) {
-        this.displayDriver.ctx.fillStyle = "yellow";
+        this.displayDriver.drawSprite({
+          sprite: this.displayDriver.getSprite("slip-effect")!,
+          position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),
+          currentSprite: 0,
+        });
       } else if (this.playerController.timedEffectDriver.hasEffect("damaged")) {
-        this.displayDriver.ctx.fillStyle = "red";
+        this.displayDriver.drawSprite({
+          sprite: this.displayDriver.getSprite("check-engine")!,
+          position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),
+          currentSprite: 0,
+        });
+      } else if (this.playerController.timedEffectDriver.hasEffect("freeze")) {
+        this.displayDriver.drawSprite({
+          sprite: this.displayDriver.getSprite("freeze-effect")!,
+          position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),
+          currentSprite: 0,
+        });
       }
       this.displayDriver.ctx.fill();
     }
