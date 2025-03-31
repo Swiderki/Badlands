@@ -31,3 +31,5 @@ export type Color = {
   b: number;
   a: number;
 };
+
+export type TracePoint = { position: Vec2D; timestamp: number; alpha?: number };

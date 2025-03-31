@@ -1,4 +1,4 @@
-import { DisplayData, Sprite } from "@/types/display-driver";
+import { DisplayData, Sprite, TracePoint } from "@/types/display-driver";
 
 import { CollisionObject } from "@/types/collision";
 import GameTimeline from "../services/game-logic/game-timeline";
@@ -46,15 +46,15 @@ abstract class PhysicsBasedController {
   private readonly NITRO_SPEED_MODIFIER: number = 2;
   private readonly NITRO_ACCELERATION_MODIFIER: number = 4;
   private currentRefuelingTimestamp: number = -1;
-  private isNitroActive = false;
+  private _isNitroActive = false;
+  get isNitroActive() { return this._isNitroActive; } //prettier-ignore
 
   invisible = false;
   noCollision = false;
 
-  tracePaths: { left: Path2D; right: Path2D } = { left: new Path2D(), right: new Path2D() };
-  traceTimestamps: {
-    left: { position: Vec2D; timestamp: number; alpha?: number }[];
-    right: { position: Vec2D; timestamp: number; alpha?: number }[];
+  tracePoints: {
+    left: TracePoint[];
+    right: TracePoint[];
   } = { left: [], right: [] };
   private readonly TRACE_INTERVAL = 100; // ms
   private _lastTraceTimestamp = 0;
@@ -122,7 +122,7 @@ abstract class PhysicsBasedController {
   }
 
   enterNitroMode(onRefuel?: () => void) {
-    if (this.isNitroActive || this.isNitroOnCooldown()) {
+    if (this._isNitroActive || this.isNitroOnCooldown()) {
       return;
     }
 
@@ -142,7 +142,7 @@ abstract class PhysicsBasedController {
   }
 
   private activateNitroMode(): void {
-    this.isNitroActive = true;
+    this._isNitroActive = true;
     this.currentMaxSpeedForward *= this.NITRO_SPEED_MODIFIER;
     this.currentMaxSpeedBackward *= this.NITRO_SPEED_MODIFIER;
     this.currentAccelerationPowerForward *= this.NITRO_ACCELERATION_MODIFIER;
@@ -155,7 +155,7 @@ abstract class PhysicsBasedController {
     this.currentMaxSpeedBackward /= this.NITRO_SPEED_MODIFIER;
     this.currentAccelerationPowerForward /= this.NITRO_ACCELERATION_MODIFIER;
     this.currentAccelerationPowerBackward /= this.NITRO_ACCELERATION_MODIFIER;
-    this.isNitroActive = false;
+    this._isNitroActive = false;
     this.currentRefuelingTimestamp = GameTimeline.now();
     if (onRefuel) {
       GameTimeline.setTimeout(onRefuel, this.NITRO_REFUEL_COOLDOWN);
@@ -225,16 +225,8 @@ abstract class PhysicsBasedController {
   private updateTracePaths(now: number): void {
     const [leftWheel, rightWheel] = this.getWheelsPosition();
 
-    if (this.traceTimestamps.left.length === 0) {
-      this.tracePaths.left.moveTo(leftWheel.x, leftWheel.y);
-      this.tracePaths.right.moveTo(rightWheel.x, rightWheel.y);
-    } else {
-      this.tracePaths.left.lineTo(leftWheel.x, leftWheel.y);
-      this.tracePaths.right.lineTo(rightWheel.x, rightWheel.y);
-    }
-
-    this.traceTimestamps.left.push({ position: leftWheel, timestamp: now });
-    this.traceTimestamps.right.push({ position: rightWheel, timestamp: now });
+    this.tracePoints.left.push({ position: leftWheel, timestamp: now });
+    this.tracePoints.right.push({ position: rightWheel, timestamp: now });
   }
 
   private cleanupOldTraces(now: number): void {
@@ -243,18 +235,8 @@ abstract class PhysicsBasedController {
     const filterOldTraces = (traces: { position: Vec2D; timestamp: number; alpha?: number }[]) =>
       traces.filter((trace) => now - trace.timestamp <= MAX_TRACE_AGE);
 
-    const initialLeftLength = this.traceTimestamps.left.length;
-    const initialRightLength = this.traceTimestamps.right.length;
-
-    this.traceTimestamps.left = filterOldTraces(this.traceTimestamps.left);
-    this.traceTimestamps.right = filterOldTraces(this.traceTimestamps.right);
-
-    if (initialLeftLength !== this.traceTimestamps.left.length) {
-      this.rebuildPath(this.tracePaths.left, this.traceTimestamps.left);
-    }
-    if (initialRightLength !== this.traceTimestamps.right.length) {
-      this.rebuildPath(this.tracePaths.right, this.traceTimestamps.right);
-    }
+    this.tracePoints.left = filterOldTraces(this.tracePoints.left);
+    this.tracePoints.right = filterOldTraces(this.tracePoints.right);
   }
 
   private updateTraceAlphas(now: number): void {
@@ -267,16 +249,15 @@ abstract class PhysicsBasedController {
         traces[index] = { ...trace, alpha };
       });
 
-    calculateAlpha(this.traceTimestamps.left);
-    calculateAlpha(this.traceTimestamps.right);
+    calculateAlpha(this.tracePoints.left);
+    calculateAlpha(this.tracePoints.right);
   }
 
   private getWheelsPosition(): [Vec2D, Vec2D] {
     const angleRad = (this.angle * Math.PI) / 180;
     const halfWidth = this.colliderWidth / 2;
-    console.log(this.colliderWidth);
     const offsetX = halfWidth * Math.sin(angleRad);
-    const offsetY = halfWidth * (Math.cos(angleRad) * -1);
+    const offsetY = halfWidth * -Math.cos(angleRad);
 
     const X_MAGIC_OFFSET = 1;
     const Y_MAGIC_OFFSET = 7;
@@ -292,17 +273,6 @@ abstract class PhysicsBasedController {
     };
 
     return [leftWheel, rightWheel];
-  }
-
-  private rebuildPath(path: Path2D, traces: { position: Vec2D; timestamp: number }[]) {
-    const newPath = new Path2D();
-    if (traces.length > 0) {
-      newPath.moveTo(traces[0].position.x, traces[0].position.y);
-      for (let i = 1; i < traces.length; i++) {
-        newPath.lineTo(traces[i].position.x, traces[i].position.y);
-      }
-    }
-    Object.assign(path, newPath);
   }
 
   get collision(): CollisionObject {
