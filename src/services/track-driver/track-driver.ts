@@ -94,6 +94,10 @@ class Track {
     return this._colliderImages[this._currentColliderImageIndex];
   }
 
+  get traction(): number {
+    return this._traction;
+  }
+
   /**
    *  @returns value between 0 and 1 meaning 0 - start of transition, 1 - end of transition, track collider is being changed
    * e.g. if track collider switches every 5000ms then transition starts at 4000ms (with value of 0) and ends at 5000ms (with 1)

@@ -28,7 +28,7 @@ abstract class PhysicsBasedController {
   accelerationPowerForward: number = 9;
   accelerationPowerBackward: number = 7;
   defaultAdhesionModifier: number = 1;
-  mapAdhesion: number = 0.9;
+  traction: number = 0.9;
 
   currentMaxSpeedForward: number = this.maxSpeedForward;
   currentMaxSpeedBackward: number = this.maxSpeedBackward;
@@ -59,8 +59,9 @@ abstract class PhysicsBasedController {
   private readonly TRACE_INTERVAL = 100; // ms
   private _lastTraceTimestamp = 0;
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, traction: number) {
     this.sprite = sprite;
+    this.traction = traction;
 
     this.colliderHeight = 30;
     this.colliderWidth = 14;

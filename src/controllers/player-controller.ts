@@ -18,8 +18,8 @@ class PlayerController extends PhysicsBasedController {
   finished = false;
   finishedTime = 0;
 
-  constructor(sprite: Sprite, startPosition: StartPosition) {
-    super(sprite);
+  constructor(sprite: Sprite, startPosition: StartPosition, traction: number) {
+    super(sprite, traction);
     this.setPosition(Vector.subtract(startPosition.position, { x: 30, y: 15 }));
     this.angle = startPosition.angle;
     this.currentMaxSpeedForward = 100;

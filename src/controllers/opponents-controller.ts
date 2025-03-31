@@ -25,9 +25,10 @@ class OpponentController extends PhysicsBasedController {
     sprite: Sprite,
     startPosition: StartPosition,
     drivingPolicy: DrivingPolicyBase,
-    nickname: string
+    nickname: string,
+    traction: number
   ) {
-    super(sprite);
+    super(sprite, traction);
 
     // Temporary, bacause he cant deal with greater values
     this.currentMaxSpeedForward = 500;
