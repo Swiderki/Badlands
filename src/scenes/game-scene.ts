@@ -1,26 +1,28 @@
-import CollisionManager from "../services/collision/collision-manager";
-import DisplayDriver from "../services/display-driver/display-driver";
+import { StartPosition } from "@/types/track-driver";
 import MiddleDrivingPolicy from "../controllers/driving-policies/middle-driving-policy";
 import OpponentController from "../controllers/opponents-controller";
-import PhysicsDriver from "../services/physics-driver/physics-driver";
 import PlayerController from "../controllers/player-controller";
-import Scene from "./Scene";
-import { StartPosition } from "@/types/track-driver";
+import CollisionHandlers from "../services/collision/collision-handlers";
+import CollisionManager from "../services/collision/collision-manager";
+import DisplayDriver from "../services/display-driver/display-driver";
+import EffectObject from "../services/effect/effect-object";
+import Game from "../services/game";
+import { startGameWithCountdown } from "../services/game-logic/countdown";
+import PhysicsDriver from "../services/physics-driver/physics-driver";
+import { Scoreboard } from "../services/scoreboard/scoreboard";
+import { EnemyPath } from "../services/track-driver/enemy-path";
 import Track from "../services/track-driver/track-driver";
 import TrackLoader from "../services/track-driver/track-loader";
 import { TrackPath } from "../services/track-driver/track-path";
-import { Vector } from "../util/vec-util";
-import { getCarCorners } from "../util/collision-util";
 import { UIService } from "../services/ui-service/ui-service";
-import { Scoreboard } from "../services/scoreboard/scoreboard";
-import Game from "../services/game";
-import EffectObject from "../services/effect/effect-object";
-import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
-import PhysicsBasedController from "../controllers/physics-based-controller";
-import { EnemyPath } from "../services/track-driver/enemy-path";
-import { startGameWithCountdown } from "../services/game-logic/countdown";
-import CollisionHandlers from "../services/collision/collision-handlers";
 import assert from "../util/assert";
+import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
+import { Vector } from "../util/vec-util";
+import Scene from "./_scene";
+import { displayGameDebugInfo } from "../services/display-driver/display-debug";
+import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
+import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
+import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -31,6 +33,8 @@ class GameScene extends Scene {
   collisionManager: CollisionManager;
   physicsDriver: PhysicsDriver;
   UiService: UIService;
+
+  debugActive = true;
   private scoreboard: Scoreboard = Scoreboard.instance;
   private playerCar: string;
   private playerColor: string;
@@ -72,11 +76,12 @@ class GameScene extends Scene {
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
 
-    await this.loadPlayer(this.track.startPositions[0]);
+    await this.loadPlayer(this.track.startPositions[0], this.track.traction);
     await this.loadOpponents(
       this.track.startPositions.slice(1),
       this.track.checkPointPath!,
-      this.displayDriver.scaler
+      this.displayDriver.scaler,
+      this.track.traction
     );
     await this.initEffectObjects();
     this.initListeners();
@@ -128,54 +133,70 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "none";
   }
 
-  private async loadPlayer(startPosition: StartPosition) {
+  private async loadPlayer(startPosition: StartPosition, traction: number) {
     const spriteName = `${this.playerCar}_${this.playerColor}`;
     const playerSprite = this.displayDriver.getSprite(spriteName);
     assert(playerSprite, "Failed to get player sprite");
-    this.playerController = new PlayerController(playerSprite, startPosition);
+    this.playerController = new PlayerController(playerSprite, startPosition, traction);
   }
 
-  private async loadOpponents(startPositions: StartPosition[], checkPointPath: TrackPath, scaler: number) {
-    const opponentSprite = this.displayDriver.getSprite("peugeot_blue");
-    assert(opponentSprite, "Failed to get opponent sprite");
+  private async loadOpponents(
+    startPositions: StartPosition[],
+    checkPointPath: TrackPath,
+    scaler: number,
+    traction: number
+  ) {
+    const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
+    const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
+    const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
+    const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
+
+    assert(opponentSprite1, "Failed to get opponent sprite");
+    assert(opponentSprite2, "Failed to get opponent sprite");
+    assert(opponentSprite3, "Failed to get opponent sprite");
+    assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* Create Middle driving enemy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite1,
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
-        "Bob"
+        "Bob",
+        traction
       )
     );
     //* Create Middle driving enemy
     //* It will later use BalancedDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite2,
         startPositions[1],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack"
+        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        "Jack",
+        traction
       )
     );
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite3,
         startPositions[2],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -35), scaler),
-        "NormcnkZJXnvkxjzcnvknjxcal"
+        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        "NormcnkZJXnvkxjzcnvknjxcal",
+        traction
       )
     );
     //* Create Middle driving enemy
     //* It will later use SuperAggressiveDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite,
+        opponentSprite4,
         startPositions[3],
-        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "Middle"
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
+        "Middle",
+        traction
       )
     );
   }
@@ -232,10 +253,10 @@ class GameScene extends Scene {
     });
 
     this.displayDriver.displayTrackFgLayers(this.track);
-    this.track.displayCheckpoints(this.displayDriver);
     this.track.renderGates();
 
     //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
+    displayGameDebugInfo(this);
     this.displayDriver.performDrawCalls();
   }
 

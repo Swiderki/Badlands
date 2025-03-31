@@ -3,7 +3,7 @@ import { CheckPoint, SVGCommand } from "@/types/track-driver";
 import { Bezier } from "bezier-js";
 
 export function parseSVGPath(svgPath: string): SVGCommand[] {
-  const commands = svgPath.match(/[MLCQZVv][^MLCQZVv]*/g); // Include 'V' and 'v' in the regex
+  const commands = svgPath.match(/[MLCQZVvHh][^MLCQZVvHh]*/g); // Include 'V' and 'v' in the regex
   const points: SVGCommand[] = [];
 
   if (!commands) return points;
@@ -12,7 +12,7 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
   let currentY = 0; // Initialize currentY
 
   for (const command of commands) {
-    const type = command[0] as "M" | "L" | "C" | "Q" | "V" | "v" | "Z";
+    const type = command[0] as "M" | "L" | "C" | "Q" | "V" | "v" | "Z" | "H" | "h";
     const values = command.slice(1).trim().split(/[ ,]+/).map(Number);
 
     switch (type) {
@@ -20,6 +20,14 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
         currentX = values[0];
         currentY = values[1];
         points.push({ type, x: currentX, y: currentY });
+        break;
+      case "H": // Absolute horizontal move
+        currentX = values[0];
+        points.push({ type, x: currentX, y: currentY });
+        break;
+      case "h": // Relative horizontal move
+        currentX += values[0];
+        points.push({ type: "H", x: currentX, y: currentY });
         break;
       case "L": // Line to
         currentX = values[0];
@@ -69,13 +77,13 @@ export function parseSVGPath(svgPath: string): SVGCommand[] {
 
 export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number): CheckPoint[] {
   const sampledPoints: CheckPoint[] = [];
-
   for (const command of commands) {
     if (command.type === "C") {
       // Cubic Bezier curve
       const previous = sampledPoints[sampledPoints.length - 1];
       const bezier = new Bezier(
         previous.point,
+        { x: command.cp1x, y: command.cp1y },
         { x: command.cp2x, y: command.cp2y },
         { x: command.x, y: command.y }
       );
@@ -108,9 +116,32 @@ export function getEvenlySpacedPoints(commands: SVGCommand[], numPoints: number)
 
         sampledPoints.push({ point: { x, y }, tangent, curvature });
       }
-    } else if (command.type === "L" || command.type === "M" || command.type === "V") {
+    } else if (command.type === "L" || command.type === "M") {
       // For straight lines, evenly interpolate the points
       const startPoint: Vec2D = { x: command.x, y: command.y };
+
+      // Tangent is undefined for straight lines, but we can calculate it as a direction vector
+      const endPoint: Vec2D = { x: command.x, y: command.y };
+      const direction = { x: endPoint.x - startPoint.x, y: endPoint.y - startPoint.y };
+
+      // Curvature is zero for straight lines
+      const curvature = 0;
+
+      // Generate points between the start and end points
+      for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        const x = startPoint.x + direction.x * t;
+        const y = startPoint.y + direction.y * t;
+
+        // Tangent as the direction vector
+        const tangent: Vec2D = direction;
+
+        sampledPoints.push({ point: { x, y }, tangent, curvature });
+      }
+    } else if (command.type === "V" || command.type === "H") {
+      // For straight lines, evenly interpolate the points
+      const previous = sampledPoints[sampledPoints.length - 1].point;
+      const startPoint: Vec2D = { x: previous.x, y: previous.y };
 
       // Tangent is undefined for straight lines, but we can calculate it as a direction vector
       const endPoint: Vec2D = { x: command.x, y: command.y };

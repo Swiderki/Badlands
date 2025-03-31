@@ -3,7 +3,7 @@ import { Perks } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import PlayerController from "@/src/controllers/player-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 const audio = new Audio("assets/sounds/no_collision.wav");

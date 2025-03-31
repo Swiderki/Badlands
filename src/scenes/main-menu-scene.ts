@@ -1,4 +1,4 @@
-import Scene from "./Scene";
+import Scene from "./_scene";
 
 class MainMenuScene extends Scene {
   constructor() {

@@ -106,17 +106,6 @@ class PhysicsDriver {
       Math.sin(impactAngle - normalAngle),
       Math.cos(impactAngle - normalAngle)
     );
-    // console.log(
-    //   "impactAngle:",
-    //   impactAngle,
-    //   "normalAngle:",
-    //   normalAngle,
-    //   "angleDifference:",
-    //   angleDifference
-    // );
-    // console.log("actualForce przed odbiciem:", controller.actualForce);
-    // console.log("normal vector:", normal);
-    console.log(angleDifference, "angleDifference");
     controller.rotate(angleDifference * 3);
 
     controller.setPosition(Vector.add(controller.position, Vector.scale(normalizedNormal, 2)));
@@ -174,7 +163,7 @@ class PhysicsDriver {
 
     const frictionForce =
       0.002 +
-      controller.mapAdhesion * controller.currentAdhesionModifier * frictionAmount * 0.03 +
+      controller.traction * controller.currentAdhesionModifier * frictionAmount * 0.03 +
       controller.brakingForce;
 
     controller.brakingForce = 0;
@@ -186,7 +175,7 @@ class PhysicsDriver {
 
   engineBraking(controller: PhysicsBasedController, deltaTime: number): Vec2D {
     const engineBrakingForce = 2 * deltaTime * 60;
-    const brakingAmount = controller.currentAdhesionModifier * controller.mapAdhesion * engineBrakingForce;
+    const brakingAmount = controller.currentAdhesionModifier * controller.traction * engineBrakingForce;
 
     return Vector.subtractFromLength(controller.actualForce, brakingAmount);
   }

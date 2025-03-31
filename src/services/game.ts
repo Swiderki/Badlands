@@ -1,11 +1,11 @@
-import { AboutScene } from "../scenes/AboutScene";
+import { AboutScene } from "../scenes/about-scene";
 import DisplayDriver from "./display-driver/display-driver";
-import GameScene from "../scenes/GameScene";
-import MainMenuScene from "../scenes/MainMenuScene";
-import { ResultScene } from "../scenes/ResultScene";
-import Scene from "../scenes/Scene";
-import { SelectionScene } from "../scenes/SelectionScene";
-import { StartScene } from "../scenes/StartScene";
+import GameScene from "../scenes/game-scene";
+import MainMenuScene from "../scenes/main-menu-scene";
+import { ResultScene } from "../scenes/result-scene";
+import Scene from "../scenes/_scene";
+import { SelectionScene } from "../scenes/selection-scene";
+import { StartScene } from "../scenes/start-scene";
 import { Scoreboard } from "./scoreboard/scoreboard";
 import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 import GameTimeline from "./game-logic/game-timeline";
@@ -42,9 +42,7 @@ class Game {
 
   set currentScene(scene: Scene) {
     if (this._currentScene) this._currentScene.onDisMount();
-    // console.log(scene);
     this._currentScene = scene;
-
     this._currentScene.onMount();
   }
 
@@ -96,7 +94,7 @@ class Game {
 
     if (event.key === "o") {
       this.nickname = "Player";
-      this.startGameScene("peugeot", "pink", "gravel");
+      this.startGameScene("peugeot", "pink", "grass");
     }
     if (event.key === "i") {
       Scoreboard.instance.currentLap += 1;
@@ -153,7 +151,6 @@ class Game {
     this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
     this._update();
   }
-
   //* This method is called every frame, but it should be free of any game logic
   //* It's only purpose is to keep FPS stable
   //* It prevents the game from running too fast or too slow

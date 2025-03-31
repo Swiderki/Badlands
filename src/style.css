@@ -4,6 +4,15 @@
   box-sizing: border-box;
   user-select: none;
 }
+
+:root {
+  --border-color: #aaa;
+  --border-dark-color: #0007;
+  --text-color: #eee;
+  --text-color-hover: #eee;
+  --text-color-active: #ddd;
+}
+
 /* Remove antialiasing*/
 img,
 #game-canvas {
@@ -34,7 +43,7 @@ body {
 }
 
 #app {
-  scale: 0.8;
+  scale: 1.5;
 }
 
 #game-scene,
@@ -51,7 +60,7 @@ body {
   left: 0;
   z-index: 99;
   background-color: #0008;
-  color: #fff;
+  color: var(--text-color);
   display: none;
   justify-content: center;
   align-items: center;
@@ -64,6 +73,7 @@ body {
   margin-inline: auto;
   transform: translate(-50%, -70%);
   left: 50%;
+  display: none;
 }
 
 .speed-meter__inner {
@@ -78,7 +88,7 @@ body {
 
 .speed-meter__wrapper div#nitro-indicator {
   --current-sprite: 0;
-  background-image: url("/assets/ui/nitro_sprite.png");
+  background-image: url("/assets/ui/nitro-sprite.png");
   --icon-size: 18px;
   background-position-x: calc(var(--current-sprite) * var(--icon-size));
   width: var(--icon-size);
@@ -116,8 +126,12 @@ body {
   width: 320px;
   aspect-ratio: 320 / 182;
   scale: 3;
-  border: 1px solid #fff;
-  color: #fff;
+  /* border: 1px solid #333; */
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 2px;
+  border: 0.05rem solid var(--border-color);
+  border-radius: 2px;
+  overflow: hidden;
+  color: var(--text-color);
   font-family: "Pixelify Sans", sans-serif;
   font-optical-sizing: auto;
 }
@@ -151,24 +165,25 @@ body {
 }
 
 #start-scene button:first-of-type,
-#selection-scene button:first-of-type,
 #result-scene button:first-of-type,
 #about-scene button:first-of-type {
   margin-top: auto;
 }
 
 #start-scene button,
-#selection-scene button,
+#selection-scene button:not(.selection__button, .color-box),
 #result-scene button,
 #about-scene button,
 .skip__wrapper button {
+  border-radius: 1px;
   background-color: transparent;
-  color: #fff;
+  color: var(--text-color);
   border: none;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0;
   font-size: 12px;
-  width: 20%;
-  border: 1px solid #fff;
+  width: 3.5rem;
+  text-align: center;
+  border: 1px solid var(--text-color);
   cursor: pointer;
   font-family: inherit;
   outline: none;
@@ -178,7 +193,7 @@ body {
 #selection-scene button.mainBtn,
 #result-scene button.mainBtn,
 #about-scene button.mainBtn {
-  background-color: #fff;
+  background-color: var(--text-color);
   color: #000;
   transition: all 200ms;
 }
@@ -187,16 +202,16 @@ body {
 #selection-scene button.mainBtn:hover,
 #result-scene button.mainBtn:hover,
 #about-scene button.mainBtn:hover {
-  background-color: #eee;
-  border-color: #eee;
+  background-color: var(--text-color-hover);
+  border-color: var(--text-color-hover);
 }
 
 #start-scene button.mainBtn:active,
 #selection-scene button.mainBtn:active,
 #result-scene button.mainBtn:active,
 #about-scene button.mainBtn:active {
-  background-color: #ccc;
-  border-color: #ccc;
+  background-color: var(--text-color-active);
+  border-color: var(--text-color-active);
 }
 
 #start-scene h1,
@@ -231,11 +246,6 @@ h1 {
 .options {
   display: flex;
   gap: 20px;
-}
-
-#selection-scene .selected {
-  box-sizing: border-box;
-  outline: 1px solid #fff;
 }
 
 .winner-section {
@@ -490,11 +500,213 @@ h1 {
   animation: rotate ease-in-out 2s forwards infinite;
 }
 
+#selection-scene {
+  background-image: url("/assets/ui/level-selection-screen-v2.png");
+  backdrop-filter: brightness(0.5);
+  background-size: cover;
+}
+#selection-scene .inner {
+  margin-inline: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selection-card {
+  box-sizing: border-box;
+  width: 5.2rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 0.4rem;
+  background-color: rgba(10, 10, 10, 0.7);
+  border-radius: 2px;
+  padding: 0.4rem 0.4rem 0.35rem 0.4rem;
+  border: 0.05rem solid var(--border-dark-color);
+}
+
+.selection-card .selection-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 1px;
+  object-fit: cover;
+  padding: 0;
+  margin: 0;
+}
+
+.selection-card:not(:first-of-type) .selection-card__image {
+  object-position: 0% 0%;
+  position: relative;
+  isolation: isolate;
+}
+
+.car-preview {
+  --image-url: url("/assets/sprites/opel_blue.png");
+}
+
+.selection-card:not(:first-of-type) .selection-card__image::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 10%;
+  left: 0;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  background-image: var(--image-url);
+  background-position: 0%, 0%;
+  background-size: calc(100% * 60) 100%;
+  animation: car-image-rotation 7s steps(60) infinite; /* Adjust timing and steps */
+}
+
+.selection-card__wrapper {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#selection-scene .inner .flex {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.color-selection {
+  --box-size: 8px;
+  --gap-size: 0.25rem;
+  padding: 0;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  right: 0.2rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--gap-size);
+  width: fit-content;
+  overflow: hidden;
+  transition: max-width 0.3s ease;
+  max-width: 100%; /* Initially, only selected color box is visible */
+  height: var(--box-size);
+  padding-right: calc(var(--gap-size) + var(--box-size));
+  z-index: 10;
+}
+.color-selection.active {
+  max-width: 10rem;
+}
+
+.color-box {
+  /* border-radiuss: 1px; */
+  outline: none;
+  width: var(--box-size);
+  height: var(--box-size);
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  transition-property: opacity, transform, right, position;
+}
+
+.color-selection:not(.active) .color-box:not(.selected) {
+  opacity: 0;
+  transform: translateX(var(--box-size));
+}
+
+.color-box.selected {
+  opacity: 1;
+  transform: translateX(0);
+  z-index: 11;
+}
+
+.color-box.selected {
+  position: absolute;
+  bottom: 0;
+  right: 0rem;
+}
+
+.color-box[data-color="black"] {
+  background-color: #000;
+  border: 1px solid #fff3;
+}
+
+.color-box[data-color="blue"] {
+  background-color: blue;
+  border: 1px solid #fff3;
+}
+
+.color-box[data-color="green"] {
+  background-color: green;
+  border: 1px solid #0003;
+}
+
+.color-box[data-color="pink"] {
+  background-color: pink;
+  border: 1px solid #0003;
+}
+
+.color-box[data-color="white"] {
+  background-color: white;
+  border: 1px solid #0003;
+}
+
+.color-box[data-color="yellow"] {
+  background-color: yellow;
+  border: 1px solid #0005;
+}
+
+.title {
+  display: flex;
+  font-size: 0.45rem;
+  width: 3rem; /* Ensure this matches the container's available space */
+  overflow: hidden;
+  position: relative;
+}
+
+.selection__option {
+  min-width: 100%;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.selection__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selection__wrapper .selection__button {
+  background: transparent;
+  color: var(--text-color);
+  border: none;
+  outline: none;
+  padding: 0rem;
+  font-size: 0.5rem;
+  z-index: 10;
+}
+
 @keyframes rotate {
   0% {
     rotate: 0deg;
   }
   100% {
     rotate: 360deg;
+  }
+}
+
+@keyframes car-image-rotation {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: calc(100% * 60) 0%; /* Moves left through sprite frames */
   }
 }

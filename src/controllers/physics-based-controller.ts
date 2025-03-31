@@ -1,12 +1,12 @@
 import { DisplayData, Sprite } from "@/types/display-driver";
-import assert from "../util/assert";
 
 import { CollisionObject } from "@/types/collision";
+import GameTimeline from "../services/game-logic/game-timeline";
 import { PhysicsUtils } from "../util/physics-util";
 import TimedEffectDriver from "../services/effect/timed-effect-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "../util/vec-util";
-import GameTimeline from "../services/game-logic/game-timeline";
+import assert from "../util/assert";
 
 const spriteCount = 60;
 abstract class PhysicsBasedController {
@@ -28,7 +28,7 @@ abstract class PhysicsBasedController {
   accelerationPowerForward: number = 9;
   accelerationPowerBackward: number = 7;
   defaultAdhesionModifier: number = 1;
-  mapAdhesion: number = 0.9;
+  traction: number = 0.9;
 
   currentMaxSpeedForward: number = this.maxSpeedForward;
   currentMaxSpeedBackward: number = this.maxSpeedBackward;
@@ -41,16 +41,19 @@ abstract class PhysicsBasedController {
 
   timedEffectDriver: TimedEffectDriver = new TimedEffectDriver();
 
-  private readonly NITRO_DURATION: number = 200;
+  private readonly NITRO_DURATION: number = 500;
   private readonly NITRO_REFUEL_COOLDOWN: number = 3000;
+  private readonly NITRO_SPEED_MODIFIER: number = 2;
+  private readonly NITRO_ACCELERATION_MODIFIER: number = 4;
   private currentRefuelingTimestamp: number = -1;
   private isNitroActive = false;
 
   invisible = false;
   noCollision = false;
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, traction: number) {
     this.sprite = sprite;
+    this.traction = traction;
 
     this.colliderHeight = 30;
     this.colliderWidth = 14;
@@ -129,16 +132,19 @@ abstract class PhysicsBasedController {
   }
 
   private activateNitroMode(): void {
-    const nitroModifier = 2;
     this.isNitroActive = true;
-    this.currentMaxSpeedForward = this.maxSpeedForward * nitroModifier;
-    this.currentMaxSpeedBackward = this.maxSpeedBackward * nitroModifier;
-    this.currentAccelerationPowerForward = this.accelerationPowerForward * nitroModifier;
-    this.currentAccelerationPowerBackward = this.accelerationPowerBackward * nitroModifier;
+    this.currentMaxSpeedForward *= this.NITRO_SPEED_MODIFIER;
+    this.currentMaxSpeedBackward *= this.NITRO_SPEED_MODIFIER;
+    this.currentAccelerationPowerForward *= this.NITRO_ACCELERATION_MODIFIER;
+    this.currentAccelerationPowerBackward *= this.NITRO_ACCELERATION_MODIFIER;
   }
 
   private deactivateNitroMode(onRefuel?: () => void): void {
-    this.resetToDefaultSpeedAndAcceleration();
+    // this.resetToDefaultSpeedAndAcceleration();
+    this.currentMaxSpeedForward /= this.NITRO_SPEED_MODIFIER;
+    this.currentMaxSpeedBackward /= this.NITRO_SPEED_MODIFIER;
+    this.currentAccelerationPowerForward /= this.NITRO_ACCELERATION_MODIFIER;
+    this.currentAccelerationPowerBackward /= this.NITRO_ACCELERATION_MODIFIER;
     this.isNitroActive = false;
     this.currentRefuelingTimestamp = GameTimeline.now();
     if (onRefuel) {
@@ -162,7 +168,7 @@ abstract class PhysicsBasedController {
       const angle =
         (3 * this.steeringForce * (Vector.length(this.actualForce) + this.maxSpeedForward)) /
         (this.maxSpeedForward * 2);
-      this.rotate(angle * deltaTime);
+      this.rotate(angle * deltaTime * 60);
     }
   }
 

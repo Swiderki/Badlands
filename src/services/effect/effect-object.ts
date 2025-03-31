@@ -6,7 +6,7 @@ import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
 import { getCarCorners } from "@/src/util/collision-util";
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 
 /** This is a class representing physical object on the truck like pothole, puddle etc. */
 export default abstract class EffectObject {
@@ -18,7 +18,6 @@ export default abstract class EffectObject {
 
   constructor(position: Vec2D, sprite: EffectSprites) {
     const spriteObject = DisplayDriver.currentInstance?.getSprite(sprite);
-    console.log(sprite);
     if (!spriteObject) {
       throw new Error("Sprite not found");
     }

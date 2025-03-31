@@ -1,6 +1,6 @@
 import { Scoreboard } from "../services/scoreboard/scoreboard";
-import GameScene from "./GameScene";
-import Scene from "./Scene";
+import GameScene from "./game-scene";
+import Scene from "./_scene";
 import Game from "@/src/services/game";
 import assert from "../util/assert";
 
@@ -57,7 +57,6 @@ export class ResultScene extends Scene {
       );
 
       const topResults = results.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      // console.log(topResults);
       topResults.forEach((result, index) => {
         const resultHTML = document.createElement("li");
 

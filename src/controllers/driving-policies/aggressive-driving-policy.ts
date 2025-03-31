@@ -1,6 +1,9 @@
 import BaseDrivingPolicy from "./base-driving-policy";
+import PlayerController from "../player-controller";
+import { Vector } from "@/src/util/vec-util";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
+import { CheckPoint } from "@/types/track-driver";
 
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
@@ -9,14 +12,40 @@ const breakPrecision = 0.01;
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
-class MiddleDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 200;
+class AggressiveDrivingPolicy extends BaseDrivingPolicy {
+  private maxSpeed = 500;
   private corneringSpeed = 100;
+  
+  private attackRange = 70;
+  
+  private furtherDistanceToCheckpointTreshold = 40;
+  private closerDistanceToCheckpointTreshold = 20;
 
-  private distanceToCheckpointTreshold = 20;
+  private distanceToCheckpointTreshold = this.closerDistanceToCheckpointTreshold;
 
   constructor(trackPath: EnemyPath, scaling_factor: number) {
     super(trackPath, scaling_factor);
+  }
+
+  private getDistance(p1: Vec2D, p2: Vec2D): number {
+    return Math.hypot(p2.x - p1.x, p2.y - p1.y);
+  }
+
+  private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
+    if (PlayerController.currentInstance !== null) {
+      const playerPosition = PlayerController.currentInstance!.centerPosition;
+      const distanceToPlayer = this.getDistance(current_position, playerPosition);
+      const shouldAttack = distanceToPlayer < this.attackRange;
+      if (shouldAttack) {
+        this.distanceToCheckpointTreshold = this.furtherDistanceToCheckpointTreshold;
+        return {
+          shouldAttack: true,
+          target: { point: playerPosition, curvature: 0, tangent: playerPosition },
+        };
+      }
+    }
+    this.distanceToCheckpointTreshold = this.closerDistanceToCheckpointTreshold;
+    return { shouldAttack: false, target: this._enemyPath.currentTargetCheckPoint };
   }
 
   //* This one keeps track of progression in the whole track, stuff like laps and if its going backwards
@@ -73,21 +102,21 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     return Math.hypot(actualForce.x * forwardVector.x, actualForce.y * forwardVector.y);
   }
 
-  private getTargetSpeed(curvature: number): number {
-    // Normalize curvature: 0 means straight, 1 (or more) means a sharp turn
+  private getTargetSpeed(curvature: number, scalar: number = 1): number {
     const normalizedCurvature = Math.min(Math.abs(curvature * 10), 1);
-
-    // Linear interpolation between corneringSpeed and maxSpeed
-    return this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature);
+    return (this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature)) * scalar;
   }
+
 
   override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
     this.updateCurrentCheckPoint(current_position);
     this.updateActualPath(current_position);
+
+    const { target, shouldAttack } = this.getTarget(current_position);
+
     const car_position = { ...current_position };
-    const target = this._enemyPath.currentTargetCheckPoint.point;
     const checkpoint = this._enemyPath.currentTargetCheckPoint;
-    const angle_diff = this.getAngleDifference(target, car_position, current_rotation);
+    const angle_diff = this.getAngleDifference(target.point, car_position, current_rotation);
     const rotation = this.computeRotation(angle_diff);
     const targetSpeed = this.getTargetSpeed(checkpoint.curvature);
 
@@ -96,8 +125,12 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
 
     //* Debugging visualization
-    DisplayDriver.currentInstance?.drawLineBetweenVectors(car_position, target, "#0066ff");
-    DisplayDriver.currentInstance?.drawPoint(target, 4, "#0000ff");
+    DisplayDriver.currentInstance?.drawLineBetweenVectors(
+        current_position,
+        target.point,
+        shouldAttack ? "#ff0000" : "#0066ff"
+    );
+    DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
     return {
       acceleration: shouldAccelerate,
@@ -108,4 +141,4 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
   }
 }
 
-export default MiddleDrivingPolicy;
+export default AggressiveDrivingPolicy;

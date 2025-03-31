@@ -1,4 +1,4 @@
-import GameScene from "@/src/scenes/GameScene";
+import GameScene from "@/src/scenes/game-scene";
 import Game from "../game";
 
 export class Scoreboard {
@@ -75,7 +75,7 @@ export class Scoreboard {
     UiService.setCurrentTime(this.currentTime);
     UiService.setCurrentLapTime(this.currentLapTime);
 
-    if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length) {
+    if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
       this.currentLap++;
       this.currentCheckpoint = 1;
     }

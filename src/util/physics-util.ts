@@ -22,9 +22,11 @@ export namespace PhysicsUtils {
     //* It returns the slope and the y-intercept (in y=ax+b form; it returns a and b)
     const n = samples.length;
     if (n < 2) {
-      throw new Error(
-        "You need to pass at least two different points inside of the linearRegression list parameter."
-      );
+      // throw new Error(
+      //   "You need to pass at least two different points inside of the linearRegression list parameter."
+      // );
+      console.log("WARNING!!! You should pass at least two points to linearRegression function! (It was error thrown here before. Now its only console.log warning.) Returned values are [0,0].")
+      return [0,0];
     }
 
     let sumX = 0,
@@ -47,8 +49,6 @@ export namespace PhysicsUtils {
     // Wariancja X i Y (mierzy rozrzut punktów)
     const varianceX = sumXX / n - meanX ** 2;
     const varianceY = sumYY / n - meanY ** 2;
-
-    // console.log("VarianceX:", varianceX, "VarianceY:", varianceY);
 
     const denominator = n * sumXX - sumX ** 2;
     if (denominator === 0 || (varianceY > varianceX && n * sumXY - sumX * sumY === 0)) {
