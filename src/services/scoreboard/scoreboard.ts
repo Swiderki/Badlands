@@ -1,10 +1,14 @@
 import GameScene from "@/src/scenes/game-scene";
 import Game from "../game";
+import DisplayDriver from "../display-driver/display-driver";
+import { Vec2D } from "@/types/physics";
+import { Vector } from "@/src/util/vec-util";
 
 export class Scoreboard {
   static _instance: Scoreboard | null = null;
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
+  private clearCheckpointsCounter = 0;
   playerResults: { nickname: string; time: number }[] = [];
   _currentLap: number = 0;
   currentCheckpoint: number = 1;
@@ -62,6 +66,21 @@ export class Scoreboard {
       this.currentCheckpoint
     );
 
+    const dd = DisplayDriver.currentInstance!;
+    dd.drawPoint(track.checkPointPath.sampledPoints[this.currentCheckpoint].point, 5, "#f0f000")
+    for(const gate of track.gates){
+      const gatePosition = {x: (gate.x * dd.scaler)/2 + gate.sprite.config.spriteWidth/2, y: (gate.y * dd.scaler)/2 + gate.sprite.config.spriteHeight/3*2} as Vec2D;
+      const distanceToGate = Vector.length(Vector.subtract(
+        playerController.centerPosition,
+        gatePosition
+      ));
+      
+      if(distanceToGate < 32 && (track.currentTransitionFraction || !track.areShortcutsOpened) && this.clearCheckpointsCounter >= 10){
+        this.currentCheckpoint += 32;
+        this.clearCheckpointsCounter = 0;
+      }
+    }
+
     if (
       (distanceToNextCheckpoint < 30 &&
         this.currentCheckpoint !== track.checkPointPath.sampledPoints.length) ||
@@ -70,6 +89,7 @@ export class Scoreboard {
       isNaN(distanceToNextCheckpoint)
     ) {
       this.currentCheckpoint++;
+      this.clearCheckpointsCounter++;
     }
 
     UiService.setCurrentTime(this.currentTime);

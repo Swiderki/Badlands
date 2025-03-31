@@ -78,6 +78,10 @@ class Track {
     return this._bonuses;
   }
 
+  get gates(): Gate[]{
+    return this._gates;
+  }
+
   get startPositions(): StartPosition[] {
     return this._startPositions;
   }
