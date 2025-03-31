@@ -3,6 +3,8 @@ import Game from "../game";
 import DisplayDriver from "../display-driver/display-driver";
 import { Vec2D } from "@/types/physics";
 import { Vector } from "@/src/util/vec-util";
+const audioLap = new Audio("assets/sounds/lap_finish.wav");
+const audioFinish = new Audio("assets/sounds/finish_line.wav");
 
 export class Scoreboard {
   static _instance: Scoreboard | null = null;
@@ -98,10 +100,14 @@ export class Scoreboard {
     if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
       this.currentLap++;
       this.currentCheckpoint = 1;
+      if (this.currentLap !== UiService.lapCount) audioLap.play();
     }
 
     if (this.currentLap === UiService.lapCount) {
-      if (playerController.finished) return;
+      if (playerController.finished) {
+        audioFinish.play();
+        return;
+      }
       const nickname = Game.instance.nickname;
 
       Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime });
