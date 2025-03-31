@@ -1,6 +1,8 @@
 import { StartPosition } from "@/types/track-driver";
 import MiddleDrivingPolicy from "../controllers/driving-policies/middle-driving-policy";
-import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
+import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy";
+import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
+import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
 import OpponentController from "../controllers/opponents-controller";
 import PlayerController from "../controllers/player-controller";
 import CollisionHandlers from "../services/collision/collision-handlers";
@@ -163,26 +165,27 @@ class GameScene extends Scene {
     assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* Create Middle driving enemy
-    // this.opponentControllersList.push(
-    //   new OpponentController(
-    //     opponentSprite1,
-    //     startPositions[0],
-    //     new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
-    //     "Bob",
-    //     traction
-    //   )
-    // );
-    // //* Create Middle driving enemy
-    // //* It will later use BalancedDrivingPolicy
-    // this.opponentControllersList.push(
-    //   new OpponentController(
-    //     opponentSprite2,
-    //     startPositions[1],
-    //     new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-    //     "Jack",
-    //     traction
-    //   )
-    // );
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite1,
+        startPositions[0],
+        new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+        "Bob",
+        traction
+      )
+    );
+    //* Create Middle driving enemy
+    //* It will later use BalancedDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite2,
+        startPositions[1],
+        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        "Jack",
+        traction
+      )
+    );
+    this.opponentControllersList[this.opponentControllersList.length - 1].currentAccelerationPowerForward += 10;
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
     this.opponentControllersList.push(
@@ -194,17 +197,17 @@ class GameScene extends Scene {
         traction
       )
     );
-    //* Create Middle driving enemy
-    //* It will later use SuperAggressiveDrivingPolicy
-    // this.opponentControllersList.push(
-    //   new OpponentController(
-    //     opponentSprite4,
-    //     startPositions[3],
-    //     new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-    //     "Middle",
-    //     traction
-    //   )
-    // );
+    // * Create Middle driving enemy
+    // * It will later use SuperAggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite4,
+        startPositions[3],
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
+        "Middle",
+        traction
+      )
+    );
   }
 
   private async initEffectObjects() {

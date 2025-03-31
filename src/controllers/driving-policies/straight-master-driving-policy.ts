@@ -10,8 +10,8 @@ import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 500;
-  private corneringSpeed = 50;
+  private maxSpeed = 350;
+  private corneringSpeed = 60;
 
   private distanceToCheckpointTreshold = 20;
 
@@ -74,6 +74,9 @@ class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
   }
 
   private getTargetSpeed(curvature: number): number {
+    if(Math.abs(curvature) > 0.01 && Math.abs(curvature) < 0.5 ){
+      return this.corneringSpeed;
+    }
     // Normalize curvature: 0 means straight, 1 (or more) means a sharp turn
     const normalizedCurvature = Math.min(Math.abs(curvature * 10), 1);
 

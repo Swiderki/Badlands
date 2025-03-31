@@ -13,8 +13,8 @@ import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
-  private maxSpeed = 500;
-  private corneringSpeed = 100;
+  private maxSpeed = 200;
+  private corneringSpeed = 200;
   
   private attackRange = 70;
   private tooCloseRange = 10;
