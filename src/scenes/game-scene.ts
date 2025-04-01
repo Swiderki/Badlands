@@ -45,6 +45,7 @@ class GameScene extends Scene {
   private playerCar: string;
   private playerColor: string;
   private map: string;
+  private debugVisible: boolean = false;
   static instance: GameScene;
   static getInstance(): GameScene {
     if (!GameScene.instance) {
@@ -143,6 +144,9 @@ class GameScene extends Scene {
         if (!obstacle) return;
         this.effectObjects.push(obstacle);
       }
+      if (e.key === "`"){
+        this.debugVisible = !this.debugVisible;
+      }
     });
   }
 
@@ -204,7 +208,7 @@ class GameScene extends Scene {
           opponentSprite2,
           startPositions[1],
           new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-          "Jack",
+          "Straight Jack",
           traction,
           this.map === "snow"
         )
@@ -217,7 +221,7 @@ class GameScene extends Scene {
         opponentSprite1,
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
-        "Bob",
+        "Bob The Middler",
         traction,
         this.map === "snow"
       )
@@ -233,7 +237,7 @@ class GameScene extends Scene {
         marekMaruchaSprite,
         startPositions[2],
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "Norman",
+        "Aggressive Norman",
         traction,
         this.map === "snow"
       )
@@ -245,7 +249,7 @@ class GameScene extends Scene {
         opponentSprite4,
         startPositions[3],
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-        "Middle",
+        "Super Seba",
         traction,
         this.map === "snow"
       )
@@ -399,7 +403,7 @@ class GameScene extends Scene {
     this.track.renderGates();
 
     //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
-    displayGameDebugInfo(this);
+    if(this.debugVisible) displayGameDebugInfo(this);
     this.displayDriver.performDrawCalls();
   }
 

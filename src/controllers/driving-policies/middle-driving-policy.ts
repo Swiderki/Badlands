@@ -101,10 +101,6 @@ class MiddleDrivingPolicy extends BaseDrivingPolicy {
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
 
-    //* Debugging visualization
-    DisplayDriver.currentInstance?.drawLineBetweenVectors(car_position, target, "#0066ff");
-    DisplayDriver.currentInstance?.drawPoint(target, 4, "#0000ff");
-
     return {
       acceleration: shouldAccelerate,
       rotation,
