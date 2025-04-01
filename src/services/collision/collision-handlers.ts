@@ -35,7 +35,8 @@ export default class CollisionHandlers {
 
         if (
           collisionManager.isCollidingWithAnotherObject(opponentCorners, obstacle.collision) &&
-          !opponent.noCollision
+          !opponent.noCollision &&
+          opponent.nickname !== "Ghost"
         ) {
           collidingCars.push(opponent);
         }
@@ -113,14 +114,15 @@ export default class CollisionHandlers {
       if (
         collisionManager.isCollidingWithAnotherObject(playerController.collision, opponent.collision) &&
         !playerController.noCollision &&
-        !opponent.noCollision
+        !opponent.noCollision  &&
+        opponent.nickname !== "Ghost"
       ) {
         physicsDriver.handleCollisionBetweenControllers(playerController, opponent);
       }
 
       //* Handle enemy enemy collisions
       opponentControllersList.forEach((opponent2) => {
-        if (opponent === opponent2 || opponent.noCollision || opponent2.noCollision) {
+        if (opponent === opponent2 || opponent.noCollision  || opponent.nickname === "Ghost" || opponent2.noCollision || opponent2.nickname === "Ghost" ) { 
           return;
         }
         if (collisionManager.isCollidingWithAnotherObject(opponent.collision, opponent2.collision)) {
