@@ -107,18 +107,15 @@ body {
 }
 
 .speed-meter__wrapper {
-  position: absolute;
   width: 60%;
-  margin-inline: auto;
-  transform: translate(-50%, -70%);
-  left: 50%;
-  display: none;
+  margin: 0 auto;
+  display: block;
 }
 
 .speed-meter__inner {
   width: 100%;
   position: relative;
-  display: none;
+  display: block;
 }
 
 .speed-meter__wrapper img#speed-meter {
@@ -127,7 +124,7 @@ body {
 
 .speed-meter__wrapper div#nitro-indicator {
   --current-sprite: 0;
-  background-image: url("/assets/ui/nitro-sprite.png");
+  background-image: url("/assets/ui/indicators/nitro-sprite.png");
   --icon-size: 18px;
   background-position-x: calc(var(--current-sprite) * var(--icon-size));
   width: var(--icon-size);
@@ -136,6 +133,19 @@ body {
   bottom: 16px;
   --some-offset: 10px;
   left: calc(50% - var(--icon-size) - var(--some-offset));
+}
+
+.speed-meter__wrapper div#obstacle-drop-indicator {
+  --current-sprite: 0;
+  background-image: url("/assets/ui/indicators/obstacle-drop.png");
+  --icon-size: 18px;
+  background-position-x: calc(var(--current-sprite) * var(--icon-size));
+  width: var(--icon-size);
+  height: var(--icon-size);
+  position: absolute;
+  bottom: 16px;
+  --some-offset: 10px;
+  left: calc(50% + var(--icon-size) - var(--some-offset));
 }
 
 .acc-tip,
@@ -209,6 +219,9 @@ body {
   margin-top: auto;
 }
 
+#about-scene p {
+  font-size: 12px;
+}
 #start-scene button,
 #selection-scene button:not(.selection__button, .color-box),
 #result-scene button,
@@ -470,6 +483,10 @@ h1 {
 .btn_wrapper {
   display: flex;
   gap: 10px;
+}
+
+.btn_wrapper > button {
+  padding: 3px !important;
 }
 
 #start-scene {

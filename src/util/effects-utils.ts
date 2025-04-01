@@ -93,15 +93,12 @@ export const getEffectObjectByName = (name: EffectSprites) => {
 export const getRandomObstacleSprite = (difficulty: TrackDifficulty) => {
   let effects: ObstaclesType[] = Object.values(Level1Obstacles);
   if (difficulty >= 2) {
-    console.log(effects);
     effects = [...effects, ...Object.values(Level2Obstacles)];
   }
   if (difficulty >= 3) {
     effects = [...effects, ...Object.values(Level3Obstacles)];
   }
-  console.log(effects);
   return effects[Math.floor(Math.random() * effects.length)];
-  //* -2 because we don't want to spawn the ice and gravel obstacles
 };
 
 export const getRandomPerkSprite = (difficulty: TrackDifficulty) => {
@@ -147,7 +144,6 @@ export const getRandomObstacles = (
   for (let i = 0; i < n; i++) {
     const position = getRandomPosition(currentEffectObjects.concat(addedObstacles));
     const sprite = getRandomObstacleSprite(difficulty);
-    console.log(position, sprite, difficulty);
 
     const RandomEffectObject = getEffectObjectByName(sprite);
     addedObstacles.push(new RandomEffectObject(position));
@@ -164,7 +160,6 @@ export const getRandomPerks = (
   for (let i = 0; i < n; i++) {
     const position = getRandomPosition(currentEffectObjects.concat(addedPerks));
     const sprite = getRandomPerkSprite(difficulty);
-    console.log("sprite", sprite);
     const RandomEffectObject = getEffectObjectByName(sprite);
     addedPerks.push(new RandomEffectObject(position) as EffectObject); //* "as" is used because switch statement already filters this as PerkObject
   }

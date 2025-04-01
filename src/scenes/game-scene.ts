@@ -267,7 +267,6 @@ class GameScene extends Scene {
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 0 }));
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 300 }));
     }
-    console.log(this.effectObjects);
 
     const addPerk = () => {
       assert(this.track, "Track has not been initialized");
@@ -384,6 +383,7 @@ class GameScene extends Scene {
     }
 
     this.displayDriver.displayTrack(this.track);
+    this.renderTraces();
     this.effectObjects.forEach((obstacle) => {
       if (!obstacle.visible) return;
       this.displayDriver.drawSprite({
@@ -399,7 +399,6 @@ class GameScene extends Scene {
     }
     this.opponentControllersList.forEach((opponent) => {
       if (opponent.finished || opponent.invisible) return;
-      this.displayDriver.drawTraces(opponent);
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
@@ -418,9 +417,7 @@ class GameScene extends Scene {
     //! DEV: Draw player has boost effect
     if (this.playerController.timedEffectDriver.effects) {
       const offset = 30;
-      if (this.playerController.timedEffectDriver.hasEffect("nitro")) {
-        console.log("nitro");
-      } else if (this.playerController.timedEffectDriver.hasEffect("boost")) {
+      if (this.playerController.timedEffectDriver.hasEffect("boost")) {
         this.displayDriver.drawSprite({
           sprite: this.displayDriver.getSprite("repair-effect")!,
           position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),
@@ -447,8 +444,17 @@ class GameScene extends Scene {
       }
       this.displayDriver.ctx.fill();
     }
-    this.displayDriver.drawTraces(this.playerController);
     this.displayDriver.drawSprite(this.playerController.displayData);
+  }
+
+  renderTraces() {
+    if (!this.playerController) return;
+
+    this.displayDriver.drawTraces(this.playerController);
+    this.opponentControllersList.forEach((opponent) => {
+      if (opponent.finished || opponent.invisible) return;
+      this.displayDriver.drawTraces(opponent);
+    });
   }
 
   private trackUpdate() {

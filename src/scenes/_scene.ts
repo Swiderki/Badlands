@@ -15,7 +15,6 @@ abstract class Scene {
   abstract render(ctx: CanvasRenderingContext2D): void;
   abstract onMount(): void;
   onDisMount(): void {
-    console.log("remove", this.eventListeners.length, "listeners");
     this.eventListeners.forEach(({ htmlElement, params }) => {
       htmlElement.removeEventListener(...params);
     });
@@ -25,7 +24,6 @@ abstract class Scene {
     htmlElement: ListenerTarget | null,
     ...params: EventListenerParameters<K>
   ) {
-    console.log("add event lister for ", htmlElement, "by", this);
     if (!htmlElement) return;
     htmlElement.addEventListener(...(params as [any, any, any]));
     this.eventListeners.push({ htmlElement, params: params as [any, any, any] });

@@ -11,7 +11,7 @@ export class Scoreboard {
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
   private clearCheckpointsCounter = 0;
-  playerResults: { nickname: string; time: number, bestLoopTime: number }[] = [];
+  playerResults: { nickname: string; time: number; bestLoopTime: number }[] = [];
   _currentLap: number = 0;
   currentCheckpoint: number = 1;
 
@@ -67,17 +67,27 @@ export class Scoreboard {
       playerController.centerPosition,
       this.currentCheckpoint
     );
-    const distanceToNextPoint = Vector.length(Vector.subtract(playerController.centerPosition, track.checkPointPath.sampledPoints[this.currentCheckpoint].point))
+    const distanceToNextPoint = Vector.length(
+      Vector.subtract(
+        playerController.centerPosition,
+        track.checkPointPath.sampledPoints[this.currentCheckpoint].point
+      )
+    );
 
     const dd = DisplayDriver.currentInstance!;
-    for(const gate of track.gates){
-      const gatePosition = {x: (gate.x * dd.scaler)/2 + gate.sprite.config.spriteWidth/2, y: (gate.y * dd.scaler)/2 + gate.sprite.config.spriteHeight/3*2} as Vec2D;
-      const distanceToGate = Vector.length(Vector.subtract(
-        playerController.centerPosition,
-        gatePosition
-      ));
-      
-      if(distanceToGate < 32 && (track.currentTransitionFraction || !track.areShortcutsOpened) && this.clearCheckpointsCounter >= 10){
+    dd.drawPoint(track.checkPointPath.sampledPoints[this.currentCheckpoint].point, 5, "#f0f000");
+    for (const gate of track.gates) {
+      const gatePosition = {
+        x: (gate.x * dd.scaler) / 2 + gate.sprite.config.spriteWidth / 2,
+        y: (gate.y * dd.scaler) / 2 + (gate.sprite.config.spriteHeight / 3) * 2,
+      } as Vec2D;
+      const distanceToGate = Vector.length(Vector.subtract(playerController.centerPosition, gatePosition));
+
+      if (
+        distanceToGate < 32 &&
+        (track.currentTransitionFraction || !track.areShortcutsOpened) &&
+        this.clearCheckpointsCounter >= 10
+      ) {
         this.currentCheckpoint += 32;
         this.clearCheckpointsCounter = 0;
       }
@@ -85,9 +95,10 @@ export class Scoreboard {
 
     if (
       (distanceToNextCheckpoint < 60 &&
-        this.currentCheckpoint !== track.checkPointPath.sampledPoints.length-2) ||
-      (distanceToNextPoint < 50 && distanceToNextCheckpoint < 2 &&
-        this.currentCheckpoint === track.checkPointPath.sampledPoints.length-2) ||
+        this.currentCheckpoint !== track.checkPointPath.sampledPoints.length - 2) ||
+      (distanceToNextPoint < 50 &&
+        distanceToNextCheckpoint < 2 &&
+        this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 2) ||
       isNaN(distanceToNextCheckpoint)
     ) {
       this.currentCheckpoint++;
@@ -98,8 +109,10 @@ export class Scoreboard {
     UiService.setCurrentLapTime(this.currentLapTime);
 
     if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
-      console.log("Lap finished");
-      if((this.currentLapTime > 0 && this.currentLapTime < playerController.bestLoopTime) || playerController.bestLoopTime === 0) {
+      if (
+        (this.currentLapTime > 0 && this.currentLapTime < playerController.bestLoopTime) ||
+        playerController.bestLoopTime === 0
+      ) {
         playerController.bestLoopTime = this.currentLapTime;
       }
       this.currentLap++;
@@ -114,7 +127,11 @@ export class Scoreboard {
       }
       const nickname = Game.instance.nickname;
 
-      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime, bestLoopTime: playerController.bestLoopTime });
+      Scoreboard.instance.playerResults.push({
+        nickname: nickname,
+        time: this.currentTime,
+        bestLoopTime: playerController.bestLoopTime,
+      });
       playerController.finished = true;
       playerController.finishedTime = this.currentTime;
       UiService.showSkipButton();

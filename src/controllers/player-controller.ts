@@ -70,6 +70,11 @@ class PlayerController extends PhysicsBasedController {
       return;
     }
 
+    UIService.getInstance().setIsObstacleDropIndicatorActive(false);
+    GameTimeline.setTimeout(() => {
+      UIService.getInstance().setIsObstacleDropIndicatorActive(true);
+    }, this.OBSTACLE_DROP_COOLDOWN);
+
     const sprite = getRandomObstacleSprite(difficulty);
     const EffectObject = getEffectObjectByName(sprite);
 
