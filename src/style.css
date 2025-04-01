@@ -219,6 +219,9 @@ body {
   margin-top: auto;
 }
 
+#about-scene p {
+  font-size: 12px;
+}
 #start-scene button,
 #selection-scene button:not(.selection__button, .color-box),
 #result-scene button,
