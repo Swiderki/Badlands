@@ -277,8 +277,11 @@ h1 {
 .race-results,
 .player-history {
   margin-top: 10px !important;
-  background-color: #000b;
-  border: 1px solid #aaa;
+  background-color: #000d;
+  padding: 3px;
+  border-radius: 1px;
+  border: 1px solid var(--border-dark-color);
+  width: calc(100% + 5px); 
 }
 .race-results ul,
 .player-history ul {
