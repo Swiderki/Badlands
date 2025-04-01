@@ -21,6 +21,7 @@ export enum Obstacles {
   OIL_SPILL = "oil_spill",
   ICE = "ice",
   GRAVEL = "gravel",
+  NONE = "none",
 }
 
 export enum Perks {

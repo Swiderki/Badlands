@@ -237,6 +237,7 @@ h1 {
 #selection-scene,
 #result-scene,
 #about-scene,
+#tutorial-scene,
 #countdown-scene {
   display: none;
 }

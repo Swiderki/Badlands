@@ -113,6 +113,12 @@ class Game {
     await this.currentScene.init();
   }
 
+  async startTutorialGameScene(car: string, color: string) {
+    const game = new GameScene(this.displayDriver, car, color, "gravel");
+    this.currentScene = game;
+    await game.init(true);
+  }
+
   async startSelectionScene() {
     this.currentScene = new SelectionScene();
     await this.currentScene.init();

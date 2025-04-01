@@ -89,7 +89,7 @@ export class TrackPath {
     displayDriver: DisplayDriver,
     pathOffset: Vec2D,
     scale: number,
-    pointOffset: number = 20
+    pointOffset: number
   ) {
     const trackPath = new TrackPath(path, numPoints);
     trackPath.centerTrackPath(
@@ -103,14 +103,15 @@ export class TrackPath {
       p.point = Vector.scale(p.point, scale);
     });
 
+    const correctedPointOffset = pointOffset < 0 ? trackPath.sampledPoints.length + pointOffset : pointOffset;
     //* Offset point backwards to line up finish line with the end of the track
     const firstPart = trackPath.sampledPoints.slice(
-      trackPath.sampledPoints.length - pointOffset,
+      trackPath.sampledPoints.length - correctedPointOffset,
       trackPath.sampledPoints.length
     );
     trackPath.sampledPoints = [
       ...firstPart,
-      ...trackPath.sampledPoints.slice(0, trackPath.sampledPoints.length - pointOffset),
+      ...trackPath.sampledPoints.slice(0, trackPath.sampledPoints.length - correctedPointOffset),
     ];
     console.log("TrackPath", trackPath.sampledPoints);
     return trackPath;

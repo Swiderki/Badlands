@@ -1,8 +1,9 @@
 import GameScene from "@/src/scenes/game-scene";
 import { Vector } from "@/src/util/vec-util";
+import CollisionManager from "../collision/collision-manager";
 
 export function displayGameDebugInfo(gameScene: GameScene) {
-  const { displayDriver, track, opponentControllersList } = gameScene;
+  const { displayDriver, track, opponentControllersList, effectObjects } = gameScene;
 
   //* Draw FinishLine
   if (track && track.checkPointPath) {
@@ -30,6 +31,17 @@ export function displayGameDebugInfo(gameScene: GameScene) {
       displayDriver.displayCheckpoints(enemyPath, "red");
       const actualPath = enemy.drivingPolicy.enemyPath.actualPath;
       displayDriver.displayActualPath(actualPath, "green");
+    }
+  }
+
+  //* Display invisible obstacles
+  const collisionManager = CollisionManager.instance;
+  if (collisionManager) {
+    for (const obstacle of effectObjects) {
+      if (!obstacle.visible) {
+        const corners = collisionManager.getRotatedCorners(obstacle.collision);
+        displayDriver.displayColliderCorners(corners, obstacle.position, 0);
+      }
     }
   }
 }

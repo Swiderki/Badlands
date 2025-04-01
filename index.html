@@ -64,15 +64,15 @@
             <div class="selection-card track-selection">
               <img
                 class="selection-card__image"
-                src="/assets/ui/track-previews/snow-track-preview-v2.png"
+                src="/assets/ui/track-previews/gravel-track-preview.png"
                 alt="snow-track-preview"
               />
               <div class="selection__wrapper">
                 <button class="selection__button prev">⮜</button>
                 <div class="title">
-                  <div class="selection__option" data-id="1" data-map="snow">Snow</div>
+                  <div class="selection__option selected" data-id="1" data-map="gravel">Gravel</div>
                   <div class="selection__option" data-id="2" data-map="grass">Grass</div>
-                  <div class="selection__option" data-id="3" data-map="gravel">Gravel</div>
+                  <div class="selection__option" data-id="3" data-map="snow">Snow</div>
                 </div>
                 <button class="selection__button next">⮞</button>
               </div>
@@ -90,7 +90,7 @@
               <div class="selection__wrapper">
                 <button class="selection__button prev">⮜</button>
                 <div class="title">
-                  <span class="selection__option" data-id="1" data-car="opel">Opel</span>
+                  <span class="selection__option selected" data-id="1" data-car="opel">Opel</span>
                   <span class="selection__option" data-id="2" data-car="peugeot">Pezio</span>
                 </div>
                 <button class="selection__button next">⮞</button>
@@ -100,6 +100,7 @@
 
           <div class="flex">
             <button id="back-btn">Back</button>
+            <button id="tutorial-btn">Tutorial</button>
             <button id="play-btn" class="mainBtn">Play</button>
           </div>
           <img src="/assets/ui/level" alt="" />
@@ -144,7 +145,7 @@
           <button>Back</button>
         </div>
       </div>
-
+      <div id="tutorial-scene" class="scene"></div>
       <div id="loading-screen" class="scene">
         <img src="/logo.png" alt="" />
         <h2>LOADING</h2>

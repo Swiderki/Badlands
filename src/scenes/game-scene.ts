@@ -26,6 +26,7 @@ import StraightMasterDrivingPolicy from "../controllers/driving-policies/straigh
 import IceObstacle from "../services/effect/obstacle/ice-obstacle";
 import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
 import { getCarCorners } from "../util/collision-util";
+import DialogTrigger from "../services/effect/obstacle/dialog-trigger";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -65,7 +66,7 @@ class GameScene extends Scene {
     this.collisionManager = new CollisionManager(this.displayDriver.scaler);
   }
 
-  async init() {
+  async init(tutorial: boolean = false) {
     this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
@@ -80,13 +81,17 @@ class GameScene extends Scene {
     this.scoreboard.resetCurrentTime();
 
     await this.loadPlayer(this.track.startPositions[0], this.track.traction);
-    await this.loadOpponents(
-      this.track.startPositions.slice(1),
-      this.track.checkPointPath!,
-      this.displayDriver.scaler,
-      this.track.traction
-    );
-    await this.initEffectObjects();
+    if (!tutorial) {
+      await this.loadOpponents(
+        this.track.startPositions.slice(1),
+        this.track.checkPointPath!,
+        this.displayDriver.scaler,
+        this.track.traction
+      );
+      await this.initEffectObjects();
+    } else {
+      await this.initTutorial();
+    }
     this.initListeners();
   }
 
@@ -212,7 +217,6 @@ class GameScene extends Scene {
     } else if (this.map === "gravel") {
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 0 }));
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 300 }));
-
     }
     console.log(this.effectObjects);
 
@@ -229,6 +233,10 @@ class GameScene extends Scene {
     };
 
     addPerk();
+  }
+
+  private async initTutorial() {
+    this.effectObjects.push(new DialogTrigger({ x: 100, y: 320 }, 200, Math.PI, "Testowy text do tutoriala"));
   }
 
   override update(deltaTime: number) {
@@ -249,6 +257,7 @@ class GameScene extends Scene {
 
     this.displayDriver.displayTrack(this.track);
     this.effectObjects.forEach((obstacle) => {
+      if (!obstacle.visible) return;
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,
