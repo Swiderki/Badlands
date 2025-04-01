@@ -89,30 +89,22 @@ class GameScene extends Scene {
       this.track.traction
     );
     await this.initEffectObjects();
+    this.initPauseListeners();
     await startGameWithCountdown();
+    this.initGameListeners();
     this.music.loop = true;
     startMusicWithFade(this.music);
-    this.initListeners();
   }
 
-  private initListeners() {
+  private initPauseListeners() {
     const pauseContext = usePauseContext();
-
-    //* i've added keypress listener instead of keydown to prevent just holding key
-    document.addEventListener("keypress", (e) => {
-      if (e.key === " ") {
-        const obstacle = this.playerController?.dropObstacle();
-        if (!obstacle) return;
-        this.effectObjects.push(obstacle);
-      }
-    });
 
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
         if (pauseContext.isPaused) {
-          pauseContext.resumeGame();
+          pauseContext.resumeGame("gameLogic");
         } else {
-          pauseContext.pauseGame();
+          pauseContext.pauseGame("gameLogic");
         }
       }
     });
@@ -121,12 +113,23 @@ class GameScene extends Scene {
       // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
       if (pauseContext.isWindowActive === null) return;
       pauseContext.isWindowActive = true;
-      pauseContext.resumeGame();
+      pauseContext.resumeGame("windowChange");
     });
 
     window.addEventListener("blur", () => {
       pauseContext.isWindowActive = false;
-      pauseContext.pauseGame();
+      pauseContext.pauseGame("windowChange");
+    });
+  }
+
+  private initGameListeners() {
+    //* i've added keypress listener instead of keydown to prevent just holding key
+    document.addEventListener("keypress", (e) => {
+      if (e.key === " ") {
+        const obstacle = this.playerController?.dropObstacle();
+        if (!obstacle) return;
+        this.effectObjects.push(obstacle);
+      }
     });
   }
 

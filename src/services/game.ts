@@ -12,7 +12,7 @@ import { SelectionScene } from "../scenes/selection-scene";
 import { StartScene } from "../scenes/start-scene";
 import assert from "../util/assert";
 import { startMusicWithFade } from "../util/music-utils";
-import { createPauseContext } from "../context/pauseContext";
+import { createPauseContext, PauseCause } from "../context/pauseContext";
 
 class Game {
   //* Drivers
@@ -29,12 +29,15 @@ class Game {
 
   deltaTime: number = 0;
 
-  private _pauseDetails = createPauseContext({
-    isPaused: false,
+  private pauseDetails = createPauseContext({
+    get isPaused() {
+      return Object.values(this.pauseCauses).some(Boolean);
+    },
+    pauseCauses: { gameLogic: false, windowChange: false },
     isWindowActive: null,
     documentTimeline: new DocumentTimeline(),
-    pauseGame: this.pauseGame,
-    resumeGame: this.resumeGame,
+    pauseGame: this.pauseGame.bind(this),
+    resumeGame: this.resumeGame.bind(this),
   });
 
   private menuMusic: HTMLAudioElement = new Audio("/assets/sounds/menu_theme.wav");
@@ -154,19 +157,22 @@ class Game {
     this.currentScene.init();
   }
 
-  pauseGame(skipOverlayUpdate = false): void {
+  pauseGame(cause: PauseCause, skipOverlayUpdate = false): void {
     if (!skipOverlayUpdate && this.currentScene instanceof GameScene) {
       htmlShowPauseOverlay();
     }
-    this._pauseDetails.isPaused = true;
+    console.log(this);
+    this.pauseDetails.pauseCauses[cause] = true;
   }
 
-  resumeGame(): void {
-    htmlHidePauseOverlay();
-    this._pauseDetails.isPaused = false;
-    this._lastRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
-    this._penultimateRenderTime = this._pauseDetails.documentTimeline.currentTime as number;
-    this._update();
+  resumeGame(cause: PauseCause): void {
+    this.pauseDetails.pauseCauses[cause] = false;
+    if (!this.pauseDetails.isPaused) {
+      htmlHidePauseOverlay();
+      this._lastRenderTime = this.pauseDetails.documentTimeline.currentTime as number;
+      this._penultimateRenderTime = this.pauseDetails.documentTimeline.currentTime as number;
+      this._update();
+    }
   }
   //* This method is called every frame, but it should be free of any game logic
   //* It's only purpose is to keep FPS stable
@@ -192,7 +198,7 @@ class Game {
 
     // pause render if window isn't active
     // returns here to allow last render before pause
-    if (this._pauseDetails.isPaused === true) return;
+    if (this.pauseDetails.isPaused) return;
 
     requestAnimationFrame((renderTime) => {
       this._penultimateRenderTime = this._lastRenderTime;
