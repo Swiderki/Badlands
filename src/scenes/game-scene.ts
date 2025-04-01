@@ -106,10 +106,10 @@ class GameScene extends Scene {
 
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
-        if (pauseContext.isPaused) {
-          pauseContext.resumeGame("gameLogic");
+        if (pauseContext.pauseCauses.pauseMenu) {
+          pauseContext.resumeGame("pauseMenu");
         } else {
-          pauseContext.pauseGame("gameLogic");
+          pauseContext.pauseGame("pauseMenu");
         }
       }
     });

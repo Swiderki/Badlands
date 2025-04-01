@@ -33,7 +33,7 @@ class Game {
     get isPaused() {
       return Object.values(this.pauseCauses).some(Boolean);
     },
-    pauseCauses: { gameLogic: false, windowChange: false },
+    pauseCauses: { gameLogic: false, pauseMenu: false, windowChange: false },
     isWindowActive: null,
     documentTimeline: new DocumentTimeline(),
     pauseGame: this.pauseGame.bind(this),
@@ -120,7 +120,6 @@ class Game {
       const gameScene = Game.instance.currentScene;
       if (gameScene instanceof GameScene) {
         gameScene.opponentControllersList.forEach((opponent) => {
-
           opponent.currentLap += 1;
         });
       }
@@ -164,7 +163,7 @@ class Game {
   }
 
   pauseGame(cause: PauseCause, skipOverlayUpdate = false): void {
-    if (!skipOverlayUpdate && this.currentScene instanceof GameScene) {
+    if (!skipOverlayUpdate && this.currentScene instanceof GameScene && cause === "pauseMenu") {
       htmlShowPauseOverlay();
     }
     console.log(this);
@@ -173,8 +172,10 @@ class Game {
 
   resumeGame(cause: PauseCause): void {
     this.pauseDetails.pauseCauses[cause] = false;
-    if (!this.pauseDetails.isPaused) {
+    if (cause === "pauseMenu") {
       htmlHidePauseOverlay();
+    }
+    if (!this.pauseDetails.isPaused) {
       this._lastRenderTime = this.pauseDetails.documentTimeline.currentTime as number;
       this._penultimateRenderTime = this.pauseDetails.documentTimeline.currentTime as number;
       this._update();

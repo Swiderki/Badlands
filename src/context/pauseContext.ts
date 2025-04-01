@@ -1,4 +1,4 @@
-type PauseCauses = { gameLogic: boolean; windowChange: boolean };
+type PauseCauses = { gameLogic: boolean; pauseMenu: boolean; windowChange: boolean };
 export type PauseCause = keyof PauseCauses;
 type PauseContext = {
   get isPaused(): boolean;
