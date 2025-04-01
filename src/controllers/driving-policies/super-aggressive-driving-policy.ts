@@ -1,16 +1,15 @@
-import BaseDrivingPolicy from "./base-driving-policy";
-import PlayerController from "../player-controller";
-import { Vector } from "@/src/util/vec-util";
-import { Vec2D, Action } from "@/types/physics";
-import { PhysicsUtils } from "../../util/physics-util";
-import { CheckPoint } from "@/types/track-driver";
 import { Scoreboard } from "@/src/services/scoreboard/scoreboard";
+import { Vector } from "@/src/util/vec-util";
+import { Action, Vec2D } from "@/types/physics";
+import { CheckPoint } from "@/types/track-driver";
+import { PhysicsUtils } from "../../util/physics-util";
+import PlayerController from "../player-controller";
+import BaseDrivingPolicy from "./base-driving-policy";
 
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
-import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
@@ -135,7 +134,7 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
     this.updateCurrentCheckPoint(current_position);
     this.updateActualPath(current_position);
 
-    const { target, speed, shouldAttack } = this.getTarget(current_position);
+    const { target, speed } = this.getTarget(current_position);
 
     const car_position = { ...current_position };
     const checkpoint = this._enemyPath.currentTargetCheckPoint;
