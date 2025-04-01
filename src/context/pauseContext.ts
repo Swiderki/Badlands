@@ -5,7 +5,7 @@ type PauseContext = {
   pauseCauses: PauseCauses;
   isWindowActive: boolean | null;
   documentTimeline: DocumentTimeline;
-  pauseGame: (cause: PauseCause) => void;
+  pauseGame: (cause: PauseCause, skipOverlayUpdate?: boolean) => void;
   resumeGame: (cause: PauseCause) => void;
 };
 let pauseContext: PauseContext = {} as PauseContext;

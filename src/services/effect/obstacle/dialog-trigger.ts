@@ -4,7 +4,7 @@ import { Obstacles } from "@/src/util/effects-utils";
 import { Vec2D } from "@/types/physics";
 import EffectObject from "../effect-object";
 import { UIService } from "../../ui-service/ui-service";
-import Game from "../../game";
+import { usePauseContext } from "@/src/context/pauseContext";
 const audio = new Audio("assets/sounds/spikes.wav");
 
 export default class DialogTrigger extends EffectObject {
@@ -20,6 +20,7 @@ export default class DialogTrigger extends EffectObject {
   override onEnter(car: PhysicsBasedController) {
     if (!(car instanceof PlayerController)) return;
     UIService.getInstance().displayTutorialText(this._text);
-    Game.getInstance().pauseGame(true);
+    const pauseContext = usePauseContext();
+    pauseContext.pauseGame("gameLogic", true);
   }
 }

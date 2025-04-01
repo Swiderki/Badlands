@@ -25,6 +25,7 @@ class PlayerController extends PhysicsBasedController {
     this.setPosition(Vector.subtract(startPosition.position, { x: 30, y: 15 }));
     this.angle = startPosition.angle;
     this.currentMaxSpeedForward = 240;
+    this.accelerationPowerForward = 240;
 
     this.updateCurrentSprite();
 

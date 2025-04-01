@@ -94,6 +94,7 @@ class GameScene extends Scene {
     } else {
       await this.initTutorial();
     }
+    this.initPauseListeners();
     await startGameWithCountdown();
     this.initGameListeners();
     this.music.loop = true;
