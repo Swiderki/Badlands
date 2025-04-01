@@ -75,7 +75,6 @@ export class Scoreboard {
     );
 
     const dd = DisplayDriver.currentInstance!;
-    dd.drawPoint(track.checkPointPath.sampledPoints[this.currentCheckpoint].point, 5, "#f0f000");
     for (const gate of track.gates) {
       const gatePosition = {
         x: (gate.x * dd.scaler) / 2 + gate.sprite.config.spriteWidth / 2,
