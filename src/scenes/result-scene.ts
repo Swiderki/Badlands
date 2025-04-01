@@ -71,7 +71,7 @@ export class ResultScene extends Scene {
           secondsString = "0" + seconds;
         }
 
-        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString}`;
+        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString} (${this.formatTime(result.bestLoopTime)})`;
         playerResultsList.appendChild(resultHTML);
       });
     }
@@ -94,7 +94,7 @@ export class ResultScene extends Scene {
 
     this.results = [...opponentsResults, playerResults];
     console.log(this.results);
-    // Sortowanie - najpierw normalnie po czasie, a DNF (time === 0) na końcu
+
     this.results.sort((a, b) => {
       if (a.time === 0) return 1;
       if (b.time === 0) return -1;
@@ -110,7 +110,7 @@ export class ResultScene extends Scene {
       resultHTML.innerText =
         result.time === 0
           ? `${index + 1}: ${result.nickname} - DNF`
-          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)}`;
+          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)} (${this.formatTime(result.bestLoopTime)})`;
       raceResults.appendChild(resultHTML);
     });
     this.displayWinner();
