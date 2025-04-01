@@ -24,7 +24,8 @@ class PlayerController extends PhysicsBasedController {
     super(sprite, traction);
     this.setPosition(Vector.subtract(startPosition.position, { x: 30, y: 15 }));
     this.angle = startPosition.angle;
-    this.currentMaxSpeedForward = 140;
+    this.currentMaxSpeedForward = 240;
+    this.accelerationPowerForward = 240;
 
     this.updateCurrentSprite();
 
@@ -119,11 +120,10 @@ class PlayerController extends PhysicsBasedController {
       this.brake();
       this._lastBrake = 0;
     }
-    if(this.getInput("k")) {
+    if (this.getInput("k")) {
       audio.volume = 0.5;
       audio.play();
     }
-
   }
 }
 

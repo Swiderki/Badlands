@@ -46,7 +46,13 @@ export class SelectionScene extends Scene {
     });
     const backBtnRef = this.sceneRef.querySelector("button#back-btn");
     backBtnRef?.addEventListener("click", () => {
-      Game.getInstance()?.startStartScene();
+      if (!Game.getInstance()) return;
+      Game.getInstance().startStartScene();
+    });
+    const tutorialBtnRef = this.sceneRef.querySelector("button#tutorial-btn");
+    tutorialBtnRef?.addEventListener("click", () => {
+      if (!Game.getInstance()) return;
+      Game.getInstance().startTutorialGameScene(this.selectedCar, this.selectedColor);
     });
   }
 
@@ -59,6 +65,18 @@ export class SelectionScene extends Scene {
   override onMount() {
     this.sceneRef = document.querySelector("#selection-scene");
     assert(this.sceneRef, "Selection scene not initialized");
+    const selectedCarRef = this.sceneRef.querySelector<HTMLElement>(
+      ".car-selection .selection__option.selected"
+    )!;
+    const selectedMapRef = this.sceneRef.querySelector<HTMLElement>(
+      ".track-selection .selection__option.selected"
+    )!;
+    const selectedColorRef = this.sceneRef.querySelector<HTMLElement>(
+      ".color-selection .color-box.selected"
+    )!;
+    this.selectedCar = selectedCarRef.getAttribute("data-car") || "opel";
+    this.selectedMap = selectedMapRef.getAttribute("data-map") || "gravel";
+    this.selectedColor = selectedColorRef.getAttribute("data-color") || "blue";
     this.sceneRef.style.display = "block";
   }
 

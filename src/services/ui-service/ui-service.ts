@@ -133,4 +133,6 @@ export class UIService {
       Game.instance.startResultScene();
     });
   }
+
+  displayTutorialText(text: string) {}
 }

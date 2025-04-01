@@ -1,11 +1,11 @@
-type PauseCauses = { gameLogic: boolean; windowChange: boolean };
+type PauseCauses = { gameLogic: boolean; pauseMenu: boolean; windowChange: boolean };
 export type PauseCause = keyof PauseCauses;
 type PauseContext = {
   get isPaused(): boolean;
   pauseCauses: PauseCauses;
   isWindowActive: boolean | null;
   documentTimeline: DocumentTimeline;
-  pauseGame: (cause: PauseCause) => void;
+  pauseGame: (cause: PauseCause, skipOverlayUpdate?: boolean) => void;
   resumeGame: (cause: PauseCause) => void;
 };
 let pauseContext: PauseContext = {} as PauseContext;

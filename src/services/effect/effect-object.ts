@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CollisionObject } from "@/types/collision";
 import DisplayDriver from "../display-driver/display-driver";
-import { EffectSprites } from "@/src/util/effects-utils";
+import { EffectSprites, Obstacles } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
@@ -16,18 +16,24 @@ export default abstract class EffectObject {
   readonly sprite: Sprite;
   // readonly randomSprite = Math.floor(Math.random() * 5);
   readonly randomSprite: number = 0;
-
+  readonly visible: boolean;
   constructor(position: Vec2D, sprite: EffectSprites) {
-    const spriteObject = DisplayDriver.currentInstance?.getSprite(sprite);
+    //* Fallback to default sprite if the sprite is invisible
+    //* I shouldn't handle this in that way, but we don't have time to implement it properly
+    const spriteName = sprite === Obstacles.NONE ? Obstacles.SPIKES : sprite;
+    const spriteObject = DisplayDriver.currentInstance?.getSprite(spriteName);
+
     if (!spriteObject) {
       throw new Error("Sprite not found");
     }
 
+    this.visible = sprite === Obstacles.NONE ? false : true;
+
     this.position = position;
     this.sprite = spriteObject;
     this.collision = {
-      x: position.x + spriteObject.config.spriteWidth/2,
-      y: position.y + spriteObject.config.spriteHeight/2,
+      x: position.x + spriteObject.config.spriteWidth / 2,
+      y: position.y + spriteObject.config.spriteHeight / 2,
       width: spriteObject.config.spriteWidth,
       height: spriteObject.config.spriteHeight,
       angle: 0,

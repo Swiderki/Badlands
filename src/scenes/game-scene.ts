@@ -27,6 +27,7 @@ import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
 import { startMusicWithFade } from "../util/music-utils";
 import { usePauseContext } from "../context/pauseContext";
+import DialogTrigger from "../services/effect/obstacle/dialog-trigger";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -67,7 +68,7 @@ class GameScene extends Scene {
     this.collisionManager = new CollisionManager(this.displayDriver.scaler);
   }
 
-  async init() {
+  async init(tutorial: boolean = false) {
     this.sceneRef = document.querySelector("#game-scene");
     if (!this.sceneRef) {
       throw Error("Start scene not initialized");
@@ -82,13 +83,17 @@ class GameScene extends Scene {
     this.scoreboard.resetCurrentTime();
 
     await this.loadPlayer(this.track.startPositions[0], this.track.traction);
-    await this.loadOpponents(
-      this.track.startPositions.slice(1),
-      this.track.checkPointPath!,
-      this.displayDriver.scaler,
-      this.track.traction
-    );
-    await this.initEffectObjects();
+    if (!tutorial) {
+      await this.loadOpponents(
+        this.track.startPositions.slice(1),
+        this.track.checkPointPath!,
+        this.displayDriver.scaler,
+        this.track.traction
+      );
+      await this.initEffectObjects();
+    } else {
+      await this.initTutorial();
+    }
     this.initPauseListeners();
     await startGameWithCountdown();
     this.initGameListeners();
@@ -101,10 +106,10 @@ class GameScene extends Scene {
 
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
-        if (pauseContext.isPaused) {
-          pauseContext.resumeGame("gameLogic");
+        if (pauseContext.pauseCauses.pauseMenu) {
+          pauseContext.resumeGame("pauseMenu");
         } else {
-          pauseContext.pauseGame("gameLogic");
+          pauseContext.pauseGame("pauseMenu");
         }
       }
     });
@@ -260,6 +265,10 @@ class GameScene extends Scene {
     addPerk();
   }
 
+  private async initTutorial() {
+    this.effectObjects.push(new DialogTrigger({ x: 100, y: 320 }, 200, Math.PI, "Testowy text do tutoriala"));
+  }
+
   override update(deltaTime: number) {
     this.trackUpdate();
     this.playerUpdate(deltaTime);
@@ -278,6 +287,7 @@ class GameScene extends Scene {
 
     this.displayDriver.displayTrack(this.track);
     this.effectObjects.forEach((obstacle) => {
+      if (!obstacle.visible) return;
       this.displayDriver.drawSprite({
         sprite: obstacle.sprite,
         position: obstacle.position,

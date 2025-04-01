@@ -202,7 +202,7 @@ class CollisionManager {
     return true;
   }
 
-  private getRotatedCorners(obj: CollisionObject): Vec2D[] {
+  getRotatedCorners(obj: CollisionObject): Vec2D[] {
     const { x, y, width, height, angle } = obj;
 
     const halfW = width / 2;
