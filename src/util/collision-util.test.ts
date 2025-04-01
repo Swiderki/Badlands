@@ -11,7 +11,6 @@ describe("collision-util", () => {
       const angle = 0;
 
       const corners = getCarCorners(position, width, height, angle);
-      console.log(corners);
       expect(corners).toHaveLength(4);
       expect(corners).toEqual([
         { x: 5, y: 40 },

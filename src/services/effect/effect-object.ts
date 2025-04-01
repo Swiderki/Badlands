@@ -36,7 +36,6 @@ export default abstract class EffectObject {
       height: spriteObject.config.spriteHeight,
       angle: 0,
     };
-    console.log(spriteObject.config.spriteWidth);
   }
 
   /** Should be called only when player is colliding with Obstacle  */

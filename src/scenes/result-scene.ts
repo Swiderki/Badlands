@@ -93,7 +93,6 @@ export class ResultScene extends Scene {
     };
 
     this.results = [...opponentsResults, playerResults];
-    console.log(this.results);
 
     this.results.sort((a, b) => {
       if (a.time === 0) return 1;

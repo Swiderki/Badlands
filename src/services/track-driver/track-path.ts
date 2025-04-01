@@ -113,7 +113,6 @@ export class TrackPath {
       ...firstPart,
       ...trackPath.sampledPoints.slice(0, trackPath.sampledPoints.length - correctedPointOffset),
     ];
-    console.log("TrackPath", trackPath.sampledPoints);
     return trackPath;
   }
 

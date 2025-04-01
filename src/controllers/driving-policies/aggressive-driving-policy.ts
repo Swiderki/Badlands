@@ -46,7 +46,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
       if (distanceToPlayer < 22) this.playerInRangeSince = now;
       if (distanceToPlayer < 40 && now - this.lastHorn > 3000 && !pauseContext.isPaused) {
-        this.brakeSound.volume = 0.2
+        this.brakeSound.volume = 0.2;
         this.brakeSound.play();
         this.lastHorn = now;
       }
@@ -84,11 +84,6 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
       this._enemyPath.visitedCheckpoints = 1;
       if (this.parentRef !== null) {
         this.parentRef.currentLap++;
-        console.log(
-          this.parentRef.bestLoopTime,
-          Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime,
-          this.parentRef.finishedLoopTime
-        );
         if (
           this.parentRef.bestLoopTime > Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime ||
           this.parentRef.bestLoopTime === 0

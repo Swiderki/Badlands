@@ -18,8 +18,6 @@ export class SelectionScene extends Scene {
 
     //* Handle color selection
     const carImage = this.sceneRef.querySelector<HTMLElement>(".car-preview")!;
-    console.log(carImage);
-    console.log(colorBoxes);
     colorBoxes.forEach((box) => {
       this.addRemovableListener(box, "click", () => {
         colorSelection.classList.toggle("active");
@@ -68,11 +66,9 @@ export class SelectionScene extends Scene {
     const tutorialDialog = this.sceneRef.querySelector(".dialog.tutorial");
     if (tutorialDialog) {
       const acceptTutorialBtnRef = tutorialDialog.querySelector("button.mainBtn");
-      console.log("acceptTutorialBtnRef", acceptTutorialBtnRef);
       const declineTutorialBtnRed = tutorialDialog.querySelector("button:not(.mainBtn)");
       if (acceptTutorialBtnRef) {
         this.addRemovableListener(acceptTutorialBtnRef, "click", () => {
-          console.log("first");
           Game.getInstance()?.startTutorialGameScene(this.selectedCar, this.selectedColor);
           this.hideTutorialDialog();
         });

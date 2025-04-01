@@ -148,7 +148,6 @@ class Game {
     if (!skipOverlayUpdate && this.currentScene instanceof GameScene && cause === "pauseMenu") {
       htmlShowPauseOverlay();
     }
-    console.log(this);
     this.pauseDetails.pauseCauses[cause] = true;
   }
 

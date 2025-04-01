@@ -263,7 +263,6 @@ class GameScene extends Scene {
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 0 }));
       this.effectObjects.push(new GravelObstacle({ x: 650, y: 300 }));
     }
-    console.log(this.effectObjects);
 
     const addPerk = () => {
       assert(this.track, "Track has not been initialized");
@@ -414,9 +413,7 @@ class GameScene extends Scene {
     //! DEV: Draw player has boost effect
     if (this.playerController.timedEffectDriver.effects) {
       const offset = 30;
-      if (this.playerController.timedEffectDriver.hasEffect("nitro")) {
-        console.log("nitro");
-      } else if (this.playerController.timedEffectDriver.hasEffect("boost")) {
+      if (this.playerController.timedEffectDriver.hasEffect("boost")) {
         this.displayDriver.drawSprite({
           sprite: this.displayDriver.getSprite("repair-effect")!,
           position: Vector.add(this.playerController.displayData.position, { x: offset, y: 0 }),

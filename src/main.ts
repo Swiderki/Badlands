@@ -4,7 +4,6 @@ function resizeApp(app: HTMLDivElement) {
   const width = window.innerWidth;
   const height = window.innerHeight;
   const scalingFactor = Math.min(width / (320 * 4), height / (182 * 4));
-  console.log(scalingFactor);
   app.style.scale = `${scalingFactor.toPrecision(2)}`;
 }
 

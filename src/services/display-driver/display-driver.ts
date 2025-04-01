@@ -264,7 +264,6 @@ class DisplayDriver {
   };
 
   drawTraces(controller: PhysicsBasedController) {
-    console.log(controller);
     this.topQueue.push(() => {
       this.drawPath(controller.tracePoints.left, controller.isNitroActive);
       this.drawPath(controller.tracePoints.right, controller.isNitroActive);

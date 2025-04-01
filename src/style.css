@@ -472,6 +472,10 @@ h1 {
   gap: 10px;
 }
 
+.btn_wrapper > button {
+  padding: 3px !important;
+}
+
 #start-scene {
   position: relative;
   display: none;
