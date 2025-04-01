@@ -1,5 +1,6 @@
 export default class PriorityQueue<T> {
   private heap: { value: T; priority: number }[];
+  // @ts-expect-error This is a private property, so we can ignore the type error
   private compare: (a: T, b: T) => number;
 
   constructor(compareFn: (a: T, b: T) => number) {

@@ -1,17 +1,16 @@
-import BaseDrivingPolicy from "./base-driving-policy";
-import PlayerController from "../player-controller";
-import { Vec2D, Action } from "@/types/physics";
-import { PhysicsUtils } from "../../util/physics-util";
-import { CheckPoint } from "@/types/track-driver";
 import { Scoreboard } from "@/src/services/scoreboard/scoreboard";
+import { Action, Vec2D } from "@/types/physics";
+import { CheckPoint } from "@/types/track-driver";
+import { PhysicsUtils } from "../../util/physics-util";
+import PlayerController from "../player-controller";
+import BaseDrivingPolicy from "./base-driving-policy";
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
-import DisplayDriver from "@/src/services/display-driver/display-driver";
-import { EnemyPath } from "@/src/services/track-driver/enemy-path";
-import GameTimeline from "@/src/services/game-logic/game-timeline";
 import { usePauseContext } from "@/src/context/pauseContext";
+import GameTimeline from "@/src/services/game-logic/game-timeline";
+import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 350;
@@ -134,7 +133,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
     this.updateCurrentCheckPoint(current_position);
     this.updateActualPath(current_position);
 
-    const { target, shouldAttack } = this.getTarget(current_position);
+    const { target } = this.getTarget(current_position);
 
     const car_position = { ...current_position };
     const checkpoint = this._enemyPath.currentTargetCheckPoint;

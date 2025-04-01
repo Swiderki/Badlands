@@ -1,17 +1,16 @@
 import { htmlHideLoadingScreen, htmlHidePauseOverlay, htmlShowPauseOverlay } from "../util/html-utils";
 
-import { AboutScene } from "../scenes/about-scene";
-import DisplayDriver from "./display-driver/display-driver";
-import GameScene from "../scenes/game-scene";
-import GameTimeline from "./game-logic/game-timeline";
-import { ResultScene } from "../scenes/result-scene";
+import { createPauseContext, PauseCause } from "../context/pauseContext";
 import Scene from "../scenes/_scene";
-import { Scoreboard } from "./scoreboard/scoreboard";
+import { AboutScene } from "../scenes/about-scene";
+import GameScene from "../scenes/game-scene";
+import { ResultScene } from "../scenes/result-scene";
 import { SelectionScene } from "../scenes/selection-scene";
 import { StartScene } from "../scenes/start-scene";
 import assert from "../util/assert";
 import { startMusicWithFade } from "../util/music-utils";
-import { createPauseContext, PauseCause } from "../context/pauseContext";
+import DisplayDriver from "./display-driver/display-driver";
+import GameTimeline from "./game-logic/game-timeline";
 
 class Game {
   //* Drivers
@@ -87,14 +86,10 @@ class Game {
     htmlHideLoadingScreen();
 
     this.startStartScene();
-    window.addEventListener("keydown", this.handleKeyDown.bind(this));
+    // window.addEventListener("keydown", this.handleKeyDown.bind(this));
 
     //* Start the game loop
     this._update();
-  }
-
-  private handleKeyDown(event: KeyboardEvent) {
-    return;
   }
 
   async startGameScene(car: string, color: string, map: string) {

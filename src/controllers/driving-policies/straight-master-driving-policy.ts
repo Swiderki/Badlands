@@ -1,12 +1,11 @@
-import BaseDrivingPolicy from "./base-driving-policy";
-import { Vec2D, Action } from "@/types/physics";
-import { PhysicsUtils } from "../../util/physics-util";
 import { Scoreboard } from "@/src/services/scoreboard/scoreboard";
+import { Action, Vec2D } from "@/types/physics";
+import { PhysicsUtils } from "../../util/physics-util";
+import BaseDrivingPolicy from "./base-driving-policy";
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
 
 //* This import is here only for debugging purposes
-import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
@@ -38,13 +37,16 @@ class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
 
     if (this._enemyPath.visitedCheckpoints === this._enemyPath.sampledPoints.length) {
       this._enemyPath.visitedCheckpoints = 1;
-      if (this.parentRef !== null)
-        { this.parentRef.currentLap++;
-          if(this.parentRef.bestLoopTime > Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime || this.parentRef.bestLoopTime === 0) {
-            this.parentRef.bestLoopTime = Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime;
-          }
-          this.parentRef.finishedLoopTime = Scoreboard.instance.currentTime;
+      if (this.parentRef !== null) {
+        this.parentRef.currentLap++;
+        if (
+          this.parentRef.bestLoopTime > Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime ||
+          this.parentRef.bestLoopTime === 0
+        ) {
+          this.parentRef.bestLoopTime = Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime;
         }
+        this.parentRef.finishedLoopTime = Scoreboard.instance.currentTime;
+      }
     }
   }
 
@@ -80,7 +82,7 @@ class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
   }
 
   private getTargetSpeed(curvature: number): number {
-    if(Math.abs(curvature) > 0.01 && Math.abs(curvature) < 0.5 ){
+    if (Math.abs(curvature) > 0.01 && Math.abs(curvature) < 0.5) {
       return this.corneringSpeed;
     }
     // Normalize curvature: 0 means straight, 1 (or more) means a sharp turn

@@ -100,17 +100,8 @@ class PhysicsDriver {
     let normal: Vec2D;
 
     if (x[0] === Infinity) {
-      const xValue = x[1];
-      const pointA = { x: xValue, y: 0 };
-      const pointB = { x: xValue, y: 1000 };
-      // displayDriver?.drawLineBetweenVectors(pointA, pointB, "blue");
-
       normal = { x: 1, y: 0 };
     } else {
-      const pointA = { x: 0, y: x[1] };
-      const pointB = { x: 1000, y: x[0] * 1000 + x[1] };
-      // displayDriver?.drawLineBetweenVectors(pointA, pointB, "blue");
-
       normal = Vector.normalize({ x: -x[0], y: 1 });
     }
 
