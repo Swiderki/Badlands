@@ -177,7 +177,7 @@ class GameScene extends Scene {
     assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* 20% that Jack will be ghost
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.2 && this.map === "snow") {
       this.opponentControllersList.push(
         new OpponentController(
           opponentGhostSprite,
@@ -196,7 +196,8 @@ class GameScene extends Scene {
         startPositions[1],
         new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
         "Jack",
-        traction
+        traction,
+        this.map === "snow" 
       )
     );
     }
@@ -208,7 +209,9 @@ class GameScene extends Scene {
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
         "Bob",
-        traction
+        traction,
+        this.map === "snow" 
+
       )
     );
 
@@ -224,7 +227,9 @@ class GameScene extends Scene {
         startPositions[2],
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Norman",
-        traction
+        traction,
+        this.map === "snow" 
+
       )
     );
     // * Create Middle driving enemy
@@ -235,7 +240,9 @@ class GameScene extends Scene {
         startPositions[3],
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "Middle",
-        traction
+        traction,
+        this.map === "snow" 
+
       )
     );
   }
