@@ -26,7 +26,7 @@ export default class SpikesObstacle extends EffectObject {
     const effect: TimedEffect = {
       canBeOverrided: true,
       startTimestamp: GameTimeline.now(),
-      duration: Infinity,
+      duration: 3000,
       finish: () => {
         car.currentMaxSpeedForward /= this.FORCE_MODIFIER;
         car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
