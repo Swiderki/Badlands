@@ -2,7 +2,7 @@ import Game from "../game";
 
 export const startGameWithCountdown = (): Promise<void> => {
   const game = Game.getInstance();
-  game.pauseGame(true);
+  game.pauseGame("gameLogic", true);
 
   const elements = {
     countdownDialog: document.querySelector<HTMLElement>("#countdown-scene"),
@@ -40,7 +40,7 @@ export const startGameWithCountdown = (): Promise<void> => {
           if (elements.countdownDialog) elements.countdownDialog.style.display = "none";
           if (elements.speedMeter) elements.speedMeter.style.display = "block";
 
-          game.resumeGame();
+          game.resumeGame("gameLogic");
           resolve();
         });
       });

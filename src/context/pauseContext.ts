@@ -1,9 +1,12 @@
+type PauseCauses = { gameLogic: boolean; windowChange: boolean };
+export type PauseCause = keyof PauseCauses;
 type PauseContext = {
-  isPaused: boolean;
+  get isPaused(): boolean;
+  pauseCauses: PauseCauses;
   isWindowActive: boolean | null;
   documentTimeline: DocumentTimeline;
-  pauseGame: () => void;
-  resumeGame: () => void;
+  pauseGame: (cause: PauseCause) => void;
+  resumeGame: (cause: PauseCause) => void;
 };
 let pauseContext: PauseContext = {} as PauseContext;
 
