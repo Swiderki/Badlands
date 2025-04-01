@@ -264,10 +264,10 @@ class DisplayDriver {
   };
 
   drawTraces(controller: PhysicsBasedController) {
-    this.topQueue.push(() => {
-      this.drawPath(controller.tracePoints.left, controller.isNitroActive);
-      this.drawPath(controller.tracePoints.right, controller.isNitroActive);
-    });
+    // this.topQueue.push(() => {
+    this.drawPath(controller.tracePoints.left, controller.isNitroActive);
+    this.drawPath(controller.tracePoints.right, controller.isNitroActive);
+    // });
   }
 
   drawRain() {

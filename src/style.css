@@ -107,18 +107,19 @@ body {
 }
 
 .speed-meter__wrapper {
-  position: absolute;
+  /* position: absolute; */
   width: 60%;
-  margin-inline: auto;
-  transform: translate(-50%, -70%);
+  /* margin-inline: auto; */
+  margin: 0 auto;
+  /* transform: translate(-50%, -0%); */
   left: 50%;
-  display: none;
+  display: block;
 }
 
 .speed-meter__inner {
   width: 100%;
   position: relative;
-  display: none;
+  display: block;
 }
 
 .speed-meter__wrapper img#speed-meter {

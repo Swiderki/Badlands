@@ -379,6 +379,7 @@ class GameScene extends Scene {
     }
 
     this.displayDriver.displayTrack(this.track);
+    this.renderTraces();
     this.effectObjects.forEach((obstacle) => {
       if (!obstacle.visible) return;
       this.displayDriver.drawSprite({
@@ -394,7 +395,6 @@ class GameScene extends Scene {
     }
     this.opponentControllersList.forEach((opponent) => {
       if (opponent.finished || opponent.invisible) return;
-      this.displayDriver.drawTraces(opponent);
       this.displayDriver.drawSprite(opponent.displayData);
     });
 
@@ -440,8 +440,17 @@ class GameScene extends Scene {
       }
       this.displayDriver.ctx.fill();
     }
-    this.displayDriver.drawTraces(this.playerController);
     this.displayDriver.drawSprite(this.playerController.displayData);
+  }
+
+  renderTraces() {
+    if (!this.playerController) return;
+
+    this.displayDriver.drawTraces(this.playerController);
+    this.opponentControllersList.forEach((opponent) => {
+      if (opponent.finished || opponent.invisible) return;
+      this.displayDriver.drawTraces(opponent);
+    });
   }
 
   private trackUpdate() {
