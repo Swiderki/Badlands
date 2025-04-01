@@ -329,7 +329,7 @@ class GameScene extends Scene {
               { x: 300, y: 380 },
               200,
               Math.PI / 3,
-              "Aby się upuścić przeszkodę, kliknij spację",
+              "Aby się upuścić przeszkodę, kliknij spację. Jeśli chcesz użyc klaksonu, kliknij k",
               () => {
                 this.effectObjects.shift();
                 this.effectObjects.shift();
