@@ -11,6 +11,8 @@ import { Scoreboard } from "./scoreboard/scoreboard";
 import { SelectionScene } from "../scenes/selection-scene";
 import { StartScene } from "../scenes/start-scene";
 import assert from "../util/assert";
+import { startMusicWithFade } from "../util/music-utils";
+import { createPauseContext } from "../context/pauseContext";
 
 class Game {
   //* Drivers
@@ -27,17 +29,15 @@ class Game {
 
   deltaTime: number = 0;
 
-  private _pauseDetails = {
+  private _pauseDetails = createPauseContext({
     isPaused: false,
-    isWindowActive: null as boolean | null,
+    isWindowActive: null,
     documentTimeline: new DocumentTimeline(),
-  };
+    pauseGame: this.pauseGame,
+    resumeGame: this.resumeGame,
+  });
 
   private menuMusic: HTMLAudioElement = new Audio("/assets/sounds/menu_theme.wav");
-
-  get pauseDetails() {
-    return this._pauseDetails;
-  }
 
   get currentScene() {
     assert(this._currentScene, "Current scene not initialized");
@@ -55,21 +55,8 @@ class Game {
       scene instanceof SelectionScene ||
       scene instanceof StartScene
     ) {
-      if (this.menuMusic.paused) {
-        // Only perform transition if music is not already playing
-        this.menuMusic.loop = true;
-        this.menuMusic.volume = 0; // Start with zero volume
-        this.menuMusic.play().catch((err) => console.error("Failed to play menu music:", err));
-
-        // Gradually increase volume
-        const fadeInInterval = setInterval(() => {
-          if (this.menuMusic.volume < 1) {
-            this.menuMusic.volume = Math.min(this.menuMusic.volume + 0.1, 1);
-          } else {
-            clearInterval(fadeInInterval);
-          }
-        }, 200);
-      }
+      this.menuMusic.loop = true;
+      startMusicWithFade(this.menuMusic);
     } else {
       this.menuMusic.pause();
       this.menuMusic.currentTime = 0;

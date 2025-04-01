@@ -12,6 +12,7 @@ const breakPrecision = 0.01;
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 import GameTimeline from "@/src/services/game-logic/game-timeline";
+import { usePauseContext } from "@/src/context/pauseContext";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 350;
@@ -38,12 +39,13 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
 
   private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
     const now = GameTimeline.now();
+    const pauseContext = usePauseContext();
 
     if (PlayerController.currentInstance !== null && !PlayerController.currentInstance.finished) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
       if (distanceToPlayer < 22) this.playerInRangeSince = now;
-      if (distanceToPlayer < 40 && now - this.lastHorn > 3000) {
+      if (distanceToPlayer < 40 && now - this.lastHorn > 3000 && !pauseContext.isPaused) {
         this.brakeSound.play();
         this.lastHorn = now;
       }
