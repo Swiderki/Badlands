@@ -11,13 +11,14 @@ const breakPrecision = 0.01;
 //* This import is here only for debugging purposes
 import DisplayDriver from "@/src/services/display-driver/display-driver";
 import { EnemyPath } from "@/src/services/track-driver/enemy-path";
+import GameTimeline from "@/src/services/game-logic/game-timeline";
 
 class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 350;
   private corneringSpeed = 60;
-  
+
   private attackRange = 70;
-  
+
   private furtherDistanceToCheckpointTreshold = 40;
   private closerDistanceToCheckpointTreshold = 20;
 
@@ -36,16 +37,16 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
   }
 
   private getTarget(current_position: Vec2D): { shouldAttack: boolean; target: CheckPoint } {
-    const now = Date.now();
+    const now = GameTimeline.now();
 
     if (PlayerController.currentInstance !== null && !PlayerController.currentInstance.finished) {
       const playerPosition = PlayerController.currentInstance!.centerPosition;
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
-      if(distanceToPlayer < 22) this.playerInRangeSince = now;
-      if(distanceToPlayer < 40 && now - this.lastHorn > 3000){
+      if (distanceToPlayer < 22) this.playerInRangeSince = now;
+      if (distanceToPlayer < 40 && now - this.lastHorn > 3000) {
         this.brakeSound.play();
         this.lastHorn = now;
-      } 
+      }
       const shouldAttack = distanceToPlayer < this.attackRange;
       if (shouldAttack && now - this.playerInRangeSince > 2000) {
         this.distanceToCheckpointTreshold = this.furtherDistanceToCheckpointTreshold;
@@ -118,7 +119,6 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
     return (this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature)) * scalar;
   }
 
-
   override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
     this.updateCurrentCheckPoint(current_position);
     this.updateActualPath(current_position);
@@ -137,9 +137,9 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
 
     //* Debugging visualization
     DisplayDriver.currentInstance?.drawLineBetweenVectors(
-        current_position,
-        target.point,
-        shouldAttack ? "#ff0000" : "#0066ff"
+      current_position,
+      target.point,
+      shouldAttack ? "#ff0000" : "#0066ff"
     );
     DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
