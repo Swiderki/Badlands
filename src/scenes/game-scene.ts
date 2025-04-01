@@ -25,6 +25,8 @@ import assert from "../util/assert";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
+import { startMusicWithFade } from "../util/music-utils";
+import { usePauseContext } from "../context/pauseContext";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -89,12 +91,12 @@ class GameScene extends Scene {
     await this.initEffectObjects();
     await startGameWithCountdown();
     this.music.loop = true;
-    this.music.play().catch((err) => console.error("Failed to play background music:", err));
+    startMusicWithFade(this.music);
     this.initListeners();
   }
 
   private initListeners() {
-    const game = Game.getInstance();
+    const pauseContext = usePauseContext();
 
     //* i've added keypress listener instead of keydown to prevent just holding key
     document.addEventListener("keypress", (e) => {
@@ -107,24 +109,24 @@ class GameScene extends Scene {
 
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
-        if (game.pauseDetails.isPaused) {
-          game.resumeGame();
+        if (pauseContext.isPaused) {
+          pauseContext.resumeGame();
         } else {
-          game.pauseGame();
+          pauseContext.pauseGame();
         }
       }
     });
 
     window.addEventListener("focus", () => {
       // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
-      if (game.pauseDetails.isWindowActive === null) return;
-      game.pauseDetails.isWindowActive = true;
-      game.resumeGame();
+      if (pauseContext.isWindowActive === null) return;
+      pauseContext.isWindowActive = true;
+      pauseContext.resumeGame();
     });
 
     window.addEventListener("blur", () => {
-      game.pauseDetails.isWindowActive = false;
-      game.pauseGame();
+      pauseContext.isWindowActive = false;
+      pauseContext.pauseGame();
     });
   }
 
@@ -185,7 +187,9 @@ class GameScene extends Scene {
         traction
       )
     );
-    this.opponentControllersList[this.opponentControllersList.length - 1].currentAccelerationPowerForward += 10;
+    this.opponentControllersList[
+      this.opponentControllersList.length - 1
+    ].currentAccelerationPowerForward += 10;
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
     this.opponentControllersList.push(
