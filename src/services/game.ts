@@ -109,6 +109,9 @@ class Game {
   }
 
   startResultScene() {
+    const speedMeter = document.querySelector<HTMLElement>(".speed-meter__inner");
+    if (speedMeter) speedMeter.style.display = "none";
+
     this.currentScene = new ResultScene();
     this.currentScene.init();
   }

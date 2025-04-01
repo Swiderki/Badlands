@@ -112,6 +112,10 @@ body {
   width: 60%;
   margin: 0 auto;
   display: block;
+  scale: 0.5;
+  position: absolute;
+  left: 50%;
+  transform: translate(-100%, -100%);
 }
 
 .speed-meter__inner {
