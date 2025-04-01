@@ -11,7 +11,7 @@ import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 
 class StraightMasterDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 350;
-  private corneringSpeed = 60;
+  private corneringSpeed = 90;
 
   private distanceToCheckpointTreshold = 20;
 

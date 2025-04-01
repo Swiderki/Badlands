@@ -23,13 +23,15 @@ class OpponentController extends PhysicsBasedController {
   bestLoopTime = 0;
   finishedLoopTime = 0;
   currentLap = 0;
+  shouldAvoidCollisions: boolean = true;
 
   constructor(
     sprite: Sprite,
     startPosition: StartPosition,
     drivingPolicy: DrivingPolicyBase,
     nickname: string,
-    traction: number
+    traction: number,
+    shouldAvoidCollisions: boolean = true
   ) {
     super(sprite, traction);
 
@@ -43,7 +45,10 @@ class OpponentController extends PhysicsBasedController {
     this.drivingPolicy.parentRef = this;
     this.setPosition(Vector.subtract(this.drivingPolicy.enemyPath.sampledPoints[0].point, { x: 30, y: 15 }));
     this.nickname = nickname;
+    this.shouldAvoidCollisions = shouldAvoidCollisions;
   }
+
+
 
   override update(deltaTime: number) {
     this._lastRotation += deltaTime;

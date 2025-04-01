@@ -171,14 +171,42 @@ class GameScene extends Scene {
     traction: number
   ) {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
+    const opponentGhostSprite = this.displayDriver.getSprite("opel_pink");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
 
+    assert(opponentGhostSprite, "Failed to get opponent sprite");
     assert(opponentSprite1, "Failed to get opponent sprite");
     assert(opponentSprite2, "Failed to get opponent sprite");
     assert(opponentSprite3, "Failed to get opponent sprite");
     assert(opponentSprite4, "Failed to get opponent sprite");
+
+    //* 20% that Jack will be ghost
+    if (Math.random() < 0.2 && this.map === "snow") {
+      this.opponentControllersList.push(
+        new OpponentController(
+          opponentGhostSprite,
+          startPositions[0],
+          new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
+          "Ghost",
+          traction,
+          false
+        )
+      );
+    }else{
+
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite2,
+        startPositions[1],
+        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+        "Jack",
+        traction,
+        this.map === "snow" 
+      )
+    );
+    }
 
     //* Create Middle driving enemy
     this.opponentControllersList.push(
@@ -187,20 +215,13 @@ class GameScene extends Scene {
         startPositions[0],
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
         "Bob",
-        traction
+        traction,
+        this.map === "snow" 
+
       )
     );
-    //* Create Middle driving enemy
-    //* It will later use BalancedDrivingPolicy
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite2,
-        startPositions[1],
-        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack",
-        traction
-      )
-    );
+
+
     this.opponentControllersList[
       this.opponentControllersList.length - 1
     ].currentAccelerationPowerForward += 10;
@@ -211,8 +232,10 @@ class GameScene extends Scene {
         opponentSprite3,
         startPositions[2],
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-        "NormcnkZJXnvkxjzcnvknjxcal",
-        traction
+        "Norman",
+        traction,
+        this.map === "snow" 
+
       )
     );
     // * Create Middle driving enemy
@@ -223,7 +246,9 @@ class GameScene extends Scene {
         startPositions[3],
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "Middle",
-        traction
+        traction,
+        this.map === "snow" 
+
       )
     );
   }
