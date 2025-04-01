@@ -45,6 +45,7 @@ class GameScene extends Scene {
   private playerCar: string;
   private playerColor: string;
   private map: string;
+  private debugVisible: boolean = false;
   static instance: GameScene;
   static getInstance(): GameScene {
     if (!GameScene.instance) {
@@ -142,6 +143,9 @@ class GameScene extends Scene {
         const obstacle = this.playerController?.dropObstacle(this.track.difficulty);
         if (!obstacle) return;
         this.effectObjects.push(obstacle);
+      }
+      if (e.key === "`"){
+        this.debugVisible = !this.debugVisible;
       }
     });
   }
@@ -403,7 +407,7 @@ class GameScene extends Scene {
     this.track.renderGates();
 
     //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
-    displayGameDebugInfo(this);
+    if(this.debugVisible) displayGameDebugInfo(this);
     this.displayDriver.performDrawCalls();
   }
 

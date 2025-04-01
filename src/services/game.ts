@@ -94,23 +94,7 @@ class Game {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "p") {
-      this.startResultScene();
-    }
-
-    if (event.key === "o") {
-      this.nickname = "Player";
-      this.startGameScene("peugeot", "pink", "grass");
-    }
-    if (event.key === "i") {
-      Scoreboard.instance.currentLap += 1;
-      const gameScene = Game.instance.currentScene;
-      if (gameScene instanceof GameScene) {
-        gameScene.opponentControllersList.forEach((opponent) => {
-          opponent.currentLap += 1;
-        });
-      }
-    }
+    return;
   }
 
   async startGameScene(car: string, color: string, map: string) {

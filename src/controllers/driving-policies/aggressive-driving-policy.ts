@@ -20,7 +20,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
 
   private attackRange = 70;
 
-  private furtherDistanceToCheckpointTreshold = 40;
+  private furtherDistanceToCheckpointTreshold = 30;
   private closerDistanceToCheckpointTreshold = 20;
 
   private playerInRangeSince: number = 0;
@@ -151,14 +151,6 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
     const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
-
-    //* Debugging visualization
-    DisplayDriver.currentInstance?.drawLineBetweenVectors(
-      current_position,
-      target.point,
-      shouldAttack ? "#ff0000" : "#0066ff"
-    );
-    DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
     return {
       acceleration: shouldAccelerate,

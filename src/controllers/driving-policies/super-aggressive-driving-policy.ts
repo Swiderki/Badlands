@@ -22,7 +22,7 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
   private distanceBeforePlayer = 70;
   private maxDegreeToAttack = 80;
 
-  private furtherDistanceToCheckpointTreshold = 40;
+  private furtherDistanceToCheckpointTreshold = 30;
   private closerDistanceToCheckpointTreshold = 20;
 
   private distanceToCheckpointTreshold = this.closerDistanceToCheckpointTreshold;
@@ -43,9 +43,6 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
       const nextPlayerStep = Vector.generateVectorFromAngle(this.distanceBeforePlayer, playerDirection);
 
       const positionBeforePlayer = Vector.add(playerPosition, nextPlayerStep);
-
-      const dd = DisplayDriver.currentInstance!;
-      dd.drawLineBetweenVectors(playerPosition, positionBeforePlayer, "#ffffff");
 
       const distanceToPlayer = this.getDistance(current_position, positionBeforePlayer);
       const isCloseEnough = distanceToPlayer < this.attackRange;
@@ -149,14 +146,6 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
     const currentVelocity = this.actualForceToVelocity(actualForce, current_rotation);
     const shouldAccelerate = currentVelocity - targetSpeed < accPrecision;
     const shouldBrake = targetSpeed - currentVelocity < breakPrecision;
-
-    //* Debugging visualization
-    DisplayDriver.currentInstance?.drawLineBetweenVectors(
-      current_position,
-      target.point,
-      shouldAttack ? "#ff0000" : "#0066ff"
-    );
-    DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
     return {
       acceleration: shouldAccelerate,
