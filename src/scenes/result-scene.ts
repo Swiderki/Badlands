@@ -6,7 +6,7 @@ import assert from "../util/assert";
 
 export class ResultScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private results: { nickname: string; time: number, bestLoopTime: number }[] = [];
+  private results: { nickname: string; time: number; bestLoopTime: number }[] = [];
   constructor() {
     super();
   }
@@ -20,18 +20,15 @@ export class ResultScene extends Scene {
     this.addAnimation();
 
     const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
-    playBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(playBtnRef, "click", () => {
       if (!Game.getInstance()) return;
-      // Game.getInstance().startGameScene();
       Game.getInstance().startSelectionScene();
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override update(deltaTime: number): void {}
+  override update(_deltaTime: number): void {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override render(ctx: CanvasRenderingContext2D): void {}
+  override render(_ctx: CanvasRenderingContext2D): void {}
 
   override onMount() {
     this.sceneRef = document.querySelector("#result-scene");
@@ -40,6 +37,7 @@ export class ResultScene extends Scene {
   }
 
   override onDisMount() {
+    super.onDisMount();
     assert(this.sceneRef, "Result scene not initialized");
     this.sceneRef.style.display = "none";
   }
@@ -71,7 +69,9 @@ export class ResultScene extends Scene {
           secondsString = "0" + seconds;
         }
 
-        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString} (${this.formatTime(result.bestLoopTime)})`;
+        resultHTML.innerText = `${index + 1}: ${
+          result.nickname
+        } - ${minutesString}:${secondsString} (${this.formatTime(result.bestLoopTime)})`;
         playerResultsList.appendChild(resultHTML);
       });
     }
@@ -110,7 +110,9 @@ export class ResultScene extends Scene {
       resultHTML.innerText =
         result.time === 0
           ? `${index + 1}: ${result.nickname} - DNF`
-          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)} (${this.formatTime(result.bestLoopTime)})`;
+          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)} (${this.formatTime(
+              result.bestLoopTime
+            )})`;
       raceResults.appendChild(resultHTML);
     });
     this.displayWinner();
@@ -119,7 +121,8 @@ export class ResultScene extends Scene {
     if (!this.results.length || this.results[0].time === 0) return;
     const winner = this.results[0];
     document.querySelector(".winner_nickname")!.innerHTML = winner.nickname;
-    document.querySelector(".winner_time")!.innerHTML = "Time: " + this.formatTime(winner.time) + " Best lap: " + this.formatTime(winner.bestLoopTime);
+    document.querySelector(".winner_time")!.innerHTML =
+      "Time: " + this.formatTime(winner.time) + " Best lap: " + this.formatTime(winner.bestLoopTime);
   }
 
   formatTime(time: number): string {

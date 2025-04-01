@@ -21,7 +21,7 @@ export class SelectionScene extends Scene {
     console.log(carImage);
     console.log(colorBoxes);
     colorBoxes.forEach((box) => {
-      box.addEventListener("click", () => {
+      this.addRemovableListener(box, "click", () => {
         colorSelection.classList.toggle("active");
         if (!box.classList.contains("selected")) {
           this.selectedColor = box.dataset.color || "pink";
@@ -31,7 +31,6 @@ export class SelectionScene extends Scene {
             "style",
             `--image-url: url(/assets/sprites/${this.selectedCar}_${this.selectedColor}.png);`
           );
-          console.log(carImage.style.backgroundImage);
         }
       });
     });
@@ -40,7 +39,7 @@ export class SelectionScene extends Scene {
     this.addCarSelectionHandling();
 
     const playBtnRef = this.sceneRef.querySelector("button#play-btn");
-    playBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(playBtnRef, "click", () => {
       if (!Game.getInstance()) return;
       if (localStorage.getItem("tutorial") === "true") {
         Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
@@ -48,13 +47,15 @@ export class SelectionScene extends Scene {
       }
       this.showTutorialDialog();
     });
+
     const backBtnRef = this.sceneRef.querySelector("button#back-btn");
-    backBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(backBtnRef, "click", () => {
       if (!Game.getInstance()) return;
       Game.getInstance().startStartScene();
     });
+
     const tutorialBtnRef = this.sceneRef.querySelector("button#tutorial-btn");
-    tutorialBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(tutorialBtnRef, "click", () => {
       if (!Game.getInstance()) return;
       Game.getInstance().startTutorialGameScene(this.selectedCar, this.selectedColor);
     });
@@ -70,14 +71,14 @@ export class SelectionScene extends Scene {
       console.log("acceptTutorialBtnRef", acceptTutorialBtnRef);
       const declineTutorialBtnRed = tutorialDialog.querySelector("button:not(.mainBtn)");
       if (acceptTutorialBtnRef) {
-        acceptTutorialBtnRef.addEventListener("click", () => {
+        this.addRemovableListener(acceptTutorialBtnRef, "click", () => {
           console.log("first");
           Game.getInstance()?.startTutorialGameScene(this.selectedCar, this.selectedColor);
           this.hideTutorialDialog();
         });
       }
       if (declineTutorialBtnRed) {
-        declineTutorialBtnRed.addEventListener("click", () => {
+        this.addRemovableListener(declineTutorialBtnRed, "click", () => {
           localStorage.setItem("tutorial", "true");
           Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
           this.hideTutorialDialog();
@@ -97,11 +98,9 @@ export class SelectionScene extends Scene {
     tutorialDialog.setAttribute("style", "display: none;");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override update(deltaTime: number): void {}
+  override update(_deltaTime: number): void {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override render(ctx: CanvasRenderingContext2D): void {}
+  override render(_ctx: CanvasRenderingContext2D): void {}
 
   override onMount() {
     this.sceneRef = document.querySelector("#selection-scene");
@@ -122,6 +121,7 @@ export class SelectionScene extends Scene {
   }
 
   override onDisMount() {
+    super.onDisMount();
     assert(this.sceneRef, "Selection scene not initialized");
     this.sceneRef.style.display = "none";
   }
@@ -146,16 +146,16 @@ export class SelectionScene extends Scene {
 
       const id = parseInt(newElement.getAttribute("data-id") || "1") - 1;
       mapOptions.forEach((option) => {
-        option.style.transform = `translateX(-${id * 100}%)`;
+        option.style.transform = `translateX(-${id * 100}%`;
       });
     };
 
-    nextBtn.addEventListener("click", () => {
+    this.addRemovableListener(nextBtn, "click", () => {
       const currentlySelected = document.querySelector(`.selection__option[data-map="${this.selectedMap}"]`);
       updateSelection(currentlySelected?.nextElementSibling as HTMLElement);
     });
 
-    prevBtn.addEventListener("click", () => {
+    this.addRemovableListener(prevBtn, "click", () => {
       const currentlySelected = document.querySelector(`.selection__option[data-map="${this.selectedMap}"]`);
       updateSelection(currentlySelected?.previousElementSibling as HTMLElement);
     });
@@ -183,16 +183,16 @@ export class SelectionScene extends Scene {
 
       const id = parseInt(newElement.getAttribute("data-id") || "1") - 1;
       carOptions.forEach((option) => {
-        option.style.transform = `translateX(-${id * 100}%)`;
+        option.style.transform = `translateX(-${id * 100}%`;
       });
     };
 
-    nextBtn.addEventListener("click", () => {
+    this.addRemovableListener(nextBtn, "click", () => {
       const currentlySelected = document.querySelector(`.selection__option[data-car="${this.selectedCar}"]`);
       updateSelection(currentlySelected?.nextElementSibling as HTMLElement);
     });
 
-    prevBtn.addEventListener("click", () => {
+    this.addRemovableListener(prevBtn, "click", () => {
       const currentlySelected = document.querySelector(`.selection__option[data-car="${this.selectedCar}"]`);
       updateSelection(currentlySelected?.previousElementSibling as HTMLElement);
     });

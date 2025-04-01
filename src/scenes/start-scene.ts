@@ -10,29 +10,25 @@ export class StartScene extends Scene {
     this.sceneRef.style.display = "block";
 
     const playBtnRef = this.sceneRef.querySelector("button:nth-of-type(2)");
-    playBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(playBtnRef, "click", () => {
       if (!Game.getInstance()) return;
-      // Game.getInstance().startGameScene();
       dialog?.setAttribute("style", "display: grid;");
-
-      // Game.getInstance().startSelectionScene();
     });
+
     const aboutBtnRef = this.sceneRef.querySelector("button:first-of-type");
     const dialog = this.sceneRef.querySelector(".dialog.nickname");
-    aboutBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(aboutBtnRef, "click", () => {
       if (!Game.getInstance()) return;
-      // Game.getInstance().startGameScene();
-
       Game.getInstance().startAboutScene();
     });
+
     const closeBtnRef = this.sceneRef.querySelector(".dialog.nickname button:first-of-type");
-    closeBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(closeBtnRef, "click", () => {
       dialog?.setAttribute("style", "display: none;");
-      // Game.getInstance().startAboutScene();
     });
 
     const startGameBtnRef = this.sceneRef.querySelector(".dialog.nickname button:last-of-type");
-    startGameBtnRef?.addEventListener("click", () => {
+    this.addRemovableListener(startGameBtnRef, "click", () => {
       const inputRef = this.sceneRef?.querySelector("input");
       if (!inputRef) return;
       if (!Game.getInstance()) return;
@@ -60,6 +56,7 @@ export class StartScene extends Scene {
   }
 
   override onDisMount() {
+    super.onDisMount();
     assert(this.sceneRef, "Start scene not initialized");
     this.sceneRef.style.display = "none";
   }

@@ -12,7 +12,6 @@ import DisplayDriver from "../services/display-driver/display-driver";
 import EffectObject from "../services/effect/effect-object";
 import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
 import IceObstacle from "../services/effect/obstacle/ice-obstacle";
-import Game from "../services/game";
 import { startGameWithCountdown } from "../services/game-logic/countdown";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
@@ -106,7 +105,7 @@ class GameScene extends Scene {
   private initPauseListeners() {
     const pauseContext = usePauseContext();
 
-    document.addEventListener("keyup", (e) => {
+    this.addRemovableListener(document, "keyup", (e) => {
       if (e.key === "Enter") {
         pauseContext.resumeGame("gameLogic");
         UIService.getInstance().hideDialogOverlay();
@@ -120,22 +119,20 @@ class GameScene extends Scene {
       }
     });
 
-    window.addEventListener("focus", () => {
-      // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
+    this.addRemovableListener(window, "focus", () => {
       if (pauseContext.isWindowActive === null) return;
       pauseContext.isWindowActive = true;
       pauseContext.resumeGame("windowChange");
     });
 
-    window.addEventListener("blur", () => {
+    this.addRemovableListener(window, "blur", () => {
       pauseContext.isWindowActive = false;
       pauseContext.pauseGame("windowChange");
     });
   }
 
   private initGameListeners() {
-    //* i've added keypress listener instead of keydown to prevent just holding key
-    document.addEventListener("keypress", (e) => {
+    this.addRemovableListener(document, "keypress", (e) => {
       if (e.key === " ") {
         const obstacle = this.playerController?.dropObstacle();
         if (!obstacle) return;
@@ -151,6 +148,7 @@ class GameScene extends Scene {
   }
 
   override onDisMount() {
+    super.onDisMount();
     assert(this.sceneRef, "Game scene not initialized");
     this.sceneRef.style.display = "none";
     this.music.pause();
@@ -162,6 +160,7 @@ class GameScene extends Scene {
     const playerSprite = this.displayDriver.getSprite(spriteName);
     assert(playerSprite, "Failed to get player sprite");
     this.playerController = new PlayerController(playerSprite, startPosition, traction);
+    this.playerController.initListeners(this.addRemovableListener.bind(this));
   }
 
   private async loadOpponents(
@@ -194,18 +193,17 @@ class GameScene extends Scene {
           false
         )
       );
-    }else{
-
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite2,
-        startPositions[1],
-        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack",
-        traction,
-        this.map === "snow" 
-      )
-    );
+    } else {
+      this.opponentControllersList.push(
+        new OpponentController(
+          opponentSprite2,
+          startPositions[1],
+          new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+          "Jack",
+          traction,
+          this.map === "snow"
+        )
+      );
     }
 
     //* Create Middle driving enemy
@@ -216,11 +214,9 @@ class GameScene extends Scene {
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
         "Bob",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
-
 
     this.opponentControllersList[
       this.opponentControllersList.length - 1
@@ -234,8 +230,7 @@ class GameScene extends Scene {
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Norman",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
     // * Create Middle driving enemy
@@ -247,8 +242,7 @@ class GameScene extends Scene {
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "Middle",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
   }

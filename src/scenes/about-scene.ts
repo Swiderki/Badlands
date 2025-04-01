@@ -10,10 +10,9 @@ export class AboutScene extends Scene {
     assert(this.sceneRef, "About scene not initialized");
     this.sceneRef.style.display = "block";
 
-    const playBtnRef = this.sceneRef.querySelector("button:first-of-type");
-    playBtnRef?.addEventListener("click", () => {
+    const backBtnRef = this.sceneRef.querySelector("button:first-of-type");
+    this.addRemovableListener(backBtnRef, "click", () => {
       if (!Game.getInstance()) return;
-      // Game.getInstance().startGameScene();
       Game.getInstance().startStartScene();
     });
   }
@@ -29,6 +28,7 @@ export class AboutScene extends Scene {
   }
 
   override onDisMount() {
+    super.onDisMount();
     assert(this.sceneRef, "About scene not initialized");
     this.sceneRef.style.display = "none";
   }

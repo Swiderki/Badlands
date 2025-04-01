@@ -5,6 +5,7 @@ import { getEffectObjectByName, getRandomObstacleSprite } from "../util/effects-
 import { UIService } from "../services/ui-service/ui-service";
 import GameTimeline from "../services/game-logic/game-timeline";
 import { Vector } from "../util/vec-util";
+import Scene from "../scenes/_scene";
 const audio = new Audio("assets/sounds/horn.wav");
 
 class PlayerController extends PhysicsBasedController {
@@ -29,7 +30,6 @@ class PlayerController extends PhysicsBasedController {
 
     this.updateCurrentSprite();
 
-    this._addInputListeners();
     PlayerController._instance = this;
   }
 
@@ -45,8 +45,8 @@ class PlayerController extends PhysicsBasedController {
     return Math.min(1, (GameTimeline.now() - this._lastObstacleDropTimestamp) / this.OBSTACLE_DROP_COOLDOWN);
   }
 
-  private _addInputListeners() {
-    document.addEventListener("keydown", (e) => {
+  initListeners(addRemovableListener: Scene["addRemovableListener"]) {
+    addRemovableListener(document, "keydown", (e) => {
       this._playerInput[e.key.toLowerCase()] = true;
       if (e.key === "Shift") {
         UIService.getInstance().setIsNitroIndicatorActive(false);
@@ -55,7 +55,7 @@ class PlayerController extends PhysicsBasedController {
       }
     });
 
-    document.addEventListener("keyup", (e) => {
+    addRemovableListener(document, "keyup", (e) => {
       this._playerInput[e.key.toLowerCase()] = false;
     });
   }
