@@ -38,6 +38,7 @@ export function displayGameDebugInfo(gameScene: GameScene) {
   const collisionManager = CollisionManager.instance;
   if (collisionManager) {
     for (const obstacle of effectObjects) {
+      if (!obstacle) continue;
       if (!obstacle.visible) {
         const corners = collisionManager.getRotatedCorners(obstacle.collision);
         displayDriver.displayColliderCorners(corners, obstacle.position, 0);

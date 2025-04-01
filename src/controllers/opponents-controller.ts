@@ -32,8 +32,8 @@ class OpponentController extends PhysicsBasedController {
     super(sprite, traction);
 
     // Temporary, bacause he cant deal with greater values
-    this.currentMaxSpeedForward = 200;
-    this.accelerationPowerForward = 80;
+    this.currentMaxSpeedForward = 500;
+    this.accelerationPowerForward = 500;
 
     this.angle = startPosition.angle;
     this.updateCurrentSprite();

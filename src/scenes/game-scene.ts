@@ -27,6 +27,7 @@ import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
 import { startMusicWithFade } from "../util/music-utils";
 import { usePauseContext } from "../context/pauseContext";
+import DialogTrigger from "../services/effect/obstacle/dialog-trigger";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -82,13 +83,17 @@ class GameScene extends Scene {
     this.scoreboard.resetCurrentTime();
 
     await this.loadPlayer(this.track.startPositions[0], this.track.traction);
-    await this.loadOpponents(
-      this.track.startPositions.slice(1),
-      this.track.checkPointPath!,
-      this.displayDriver.scaler,
-      this.track.traction
-    );
-    await this.initEffectObjects();
+    if (!tutorial) {
+      await this.loadOpponents(
+        this.track.startPositions.slice(1),
+        this.track.checkPointPath!,
+        this.displayDriver.scaler,
+        this.track.traction
+      );
+      await this.initEffectObjects();
+    } else {
+      await this.initTutorial();
+    }
     await startGameWithCountdown();
     this.music.loop = true;
     startMusicWithFade(this.music);
