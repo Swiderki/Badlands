@@ -11,7 +11,7 @@ export class Scoreboard {
   private currentPlayerStartTime: Date | null = null;
   private lapTimeList: (Date | null)[] = [null, null, null];
   private clearCheckpointsCounter = 0;
-  playerResults: { nickname: string; time: number }[] = [];
+  playerResults: { nickname: string; time: number, bestLoopTime: number }[] = [];
   _currentLap: number = 0;
   currentCheckpoint: number = 1;
 
@@ -99,6 +99,10 @@ export class Scoreboard {
     UiService.setCurrentLapTime(this.currentLapTime);
 
     if (this.currentCheckpoint === track.checkPointPath.sampledPoints.length - 1) {
+      console.log("Lap finished");
+      if((this.currentLapTime > 0 && this.currentLapTime < playerController.bestLoopTime) || playerController.bestLoopTime === 0) {
+        playerController.bestLoopTime = this.currentLapTime;
+      }
       this.currentLap++;
       this.currentCheckpoint = 1;
       if (this.currentLap !== UiService.lapCount) audioLap.play();
@@ -111,7 +115,7 @@ export class Scoreboard {
       }
       const nickname = Game.instance.nickname;
 
-      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime });
+      Scoreboard.instance.playerResults.push({ nickname: nickname, time: this.currentTime, bestLoopTime: playerController.bestLoopTime });
       playerController.finished = true;
       playerController.finishedTime = this.currentTime;
       UiService.showSkipButton();

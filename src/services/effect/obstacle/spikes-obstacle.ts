@@ -9,6 +9,7 @@ const audio = new Audio("assets/sounds/spikes.wav");
 
 export default class SpikesObstacle extends EffectObject {
   private readonly FORCE_MODIFIER = 0.2;
+  private readonly MAX_SPEED_MODIFIER = 0.8;
   private readonly ACCELERATION_MODIFIER = 0.7;
 
   constructor(position: Vec2D) {
@@ -20,7 +21,7 @@ export default class SpikesObstacle extends EffectObject {
 
     car.actualForce.x *= this.FORCE_MODIFIER;
     car.actualForce.y *= this.FORCE_MODIFIER;
-    car.currentMaxSpeedForward *= this.FORCE_MODIFIER;
+    car.currentMaxSpeedForward *= this.MAX_SPEED_MODIFIER;
     car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
 
     const effect: TimedEffect = {
@@ -28,7 +29,7 @@ export default class SpikesObstacle extends EffectObject {
       startTimestamp: GameTimeline.now(),
       duration: 3000,
       finish: () => {
-        car.currentMaxSpeedForward /= this.FORCE_MODIFIER;
+        car.currentMaxSpeedForward /= this.MAX_SPEED_MODIFIER;
         car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
       },
       update() {},

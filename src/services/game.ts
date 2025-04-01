@@ -120,6 +120,7 @@ class Game {
       const gameScene = Game.instance.currentScene;
       if (gameScene instanceof GameScene) {
         gameScene.opponentControllersList.forEach((opponent) => {
+
           opponent.currentLap += 1;
         });
       }

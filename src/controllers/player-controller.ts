@@ -18,6 +18,7 @@ class PlayerController extends PhysicsBasedController {
   private readonly OBSTACLE_DROP_COOLDOWN = 3000;
   finished = false;
   finishedTime = 0;
+  bestLoopTime = 0;
 
   constructor(sprite: Sprite, startPosition: StartPosition, traction: number) {
     super(sprite, traction);

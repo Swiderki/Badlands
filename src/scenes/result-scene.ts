@@ -6,7 +6,7 @@ import assert from "../util/assert";
 
 export class ResultScene extends Scene {
   private sceneRef: HTMLElement | null = null;
-  private results: { nickname: string; time: number }[] = [];
+  private results: { nickname: string; time: number, bestLoopTime: number }[] = [];
   constructor() {
     super();
   }
@@ -71,7 +71,7 @@ export class ResultScene extends Scene {
           secondsString = "0" + seconds;
         }
 
-        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString}`;
+        resultHTML.innerText = `${index + 1}: ${result.nickname} - ${minutesString}:${secondsString} (${this.formatTime(result.bestLoopTime)})`;
         playerResultsList.appendChild(resultHTML);
       });
     }
@@ -83,16 +83,18 @@ export class ResultScene extends Scene {
       GameScene.instance?.opponentControllersList.map((opponent) => ({
         nickname: opponent.nickname,
         time: opponent.finishedTime,
+        bestLoopTime: opponent.bestLoopTime,
       })) || [];
 
     const playerResults = {
       nickname: Game.instance.nickname,
       time: GameScene.instance.playerController!.finishedTime,
+      bestLoopTime: GameScene.instance.playerController!.bestLoopTime,
     };
 
     this.results = [...opponentsResults, playerResults];
+    console.log(this.results);
 
-    // Sortowanie - najpierw normalnie po czasie, a DNF (time === 0) na końcu
     this.results.sort((a, b) => {
       if (a.time === 0) return 1;
       if (b.time === 0) return -1;
@@ -108,7 +110,7 @@ export class ResultScene extends Scene {
       resultHTML.innerText =
         result.time === 0
           ? `${index + 1}: ${result.nickname} - DNF`
-          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)}`;
+          : `${index + 1}: ${result.nickname} - ${this.formatTime(result.time)} (${this.formatTime(result.bestLoopTime)})`;
       raceResults.appendChild(resultHTML);
     });
     this.displayWinner();
@@ -117,7 +119,7 @@ export class ResultScene extends Scene {
     if (!this.results.length || this.results[0].time === 0) return;
     const winner = this.results[0];
     document.querySelector(".winner_nickname")!.innerHTML = winner.nickname;
-    document.querySelector(".winner_time")!.innerHTML = this.formatTime(winner.time);
+    document.querySelector(".winner_time")!.innerHTML = "Time: " + this.formatTime(winner.time) + " Best lap: " + this.formatTime(winner.bestLoopTime);
   }
 
   formatTime(time: number): string {

@@ -4,7 +4,7 @@ import { Vector } from "@/src/util/vec-util";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
 import { CheckPoint } from "@/types/track-driver";
-
+import { Scoreboard } from "@/src/services/scoreboard/scoreboard";
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
 
@@ -81,7 +81,21 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
 
     if (this._enemyPath.visitedCheckpoints === this._enemyPath.sampledPoints.length) {
       this._enemyPath.visitedCheckpoints = 1;
-      if (this.parentRef !== null) this.parentRef.currentLap++;
+      if (this.parentRef !== null) {
+        this.parentRef.currentLap++;
+        console.log(
+          this.parentRef.bestLoopTime,
+          Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime,
+          this.parentRef.finishedLoopTime
+        );
+        if (
+          this.parentRef.bestLoopTime > Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime ||
+          this.parentRef.bestLoopTime === 0
+        ) {
+          this.parentRef.bestLoopTime = Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime;
+        }
+        this.parentRef.finishedLoopTime = Scoreboard.instance.currentTime;
+      }
     }
   }
 
