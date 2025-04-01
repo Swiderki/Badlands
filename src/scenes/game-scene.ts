@@ -177,14 +177,15 @@ class GameScene extends Scene {
     assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* 20% that Jack will be ghost
-    if (Math.random() < 0.2) {
+    if (Math.random() < 2) {
       this.opponentControllersList.push(
         new OpponentController(
           opponentGhostSprite,
           startPositions[0],
           new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
           "Ghost",
-          traction
+          traction,
+          false
         )
       );
     }else{

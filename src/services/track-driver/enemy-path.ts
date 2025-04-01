@@ -110,6 +110,7 @@ export class EnemyPath extends TrackPath {
   }
 
   updateActualTrackPathIfIntersects(parentController: OpponentController) {
+    if (!parentController.shouldAvoidCollisions) return
     const collisionManager = CollisionManager.instance;
     if (!collisionManager) return;
 
