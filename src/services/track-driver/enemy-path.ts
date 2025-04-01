@@ -36,6 +36,7 @@ export class EnemyPath extends TrackPath {
   }
 
   getDistanceToActualPoint(pos: Vec2D): number {
+    if (!this.currentTargetCheckPoint || !this.nextTargetCheckPoint) return 0;
     const someArbitraryValue = 100;
     const point = this.currentTargetCheckPoint.point;
     const previousPoint = this.nextTargetCheckPoint.point;
@@ -110,7 +111,7 @@ export class EnemyPath extends TrackPath {
   }
 
   updateActualTrackPathIfIntersects(parentController: OpponentController) {
-    if (!parentController.shouldAvoidCollisions) return
+    if (!parentController.shouldAvoidCollisions) return;
     const collisionManager = CollisionManager.instance;
     if (!collisionManager) return;
 
