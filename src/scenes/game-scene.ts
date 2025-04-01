@@ -76,7 +76,11 @@ class GameScene extends Scene {
     this.sceneRef.style.display = "block";
     this.UiService.hideSkipButton();
 
-    this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
+    this.track = await TrackLoader.loadTrack(
+      this.displayDriver,
+      `/assets/tracks/${this.map}/track.json`,
+      this.map
+    );
 
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
@@ -134,7 +138,8 @@ class GameScene extends Scene {
   private initGameListeners() {
     this.addRemovableListener(document, "keypress", (e) => {
       if (e.key === " ") {
-        const obstacle = this.playerController?.dropObstacle();
+        if (!this.track) return;
+        const obstacle = this.playerController?.dropObstacle(this.track.difficulty);
         if (!obstacle) return;
         this.effectObjects.push(obstacle);
       }
@@ -248,7 +253,9 @@ class GameScene extends Scene {
   }
 
   private async initEffectObjects() {
-    const randomObstacles = getRandomObstacles(3, this.effectObjects);
+    assert(this.track, "Track has not been initialized");
+    const numberOfObstacles = this.track.difficulty * 3;
+    const randomObstacles = getRandomObstacles(numberOfObstacles, this.track.difficulty, this.effectObjects);
     this.effectObjects.push(...randomObstacles);
     if (this.map === "snow") {
       this.effectObjects.push(new IceObstacle({ x: 0, y: 0 }));
@@ -259,7 +266,8 @@ class GameScene extends Scene {
     console.log(this.effectObjects);
 
     const addPerk = () => {
-      const randomPerks = getRandomPerks(1, this.effectObjects);
+      assert(this.track, "Track has not been initialized");
+      const randomPerks = getRandomPerks(1, this.track.difficulty, this.effectObjects);
       randomPerks.forEach((perk) => {
         const index = this.effectObjects.length;
         perk._onEnter = () => {

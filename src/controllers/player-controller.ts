@@ -6,6 +6,7 @@ import { UIService } from "../services/ui-service/ui-service";
 import GameTimeline from "../services/game-logic/game-timeline";
 import { Vector } from "../util/vec-util";
 import Scene from "../scenes/_scene";
+import { TrackDifficulty } from "../services/track-driver/track-driver";
 const audio = new Audio("assets/sounds/horn.wav");
 
 class PlayerController extends PhysicsBasedController {
@@ -64,12 +65,12 @@ class PlayerController extends PhysicsBasedController {
     return this._playerInput[key] || false;
   }
 
-  dropObstacle() {
+  dropObstacle(difficulty: TrackDifficulty) {
     if (this._lastObstacleDropTimestamp + this.OBSTACLE_DROP_COOLDOWN > GameTimeline.now()) {
       return;
     }
 
-    const sprite = getRandomObstacleSprite();
+    const sprite = getRandomObstacleSprite(difficulty);
     const EffectObject = getEffectObjectByName(sprite);
 
     const angleInRad = (this.angle * Math.PI) / 180;

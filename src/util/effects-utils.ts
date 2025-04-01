@@ -5,7 +5,7 @@ import OilSpillObstacle from "../services/effect/obstacle/oil-spill-obstacle";
 import PotholeObstacle from "../services/effect/obstacle/pothole-obstacle";
 import PuddleObstacle from "../services/effect/obstacle/puddle-obstacle";
 import SpikesObstacle from "../services/effect/obstacle/spikes-obstacle";
-import Track from "../services/track-driver/track-driver";
+import Track, { TrackDifficulty } from "../services/track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
 import WrenchPerk from "../services/effect/perk/wrench-perk";
 import InvisiblePerk from "../services/effect/perk/invisible-perk";
@@ -13,26 +13,48 @@ import NoCollisionPerk from "../services/effect/perk/no-collision-perk";
 import IceObstacle from "../services/effect/obstacle/ice-obstacle";
 import IceCubeObstacle from "../services/effect/obstacle/ice-cube-obstacle";
 import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
-export enum Obstacles {
+
+enum Level1Obstacles {
   POTHOLE = "pothole",
   PUDDLE = "puddle",
   BANANA_PEEL = "banana_peel",
-  SPIKES = "spikes",
-  OIL_SPILL = "oil_spill",
-  ICE = "ice",
-  GRAVEL = "gravel",
-  NONE = "none",
 }
 
-export enum Perks {
+enum Level2Obstacles {
+  SPIKES = "spikes",
+}
+
+enum Level3Obstacles {
+  OIL_SPILL = "oil_spill",
+}
+
+enum Internal {
+  NONE = "none",
+  ICE = "ice",
+  GRAVEL = "gravel",
+}
+
+export const Obstacles = { ...Level1Obstacles, ...Level2Obstacles, ...Level3Obstacles, ...Internal };
+type ObstaclesType = (typeof Obstacles)[keyof typeof Obstacles];
+
+enum Level1Perks {
   BOOST_STAR = "boost_star",
   WRENCH = "wrench",
+}
+
+enum Level2Perks {
   ICE_CUBE = "ice_cube",
+}
+
+enum Level3Perks {
   INVISIBLE = "invisible",
   NO_COLLISION = "no_collision",
 }
 
-export type EffectSprites = Obstacles | Perks;
+export const Perks = { ...Level1Perks, ...Level2Perks, ...Level3Perks };
+type PerksType = (typeof Perks)[keyof typeof Perks];
+
+export type EffectSprites = ObstaclesType | PerksType;
 
 export const getEffectObjectByName = (name: EffectSprites) => {
   switch (name) {
@@ -64,18 +86,32 @@ export const getEffectObjectByName = (name: EffectSprites) => {
     case Perks.NO_COLLISION:
       return NoCollisionPerk;
     default:
-      throw new Error("effect not found");
+      throw new Error("effect not found: " + name);
   }
 };
 
-export const getRandomObstacleSprite = (): Obstacles => {
-  const effects = Object.values(Obstacles);
-  return effects[Math.floor(Math.random() * (effects.length - 2))];
+export const getRandomObstacleSprite = (difficulty: TrackDifficulty) => {
+  let effects: ObstaclesType[] = Object.values(Level1Obstacles);
+  if (difficulty >= 2) {
+    console.log(effects);
+    effects = [...effects, ...Object.values(Level2Obstacles)];
+  }
+  if (difficulty >= 3) {
+    effects = [...effects, ...Object.values(Level3Obstacles)];
+  }
+  console.log(effects);
+  return effects[Math.floor(Math.random() * effects.length)];
   //* -2 because we don't want to spawn the ice and gravel obstacles
 };
 
-export const getRandomPerkSprite = (): Perks => {
-  const effects = Object.values(Perks);
+export const getRandomPerkSprite = (difficulty: TrackDifficulty) => {
+  let effects: PerksType[] = Object.values(Level1Perks);
+  if (difficulty >= 2) {
+    effects = [...effects, ...Object.values(Level2Perks)];
+  }
+  if (difficulty >= 3) {
+    effects = [...effects, ...Object.values(Level3Perks)];
+  }
   return effects[Math.floor(Math.random() * effects.length)];
 };
 
@@ -102,11 +138,16 @@ export const getRandomPosition = (currentObstacles: EffectObject[]): Vec2D => {
   return nonCollidingPoints[Math.floor(Math.random() * nonCollidingPoints.length)].point;
 };
 
-export const getRandomObstacles = (n: number, currentEffectObjects: EffectObject[]): EffectObject[] => {
+export const getRandomObstacles = (
+  n: number,
+  difficulty: TrackDifficulty,
+  currentEffectObjects: EffectObject[]
+): EffectObject[] => {
   const addedObstacles: EffectObject[] = [];
   for (let i = 0; i < n; i++) {
     const position = getRandomPosition(currentEffectObjects.concat(addedObstacles));
-    const sprite = getRandomObstacleSprite();
+    const sprite = getRandomObstacleSprite(difficulty);
+    console.log(position, sprite, difficulty);
 
     const RandomEffectObject = getEffectObjectByName(sprite);
     addedObstacles.push(new RandomEffectObject(position));
@@ -114,11 +155,15 @@ export const getRandomObstacles = (n: number, currentEffectObjects: EffectObject
   return addedObstacles;
 };
 
-export const getRandomPerks = (n: number, currentEffectObjects: EffectObject[]): EffectObject[] => {
+export const getRandomPerks = (
+  n: number,
+  difficulty: TrackDifficulty,
+  currentEffectObjects: EffectObject[]
+): EffectObject[] => {
   const addedPerks: EffectObject[] = [];
   for (let i = 0; i < n; i++) {
     const position = getRandomPosition(currentEffectObjects.concat(addedPerks));
-    const sprite = getRandomPerkSprite();
+    const sprite = getRandomPerkSprite(difficulty);
     console.log("sprite", sprite);
     const RandomEffectObject = getEffectObjectByName(sprite);
     addedPerks.push(new RandomEffectObject(position) as EffectObject); //* "as" is used because switch statement already filters this as PerkObject

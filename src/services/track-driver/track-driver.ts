@@ -9,6 +9,7 @@ import type track from "@/public/assets/tracks/grass/track.json";
 
 type GateConfig = (typeof track.gates)[number];
 type Gate = Omit<GateConfig, "sprite"> & { sprite: Sprite };
+export type TrackDifficulty = 1 | 2 | 3;
 
 class Track {
   //* List of bonuses that will spawn on the track (inheriting from a base Bonus class)
@@ -29,6 +30,7 @@ class Track {
   private _colliderImages: [number[][]] | [number[][], number[][]];
   private _currentColliderImageIndex = 0;
   private _gates: Gate[] = [];
+  readonly difficulty: TrackDifficulty;
 
   private _checkPointPath: TrackPath | null = null;
 
@@ -48,7 +50,8 @@ class Track {
     openedShortcutColliderImage: number[][] | null,
     gates: GateConfig[],
     checkPointPath: TrackPath,
-    isRainy: boolean
+    isRainy: boolean,
+    difficulty: TrackDifficulty
   ) {
     this._bonuses = bonuses;
     this._traction = traction;
@@ -69,6 +72,7 @@ class Track {
 
     this._checkPointPath = checkPointPath;
     this.isRainy = isRainy;
+    this.difficulty = difficulty;
     this._startPositions = startPositions.map((startPosition) => {
       return { position: checkPointPath.sampledPoints[0].point, angle: startPosition.angle };
     });

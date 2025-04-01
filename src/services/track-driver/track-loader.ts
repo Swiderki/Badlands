@@ -27,7 +27,7 @@ type NormalizedSnowTrack = Normalize<typeof snowTrack>;
 type TrackDefinition = NormalizedGrassTrack | NormalizedGravelTrack | NormalizedSnowTrack;
 
 class TrackLoader {
-  static async loadTrack(displayDriver: DisplayDriver, src: string): Promise<Track> {
+  static async loadTrack(displayDriver: DisplayDriver, src: string, map: string): Promise<Track> {
     return fetch(location.origin + src)
       .then((response) => response.json())
       .then(async (data: TrackDefinition) => {
@@ -68,6 +68,12 @@ class TrackLoader {
           scale,
           data.pointOffset
         );
+        const difficuties = {
+          gravel: 1,
+          grass: 2,
+          snow: 3,
+        } as const;
+        const difficulty = difficuties[map as keyof typeof difficuties];
 
         return new Track(
           data.bonuses,
@@ -79,7 +85,8 @@ class TrackLoader {
           openedShortcutColliderImage,
           gates,
           checkPointPath,
-          isRainy
+          isRainy,
+          difficulty
         );
       });
   }
