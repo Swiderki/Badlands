@@ -171,7 +171,7 @@ class GameScene extends Scene {
     traction: number
   ) {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
-    const opponentGhostSprite = this.displayDriver.getSprite("opel_pink");
+    const opponentGhostSprite = this.displayDriver.getSprite("ghost");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
@@ -194,18 +194,17 @@ class GameScene extends Scene {
           false
         )
       );
-    }else{
-
-    this.opponentControllersList.push(
-      new OpponentController(
-        opponentSprite2,
-        startPositions[1],
-        new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
-        "Jack",
-        traction,
-        this.map === "snow" 
-      )
-    );
+    } else {
+      this.opponentControllersList.push(
+        new OpponentController(
+          opponentSprite2,
+          startPositions[1],
+          new StraightMasterDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 10), scaler),
+          "Jack",
+          traction,
+          this.map === "snow"
+        )
+      );
     }
 
     //* Create Middle driving enemy
@@ -216,11 +215,9 @@ class GameScene extends Scene {
         new MiddleDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, 20), scaler),
         "Bob",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
-
 
     this.opponentControllersList[
       this.opponentControllersList.length - 1
@@ -234,8 +231,7 @@ class GameScene extends Scene {
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Norman",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
     // * Create Middle driving enemy
@@ -247,8 +243,7 @@ class GameScene extends Scene {
         new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
         "Middle",
         traction,
-        this.map === "snow" 
-
+        this.map === "snow"
       )
     );
   }
