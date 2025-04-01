@@ -4,7 +4,6 @@ import { AboutScene } from "../scenes/about-scene";
 import DisplayDriver from "./display-driver/display-driver";
 import GameScene from "../scenes/game-scene";
 import GameTimeline from "./game-logic/game-timeline";
-import MainMenuScene from "../scenes/main-menu-scene";
 import { ResultScene } from "../scenes/result-scene";
 import Scene from "../scenes/_scene";
 import { Scoreboard } from "./scoreboard/scoreboard";
@@ -52,12 +51,7 @@ class Game {
     this._currentScene = scene;
     this._currentScene.onMount();
 
-    if (
-      scene instanceof AboutScene ||
-      scene instanceof MainMenuScene ||
-      scene instanceof SelectionScene ||
-      scene instanceof StartScene
-    ) {
+    if (scene instanceof AboutScene || scene instanceof SelectionScene || scene instanceof StartScene) {
       this.menuMusic.loop = true;
       startMusicWithFade(this.menuMusic);
     } else {
@@ -102,13 +96,6 @@ class Game {
   private handleKeyDown(event: KeyboardEvent) {
     if (event.key === "p") {
       this.startResultScene();
-
-      if (this.currentScene instanceof MainMenuScene) {
-        // this.startGameScene();
-        // this.currentScene = this.
-      } else if (this.currentScene instanceof GameScene) {
-        // this.startMainMenuScene();
-      }
     }
 
     if (event.key === "o") {
@@ -140,11 +127,6 @@ class Game {
   async startSelectionScene() {
     this.currentScene = new SelectionScene();
     await this.currentScene.init();
-  }
-
-  private startMainMenuScene() {
-    this.currentScene = new MainMenuScene();
-    this.currentScene.init();
   }
 
   startResultScene() {
