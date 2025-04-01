@@ -28,7 +28,6 @@ export const startGameWithCountdown = (): Promise<void> => {
   };
 
   if (elements.countdownDialog) elements.countdownDialog.style.display = "block";
-  if (elements.speedMeter) elements.speedMeter.style.display = "none";
 
   return new Promise((resolve) => {
     updateCountdown("3", "GET READY!", "/assets/sounds/3.wav", () => {

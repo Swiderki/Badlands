@@ -372,7 +372,6 @@ class GameScene extends Scene {
     this.uiUpdate();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override render(_ctx: CanvasRenderingContext2D) {
     if (this.displayDriver === null || this.track === null) {
       return;
@@ -387,8 +386,6 @@ class GameScene extends Scene {
         position: obstacle.position,
         currentSprite: obstacle.randomSprite,
       });
-      // const corners = getCarCorners({x: obstacle.collision.x, y:obstacle.collision.y},obstacle.collision.width, obstacle.collision.height, obstacle.collision.angle)
-      // this.displayDriver.displayColliderCorners(corners,{x: obstacle.collision.x, y:obstacle.collision.y} ,obstacle.collision.angle)
     });
     if (!this.playerController!.finished && !this.playerController!.invisible) {
       this.renderPlayer();
@@ -407,10 +404,8 @@ class GameScene extends Scene {
   }
 
   renderPlayer() {
-    if (!this.playerController) {
-      return;
-    }
-    //! DEV: Draw player has boost effect
+    if (!this.playerController) return;
+
     if (this.playerController.timedEffectDriver.effects) {
       const offset = 30;
       if (this.playerController.timedEffectDriver.hasEffect("boost")) {
