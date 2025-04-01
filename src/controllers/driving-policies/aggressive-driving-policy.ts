@@ -46,6 +46,7 @@ class AggressiveDrivingPolicy extends BaseDrivingPolicy {
       const distanceToPlayer = this.getDistance(current_position, playerPosition);
       if (distanceToPlayer < 22) this.playerInRangeSince = now;
       if (distanceToPlayer < 40 && now - this.lastHorn > 3000 && !pauseContext.isPaused) {
+        this.brakeSound.volume = 0.2
         this.brakeSound.play();
         this.lastHorn = now;
       }

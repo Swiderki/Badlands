@@ -96,11 +96,11 @@ class PlayerController extends PhysicsBasedController {
 
     if (this.getInput("arrowup") || this.getInput("w")) {
       if (
-        Vector.length(this.actualForce) < 0.9 * this.currentMaxSpeedForward &&
+        Vector.length(this.actualForce) < 0.8 * this.currentMaxSpeedForward &&
         this._lastAcceleration >= 0.4
       ) {
         const audio = new Audio("assets/sounds/gas.wav");
-        audio.volume = 0.5;
+        audio.volume = 0.4;
         audio.play();
         this._lastAcceleration = 0;
       }
@@ -121,7 +121,7 @@ class PlayerController extends PhysicsBasedController {
       this._lastBrake = 0;
     }
     if (this.getInput("k")) {
-      audio.volume = 0.5;
+      audio.volume = 0.2;
       audio.play();
     }
   }
