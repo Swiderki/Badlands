@@ -170,7 +170,7 @@ class GameScene extends Scene {
     traction: number
   ) {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
-    const opponentGhostSprite = this.displayDriver.getSprite("opel_pink");
+    const opponentGhostSprite = this.displayDriver.getSprite("ghost");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
     const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
