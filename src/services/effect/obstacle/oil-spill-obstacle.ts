@@ -5,6 +5,7 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 import PlayerController from "@/src/controllers/player-controller";
+import { Vector } from "@/src/util/vec-util";
 const audio = new Audio("assets/sounds/oil_spill.wav");
 
 export default class OilSpillObstacle extends EffectObject {
@@ -15,20 +16,22 @@ export default class OilSpillObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    if (car instanceof PlayerController) audio.play();
+    if (Vector.length(car.actualForce) > 80) {
+      if (car instanceof PlayerController) audio.play();
+      
+      car.currentAdhesionModifier *= this.ADHESION_MODIFIER;
 
-    car.currentAdhesionModifier *= this.ADHESION_MODIFIER;
+      const effect: TimedEffect = {
+        canBeOverrided: true,
+        startTimestamp: GameTimeline.now(),
+        duration: 700,
+        finish: () => {
+          car.currentAdhesionModifier /= this.ADHESION_MODIFIER;
+        },
+        update() {},
+      };
 
-    const effect: TimedEffect = {
-      canBeOverrided: true,
-      startTimestamp: GameTimeline.now(),
-      duration: 700,
-      finish: () => {
-        car.currentAdhesionModifier /= this.ADHESION_MODIFIER;
-      },
-      update() {},
-    };
-
-    car.timedEffectDriver.addEffect("slip", effect);
+      car.timedEffectDriver.addEffect("slip", effect);
+    }
   }
 }

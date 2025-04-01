@@ -5,6 +5,7 @@ import GameTimeline from "../../game-logic/game-timeline";
 import EffectObject from "../effect-object";
 import { TimedEffect } from "../timed-effect-driver";
 import PlayerController from "@/src/controllers/player-controller";
+import { Vector } from "@/src/util/vec-util";
 const audio = new Audio("assets/sounds/icecube.wav");
 
 export default class IceCubeObstacle extends EffectObject {
@@ -13,24 +14,26 @@ export default class IceCubeObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    if (car instanceof PlayerController) audio.play();
+    if (Vector.length(car.actualForce) > 80) {
+      if (car instanceof PlayerController) audio.play();
+      
+      const oldMaxSpeed = car.currentMaxSpeedForward;
+      const oldMaxSpeedBackward = car.currentMaxSpeedBackward;
+      car.currentMaxSpeedForward = 0;
+      car.currentMaxSpeedBackward = 0;
+      car.actualForce = { x: 0, y: 0 };
 
-    const oldMaxSpeed = car.currentMaxSpeedForward;
-    const oldMaxSpeedBackward = car.currentMaxSpeedBackward;
-    car.currentMaxSpeedForward = 0;
-    car.currentMaxSpeedBackward = 0;
-    car.actualForce = { x: 0, y: 0 };
-
-    const effect: TimedEffect = {
-      canBeOverrided: true,
-      startTimestamp: GameTimeline.now(),
-      duration: 1000,
-      finish: () => {
-        car.currentMaxSpeedForward = oldMaxSpeed;
-        car.currentMaxSpeedBackward = oldMaxSpeedBackward;
-      },
-      update() {},
-    };
-    car.timedEffectDriver.addEffect("freeze", effect);
+      const effect: TimedEffect = {
+        canBeOverrided: true,
+        startTimestamp: GameTimeline.now(),
+        duration: 1000,
+        finish: () => {
+          car.currentMaxSpeedForward = oldMaxSpeed;
+          car.currentMaxSpeedBackward = oldMaxSpeedBackward;
+        },
+        update() {},
+      };
+      car.timedEffectDriver.addEffect("freeze", effect);
+    }
   }
 }

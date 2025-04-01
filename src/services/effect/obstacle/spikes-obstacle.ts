@@ -5,6 +5,7 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 import PlayerController from "@/src/controllers/player-controller";
+import { Vector } from "@/src/util/vec-util";
 const audio = new Audio("assets/sounds/spikes.wav");
 
 export default class SpikesObstacle extends EffectObject {
@@ -17,24 +18,26 @@ export default class SpikesObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    if (car instanceof PlayerController) audio.play();
+    if (Vector.length(car.actualForce) > 80) {      
+      if (car instanceof PlayerController) audio.play();
 
-    car.actualForce.x *= this.FORCE_MODIFIER;
-    car.actualForce.y *= this.FORCE_MODIFIER;
-    car.currentMaxSpeedForward *= this.MAX_SPEED_MODIFIER;
-    car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
+      car.actualForce.x *= this.FORCE_MODIFIER;
+      car.actualForce.y *= this.FORCE_MODIFIER;
+      car.currentMaxSpeedForward *= this.MAX_SPEED_MODIFIER;
+      car.currentAccelerationPowerForward *= this.ACCELERATION_MODIFIER;
 
-    const effect: TimedEffect = {
-      canBeOverrided: true,
-      startTimestamp: GameTimeline.now(),
-      duration: 3000,
-      finish: () => {
-        car.currentMaxSpeedForward /= this.MAX_SPEED_MODIFIER;
-        car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
-      },
-      update() {},
-    };
+      const effect: TimedEffect = {
+        canBeOverrided: true,
+        startTimestamp: GameTimeline.now(),
+        duration: 3000,
+        finish: () => {
+          car.currentMaxSpeedForward /= this.MAX_SPEED_MODIFIER;
+          car.currentAccelerationPowerForward /= this.ACCELERATION_MODIFIER;
+        },
+        update() {},
+      };
 
-    car.timedEffectDriver.addEffect("damaged", effect);
+      car.timedEffectDriver.addEffect("damaged", effect);
+    }
   }
 }

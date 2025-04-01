@@ -5,6 +5,7 @@ import { TimedEffect } from "../timed-effect-driver";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import GameTimeline from "../../game-logic/game-timeline";
 import PlayerController from "@/src/controllers/player-controller";
+import { Vector } from "@/src/util/vec-util";
 const audio = new Audio("assets/sounds/banana.wav");
 
 export default class BananaPeelObstacle extends EffectObject {
@@ -13,18 +14,20 @@ export default class BananaPeelObstacle extends EffectObject {
   }
 
   override onEnter(car: PhysicsBasedController) {
-    if (car instanceof PlayerController) audio.play();
+    if (Vector.length(car.actualForce) > 80) {
+      if (car instanceof PlayerController) audio.play();
+      
+      const effect: TimedEffect = {
+        canBeOverrided: true,
+        startTimestamp: GameTimeline.now(),
+        duration: 700,
+        finish() {},
+        update(deltaTime) {
+          car.rotate(-300 * deltaTime);
+        },
+      };
 
-    const effect: TimedEffect = {
-      canBeOverrided: true,
-      startTimestamp: GameTimeline.now(),
-      duration: 700,
-      finish() {},
-      update(deltaTime) {
-        car.rotate(-2);
-      },
-    };
-
-    car.timedEffectDriver.addEffect("slip", effect);
+      car.timedEffectDriver.addEffect("slip", effect);
+    }
   }
 }
