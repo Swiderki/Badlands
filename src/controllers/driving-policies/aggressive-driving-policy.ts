@@ -1,6 +1,5 @@
 import BaseDrivingPolicy from "./base-driving-policy";
 import PlayerController from "../player-controller";
-import { Vector } from "@/src/util/vec-util";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
 import { CheckPoint } from "@/types/track-driver";
