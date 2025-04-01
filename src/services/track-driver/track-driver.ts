@@ -4,7 +4,6 @@ import GameTimeline from "../game-logic/game-timeline";
 import { Sprite } from "@/types/display-driver";
 import { StartPosition } from "@/types/track-driver";
 import { TrackPath } from "./track-path";
-import { Vec2D } from "@/types/physics";
 import type track from "@/public/assets/tracks/grass/track.json";
 
 type GateConfig = (typeof track.gates)[number];

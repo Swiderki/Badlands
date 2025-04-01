@@ -6,7 +6,6 @@ import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { SpriteLoader } from "./sprite-loader";
 import Track from "../track-driver/track-driver";
 import { Vec2D } from "@/types/physics";
-import { Vector } from "@/src/util/vec-util";
 import assert from "@/src/util/assert";
 
 class DisplayDriver {
@@ -132,8 +131,7 @@ class DisplayDriver {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  displayColliderCorners(corners: Vec2D[], position: Vec2D, angle: number) {
+  displayColliderCorners(corners: Vec2D[], position: Vec2D, _angle: number) {
     this._ctx.lineWidth = 3;
     this._ctx.strokeStyle = "red";
     this._ctx.beginPath();

@@ -206,7 +206,7 @@ abstract class PhysicsBasedController {
     };
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     const now = GameTimeline.now();
 
     // Update trace paths if enough time has passed

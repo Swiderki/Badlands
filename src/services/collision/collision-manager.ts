@@ -9,7 +9,6 @@ import { CheckPoint } from "@/types/track-driver";
 import DisplayDriver from "../display-driver/display-driver";
 import BoostPerk from "../effect/perk/boost-perk";
 import Game from "../game";
-import CollisionHandlers from "./collision-handlers";
 
 const SOME_ARBITRARY_THRESHOLD = 100;
 
@@ -92,8 +91,8 @@ class CollisionManager {
 
   getActualPathIntersections(
     actualPath: CheckPoint[],
-    sampledPoints: CheckPoint[],
-    controllerToSkip: OpponentController
+    _sampledPoints: CheckPoint[],
+    _controllerToSkip: OpponentController
   ) {
     const gameSceneRef = Game.getInstance().currentScene as GameScene;
     if (!(gameSceneRef instanceof GameScene)) {

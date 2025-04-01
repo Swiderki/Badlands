@@ -5,7 +5,6 @@ import { Vec2D } from "@/types/physics";
 import EffectObject from "../effect-object";
 import { UIService } from "../../ui-service/ui-service";
 import { usePauseContext } from "@/src/context/pauseContext";
-const audio = new Audio("assets/sounds/spikes.wav");
 
 export default class DialogTrigger extends EffectObject {
   private _text: string = "Hello!";

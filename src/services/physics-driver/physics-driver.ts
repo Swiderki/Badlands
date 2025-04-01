@@ -64,7 +64,7 @@ class PhysicsDriver {
     controller: PhysicsBasedController,
     collisionPoint: Vec2D,
     trackCollider: number[][],
-    deltaTime: number
+    _deltaTime: number
   ) {
     if (!collisionPoint) {
       return;

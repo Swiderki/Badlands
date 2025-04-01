@@ -5,8 +5,6 @@ import { EffectSprites, Obstacles } from "@/src/util/effects-utils";
 import PhysicsBasedController from "@/src/controllers/physics-based-controller";
 import { Sprite } from "@/types/display-driver";
 import { Vec2D } from "@/types/physics";
-import { getCarCorners } from "@/src/util/collision-util";
-import GameScene from "@/src/scenes/game-scene";
 
 /** This is a class representing physical object on the truck like pothole, puddle etc. */
 export default abstract class EffectObject {
@@ -64,11 +62,11 @@ export default abstract class EffectObject {
   }
 
   /** This method should be overriden in GameScene allowing it to remove perk after it has been used since perks are dynamic, single-use objects */
-  _onEnter(car: PhysicsBasedController): void {}
+  _onEnter(_car: PhysicsBasedController): void {}
 
-  onEnter(car: PhysicsBasedController): void {}
+  onEnter(_car: PhysicsBasedController): void {}
 
-  onExit(car: PhysicsBasedController): void {}
+  onExit(_car: PhysicsBasedController): void {}
 
-  onColliding(car: PhysicsBasedController): void {}
+  onColliding(_car: PhysicsBasedController): void {}
 }

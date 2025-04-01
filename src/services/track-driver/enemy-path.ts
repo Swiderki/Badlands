@@ -2,10 +2,8 @@ import { Vector } from "@/src/util/vec-util";
 import { TrackPath } from "./track-path";
 import { Vec2D } from "@/types/physics";
 import { CheckPoint } from "@/types/track-driver";
-import DisplayDriver from "../display-driver/display-driver";
 import CollisionManager from "../collision/collision-manager";
 import OpponentController from "@/src/controllers/opponents-controller";
-import { PathIntersection } from "@/types/collision";
 
 export class EnemyPath extends TrackPath {
   actualPath: CheckPoint[] = [];

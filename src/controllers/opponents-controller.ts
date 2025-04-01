@@ -3,11 +3,9 @@ import PhysicsBasedController from "./physics-based-controller";
 import { StartPosition } from "@/types/track-driver";
 import DrivingPolicyBase from "./driving-policies/base-driving-policy";
 import Game from "../services/game";
-import DisplayDriver from "../services/display-driver/display-driver";
 import { Vector } from "../util/vec-util";
 import GameScene from "../scenes/game-scene";
 import { Scoreboard } from "../services/scoreboard/scoreboard";
-import GameTimeline from "../services/game-logic/game-timeline";
 
 class OpponentController extends PhysicsBasedController {
   private _lastRotation: number = 0;
