@@ -11,6 +11,8 @@ import { Scoreboard } from "./scoreboard/scoreboard";
 import { SelectionScene } from "../scenes/selection-scene";
 import { StartScene } from "../scenes/start-scene";
 import assert from "../util/assert";
+import { startMusicWithFade } from "../util/music-utils";
+import { createPauseContext } from "../context/pauseContext";
 
 class Game {
   //* Drivers
@@ -27,15 +29,15 @@ class Game {
 
   deltaTime: number = 0;
 
-  private _pauseDetails = {
+  private _pauseDetails = createPauseContext({
     isPaused: false,
-    isWindowActive: null as boolean | null,
+    isWindowActive: null,
     documentTimeline: new DocumentTimeline(),
-  };
+    pauseGame: this.pauseGame,
+    resumeGame: this.resumeGame,
+  });
 
-  get pauseDetails() {
-    return this._pauseDetails;
-  }
+  private menuMusic: HTMLAudioElement = new Audio("/assets/sounds/menu_theme.wav");
 
   get currentScene() {
     assert(this._currentScene, "Current scene not initialized");
@@ -46,6 +48,19 @@ class Game {
     if (this._currentScene) this._currentScene.onDisMount();
     this._currentScene = scene;
     this._currentScene.onMount();
+
+    if (
+      scene instanceof AboutScene ||
+      scene instanceof MainMenuScene ||
+      scene instanceof SelectionScene ||
+      scene instanceof StartScene
+    ) {
+      this.menuMusic.loop = true;
+      startMusicWithFade(this.menuMusic);
+    } else {
+      this.menuMusic.pause();
+      this.menuMusic.currentTime = 0;
+    }
   }
 
   get nickname() {

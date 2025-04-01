@@ -1,11 +1,17 @@
 import { StartPosition } from "@/types/track-driver";
 import MiddleDrivingPolicy from "../controllers/driving-policies/middle-driving-policy";
+import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy";
+import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
+import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
 import OpponentController from "../controllers/opponents-controller";
 import PlayerController from "../controllers/player-controller";
 import CollisionHandlers from "../services/collision/collision-handlers";
 import CollisionManager from "../services/collision/collision-manager";
+import { displayGameDebugInfo } from "../services/display-driver/display-debug";
 import DisplayDriver from "../services/display-driver/display-driver";
 import EffectObject from "../services/effect/effect-object";
+import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
+import IceObstacle from "../services/effect/obstacle/ice-obstacle";
 import Game from "../services/game";
 import { startGameWithCountdown } from "../services/game-logic/countdown";
 import PhysicsDriver from "../services/physics-driver/physics-driver";
@@ -19,14 +25,8 @@ import assert from "../util/assert";
 import { getRandomObstacles, getRandomPerks } from "../util/effects-utils";
 import { Vector } from "../util/vec-util";
 import Scene from "./_scene";
-import { displayGameDebugInfo } from "../services/display-driver/display-debug";
-import AggressiveDrivingPolicy from "../controllers/driving-policies/aggressive-driving-policy";
-import SuperAggressiveDrivingPolicy from "../controllers/driving-policies/super-aggressive-driving-policy";
-import StraightMasterDrivingPolicy from "../controllers/driving-policies/straight-master-driving-policy copy";
-import IceObstacle from "../services/effect/obstacle/ice-obstacle";
-import GravelObstacle from "../services/effect/obstacle/gravel-obstacle";
-import { getCarCorners } from "../util/collision-util";
-import DialogTrigger from "../services/effect/obstacle/dialog-trigger";
+import { startMusicWithFade } from "../util/music-utils";
+import { usePauseContext } from "../context/pauseContext";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -37,6 +37,7 @@ class GameScene extends Scene {
   collisionManager: CollisionManager;
   physicsDriver: PhysicsDriver;
   UiService: UIService;
+  private music: HTMLAudioElement = new Audio("/assets/sounds/game_theme.wav");
 
   debugActive = true;
   private scoreboard: Scoreboard = Scoreboard.instance;
@@ -72,31 +73,30 @@ class GameScene extends Scene {
       throw Error("Start scene not initialized");
     }
     this.sceneRef.style.display = "block";
+    this.UiService.hideSkipButton();
 
     this.track = await TrackLoader.loadTrack(this.displayDriver, `/assets/tracks/${this.map}/track.json`);
-    startGameWithCountdown();
 
     this.UiService.generateScoreboard();
     this.scoreboard.currentLap = 0;
     this.scoreboard.resetCurrentTime();
 
     await this.loadPlayer(this.track.startPositions[0], this.track.traction);
-    if (!tutorial) {
-      await this.loadOpponents(
-        this.track.startPositions.slice(1),
-        this.track.checkPointPath!,
-        this.displayDriver.scaler,
-        this.track.traction
-      );
-      await this.initEffectObjects();
-    } else {
-      await this.initTutorial();
-    }
+    await this.loadOpponents(
+      this.track.startPositions.slice(1),
+      this.track.checkPointPath!,
+      this.displayDriver.scaler,
+      this.track.traction
+    );
+    await this.initEffectObjects();
+    await startGameWithCountdown();
+    this.music.loop = true;
+    startMusicWithFade(this.music);
     this.initListeners();
   }
 
   private initListeners() {
-    const game = Game.getInstance();
+    const pauseContext = usePauseContext();
 
     //* i've added keypress listener instead of keydown to prevent just holding key
     document.addEventListener("keypress", (e) => {
@@ -109,24 +109,24 @@ class GameScene extends Scene {
 
     document.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
-        if (game.pauseDetails.isPaused) {
-          game.resumeGame();
+        if (pauseContext.isPaused) {
+          pauseContext.resumeGame();
         } else {
-          game.pauseGame();
+          pauseContext.pauseGame();
         }
       }
     });
 
     window.addEventListener("focus", () => {
       // if windows state is unknown then it means that is has not been focused but BeforeUpdate shouldn't be called
-      if (game.pauseDetails.isWindowActive === null) return;
-      game.pauseDetails.isWindowActive = true;
-      game.resumeGame();
+      if (pauseContext.isWindowActive === null) return;
+      pauseContext.isWindowActive = true;
+      pauseContext.resumeGame();
     });
 
     window.addEventListener("blur", () => {
-      game.pauseDetails.isWindowActive = false;
-      game.pauseGame();
+      pauseContext.isWindowActive = false;
+      pauseContext.pauseGame();
     });
   }
 
@@ -139,6 +139,8 @@ class GameScene extends Scene {
   override onDisMount() {
     assert(this.sceneRef, "Game scene not initialized");
     this.sceneRef.style.display = "none";
+    this.music.pause();
+    this.music.currentTime = 0;
   }
 
   private async loadPlayer(startPosition: StartPosition, traction: number) {
@@ -185,28 +187,31 @@ class GameScene extends Scene {
         traction
       )
     );
+    this.opponentControllersList[
+      this.opponentControllersList.length - 1
+    ].currentAccelerationPowerForward += 10;
     //* Create Middle driving enemy
     //* It will later use AggressiveDrivingPolicy
-    // this.opponentControllersList.push(
-    //   new OpponentController(
-    //     opponentSprite3,
-    //     startPositions[2],
-    //     new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
-    //     "NormcnkZJXnvkxjzcnvknjxcal",
-    //     traction
-    //   )
-    // );
-    //* Create Middle driving enemy
-    //* It will later use SuperAggressiveDrivingPolicy
-    // this.opponentControllersList.push(
-    //   new OpponentController(
-    //     opponentSprite4,
-    //     startPositions[3],
-    //     new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
-    //     "Middle",
-    //     traction
-    //   )
-    // );
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite3,
+        startPositions[2],
+        new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
+        "NormcnkZJXnvkxjzcnvknjxcal",
+        traction
+      )
+    );
+    // * Create Middle driving enemy
+    // * It will later use SuperAggressiveDrivingPolicy
+    this.opponentControllersList.push(
+      new OpponentController(
+        opponentSprite4,
+        startPositions[3],
+        new SuperAggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -10), scaler),
+        "Middle",
+        traction
+      )
+    );
   }
 
   private async initEffectObjects() {

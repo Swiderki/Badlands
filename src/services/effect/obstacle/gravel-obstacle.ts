@@ -16,8 +16,9 @@ export default class GravelObstacle extends EffectObject {
   }
 
   override onColliding(car: PhysicsBasedController) {
-    if (Vector.length(car.actualForce) > 0) {
-      car.rotate((Math.random() + -0.5) * 10);
+    if (Vector.length(car.actualForce) > 30) {
+      console.log(Vector.length(car.actualForce));
+      car.rotate((Math.random() + -0.5) * 4);
     }
   }
 

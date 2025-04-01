@@ -67,6 +67,7 @@ export class Scoreboard {
       playerController.centerPosition,
       this.currentCheckpoint
     );
+    const distanceToNextPoint = Vector.length(Vector.subtract(playerController.centerPosition, track.checkPointPath.sampledPoints[this.currentCheckpoint].point))
 
     const dd = DisplayDriver.currentInstance!;
     dd.drawPoint(track.checkPointPath.sampledPoints[this.currentCheckpoint].point, 5, "#f0f000")
@@ -84,10 +85,10 @@ export class Scoreboard {
     }
 
     if (
-      (distanceToNextCheckpoint < 30 &&
-        this.currentCheckpoint !== track.checkPointPath.sampledPoints.length) ||
-      (distanceToNextCheckpoint < 2 &&
-        this.currentCheckpoint === track.checkPointPath.sampledPoints.length) ||
+      (distanceToNextCheckpoint < 60 &&
+        this.currentCheckpoint !== track.checkPointPath.sampledPoints.length-2) ||
+      (distanceToNextPoint < 50 && distanceToNextCheckpoint < 2 &&
+        this.currentCheckpoint === track.checkPointPath.sampledPoints.length-2) ||
       isNaN(distanceToNextCheckpoint)
     ) {
       this.currentCheckpoint++;

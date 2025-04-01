@@ -264,13 +264,25 @@ h1 {
   align-items: center;
 }
 
-.winner-section img {
-  height: 30px;
-  width: 70px;
+#result-scene img {
+  width: 200px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 5%);
+  z-index: -1;
+;
+
 }
+
+
 .race-results,
 .player-history {
-  margin-top: 10px;
+  margin-top: 10px !important;
+  background-color: #000d;
+  padding: 3px;
+  border-radius: 1px;
+  border: 1px solid var(--border-dark-color);
+  width: calc(100% + 5px); 
 }
 .race-results ul,
 .player-history ul {
@@ -278,6 +290,7 @@ h1 {
   padding: 0;
   display: flex;
   gap: 10px;
+
 }
 .race-results li,
 .player-history li {

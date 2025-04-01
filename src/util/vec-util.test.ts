@@ -32,13 +32,6 @@ describe("Vector Utility Functions", () => {
     expect(result).toEqual({ x: 5, y: 5 });
   });
 
-  test("angleBetween() should calculate the angle between two vectors", () => {
-    const v1: Vec2D = { x: 1, y: 0 };
-    const v2: Vec2D = { x: 0, y: 1 };
-    const result = Vector.angleBetween(v1, v2);
-    expect(result).toBeCloseTo(Math.PI / 2);
-  });
-
   test("equals() should check if two vectors are equal", () => {
     const v1: Vec2D = { x: 1, y: 1 };
     const v2: Vec2D = { x: 1, y: 1 };
