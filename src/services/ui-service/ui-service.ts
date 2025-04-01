@@ -48,6 +48,14 @@ export class UIService {
     return nitroIndicator;
   }
 
+  private get obstacleDrop(): HTMLElement {
+    const obstacleDrop = document.querySelector<HTMLElement>("#obstacle-drop-indicator");
+    if (!obstacleDrop) {
+      throw new Error("cannot find element for nitro indicator");
+    }
+    return obstacleDrop;
+  }
+
   private createLapHTML(num: number): HTMLLIElement {
     const lapHTML = document.createElement("li");
     lapHTML.id = `lap-${num}`;
@@ -119,6 +127,10 @@ export class UIService {
 
   setIsNitroIndicatorActive(active: boolean) {
     this.nitroIndicator.style.setProperty("--current-sprite", active ? "0" : "1");
+  }
+
+  setIsObstacleDropIndicatorActive(active: boolean) {
+    this.obstacleDrop.style.setProperty("--current-sprite", active ? "0" : "1");
   }
 
   showSkipButton() {
