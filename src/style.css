@@ -82,6 +82,7 @@ body {
   justify-content: flex-start;
   align-items: flex-end;
   padding: 2rem;
+  padding-bottom: 240px;
   margin: auto;
   color: var(--text-color);
   font-family: "Pixelify Sans", sans-serif;
