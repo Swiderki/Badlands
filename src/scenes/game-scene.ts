@@ -177,13 +177,13 @@ class GameScene extends Scene {
     const opponentSprite1 = this.displayDriver.getSprite("peugeot_blue");
     const opponentGhostSprite = this.displayDriver.getSprite("ghost");
     const opponentSprite2 = this.displayDriver.getSprite("peugeot_green");
-    const opponentSprite3 = this.displayDriver.getSprite("peugeot_pink");
+    const marekMaruchaSprite = this.displayDriver.getSprite("marucha");
     const opponentSprite4 = this.displayDriver.getSprite("peugeot_black");
 
     assert(opponentGhostSprite, "Failed to get opponent sprite");
     assert(opponentSprite1, "Failed to get opponent sprite");
     assert(opponentSprite2, "Failed to get opponent sprite");
-    assert(opponentSprite3, "Failed to get opponent sprite");
+    assert(marekMaruchaSprite, "Failed to get opponent sprite");
     assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* 20% that Jack will be ghost
@@ -230,7 +230,7 @@ class GameScene extends Scene {
     //* It will later use AggressiveDrivingPolicy
     this.opponentControllersList.push(
       new OpponentController(
-        opponentSprite3,
+        marekMaruchaSprite,
         startPositions[2],
         new AggressiveDrivingPolicy(EnemyPath.createFromTrackPath(checkPointPath, -20), scaler),
         "Norman",
@@ -337,7 +337,7 @@ class GameScene extends Scene {
               { x: 300, y: 380 },
               200,
               Math.PI / 3,
-              "Aby się upuścić przeszkodę, kliknij spację",
+              "Aby się upuścić przeszkodę, kliknij spację. Jeśli chcesz użyc klaksonu, kliknij k",
               () => {
                 this.effectObjects.shift();
                 this.effectObjects.shift();
