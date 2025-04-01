@@ -48,9 +48,8 @@ class OpponentController extends PhysicsBasedController {
     this.shouldAvoidCollisions = shouldAvoidCollisions;
   }
 
-
-
   override update(deltaTime: number) {
+    super.update(deltaTime);
     this._lastRotation += deltaTime;
     this._lastAcceleration += deltaTime;
     this._lastBrake += deltaTime;
