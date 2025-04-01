@@ -20,6 +20,8 @@ class OpponentController extends PhysicsBasedController {
   nickname: string;
   finished = false;
   finishedTime = 0;
+  bestLoopTime = 0;
+  finishedLoopTime = 0;
   currentLap = 0;
 
   constructor(

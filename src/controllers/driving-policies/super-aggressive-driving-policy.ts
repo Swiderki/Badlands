@@ -4,6 +4,7 @@ import { Vector } from "@/src/util/vec-util";
 import { Vec2D, Action } from "@/types/physics";
 import { PhysicsUtils } from "../../util/physics-util";
 import { CheckPoint } from "@/types/track-driver";
+import { Scoreboard } from "@/src/services/scoreboard/scoreboard";
 
 const accPrecision = 0.01;
 const breakPrecision = 0.01;
@@ -15,7 +16,7 @@ import { EnemyPath } from "@/src/services/track-driver/enemy-path";
 class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
   private maxSpeed = 200;
   private corneringSpeed = 200;
-  
+
   private attackRange = 70;
   private tooCloseRange = 10;
   private distanceBeforePlayer = 70;
@@ -43,18 +44,20 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
 
       const positionBeforePlayer = Vector.add(playerPosition, nextPlayerStep);
 
-      const dd = DisplayDriver.currentInstance!
+      const dd = DisplayDriver.currentInstance!;
       dd.drawLineBetweenVectors(playerPosition, positionBeforePlayer, "#ffffff");
 
       const distanceToPlayer = this.getDistance(current_position, positionBeforePlayer);
       const isCloseEnough = distanceToPlayer < this.attackRange;
       const isntTooClose = distanceToPlayer > this.tooCloseRange;
-      const isDegreeGood = Vector.degreeBetweenVectors(Vector.subtract(positionBeforePlayer, current_position), nextPlayerStep) < this.maxDegreeToAttack;
+      const isDegreeGood =
+        Vector.degreeBetweenVectors(Vector.subtract(positionBeforePlayer, current_position), nextPlayerStep) <
+        this.maxDegreeToAttack;
       if (isCloseEnough && isDegreeGood && isntTooClose) {
         this.distanceToCheckpointTreshold = this.furtherDistanceToCheckpointTreshold;
         return {
           shouldAttack: true,
-          speed: distanceToPlayer/this.attackRange*1.5, //! Heuristics
+          speed: (distanceToPlayer / this.attackRange) * 1.5, //! Heuristics
           target: { point: positionBeforePlayer, curvature: 0, tangent: positionBeforePlayer },
         };
       }
@@ -82,7 +85,16 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
 
     if (this._enemyPath.visitedCheckpoints === this._enemyPath.sampledPoints.length) {
       this._enemyPath.visitedCheckpoints = 1;
-      if (this.parentRef !== null) this.parentRef.currentLap++;
+      if (this.parentRef !== null) {
+        this.parentRef.currentLap++;
+        if (
+          this.parentRef.bestLoopTime > Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime ||
+          this.parentRef.bestLoopTime === 0
+        ) {
+          this.parentRef.bestLoopTime = Scoreboard.instance.currentTime - this.parentRef.finishedLoopTime;
+        }
+        this.parentRef.finishedLoopTime = Scoreboard.instance.currentTime;
+      }
     }
   }
 
@@ -122,7 +134,6 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
     return (this.corneringSpeed + (this.maxSpeed - this.corneringSpeed) * (1 - normalizedCurvature)) * scalar;
   }
 
-
   override getAction(current_position: Vec2D, current_rotation: number, actualForce: Vec2D): Action {
     this.updateCurrentCheckPoint(current_position);
     this.updateActualPath(current_position);
@@ -141,9 +152,9 @@ class SuperAggressiveDrivingPolicy extends BaseDrivingPolicy {
 
     //* Debugging visualization
     DisplayDriver.currentInstance?.drawLineBetweenVectors(
-        current_position,
-        target.point,
-        shouldAttack ? "#ff0000" : "#0066ff"
+      current_position,
+      target.point,
+      shouldAttack ? "#ff0000" : "#0066ff"
     );
     DisplayDriver.currentInstance?.drawPoint(target.point, 4, shouldAttack ? "#ff0000" : "#0000ff");
 
