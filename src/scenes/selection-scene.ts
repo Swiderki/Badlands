@@ -42,7 +42,11 @@ export class SelectionScene extends Scene {
     const playBtnRef = this.sceneRef.querySelector("button#play-btn");
     playBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
-      Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
+      if (localStorage.getItem("tutorial") === "true") {
+        Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
+        return;
+      }
+      this.showTutorialDialog();
     });
     const backBtnRef = this.sceneRef.querySelector("button#back-btn");
     backBtnRef?.addEventListener("click", () => {
@@ -54,6 +58,43 @@ export class SelectionScene extends Scene {
       if (!Game.getInstance()) return;
       Game.getInstance().startTutorialGameScene(this.selectedCar, this.selectedColor);
     });
+
+    this.addDialogEvents();
+  }
+
+  addDialogEvents() {
+    if (!this.sceneRef) return;
+    const tutorialDialog = this.sceneRef.querySelector(".dialog.tutorial");
+    if (tutorialDialog) {
+      const acceptTutorialBtnRef = tutorialDialog.querySelector("button.mainBtn");
+      console.log("acceptTutorialBtnRef", acceptTutorialBtnRef);
+      const declineTutorialBtnRed = tutorialDialog.querySelector("button:not(.mainBtn)");
+      if (acceptTutorialBtnRef) {
+        acceptTutorialBtnRef.addEventListener("click", () => {
+          console.log("first");
+          Game.getInstance()?.startTutorialGameScene(this.selectedCar, this.selectedColor);
+          this.hideTutorialDialog();
+        });
+      }
+      if (declineTutorialBtnRed) {
+        declineTutorialBtnRed.addEventListener("click", () => {
+          localStorage.setItem("tutorial", "true");
+          Game.getInstance().startGameScene(this.selectedCar, this.selectedColor, this.selectedMap);
+          this.hideTutorialDialog();
+        });
+      }
+    }
+  }
+  showTutorialDialog() {
+    const tutorialDialog = this.sceneRef?.querySelector(".dialog.tutorial");
+    if (!tutorialDialog) return;
+    tutorialDialog.setAttribute("style", "display: grid;");
+  }
+
+  hideTutorialDialog() {
+    const tutorialDialog = this.sceneRef?.querySelector(".dialog.tutorial");
+    if (!tutorialDialog) return;
+    tutorialDialog.setAttribute("style", "display: none;");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

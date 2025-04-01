@@ -55,18 +55,55 @@ body {
 }
 
 #game-pause-overlay {
+  box-sizing: border-box;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 99;
-  background-color: #0008;
   color: var(--text-color);
   display: none;
   justify-content: center;
   align-items: center;
   font: bold 4rem monospace, monospace;
+}
+
+.dialog-overlay {
+  position: absolute;
+  box-sizing: border-box;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #0003;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 2rem;
+  margin: auto;
+  color: var(--text-color);
+  font-family: "Pixelify Sans", sans-serif;
+}
+
+.dialog-overlay__text {
+  padding: 1rem;
+  padding-bottom: 1.8rem;
+  text-align: left;
+  border: 3px solid var(--border-dark-color);
+  background-color: #0008;
+  border-radius: 2px;
+  position: relative;
+}
+
+.dialog-overlay__text::after {
+  content: "press enter to continue";
+  font-size: 0.7rem;
+  font-style: italic;
+  color: #eeea;
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
 }
 
 .speed-meter__wrapper {
@@ -270,10 +307,7 @@ h1 {
   left: 50%;
   transform: translate(-50%, 5%);
   z-index: -1;
-;
-
 }
-
 
 .race-results,
 .player-history {
@@ -282,7 +316,7 @@ h1 {
   padding: 3px;
   border-radius: 1px;
   border: 1px solid var(--border-dark-color);
-  width: calc(100% + 5px); 
+  width: calc(100% + 5px);
 }
 .race-results ul,
 .player-history ul {
@@ -290,7 +324,6 @@ h1 {
   padding: 0;
   display: flex;
   gap: 10px;
-
 }
 .race-results li,
 .player-history li {
@@ -713,6 +746,21 @@ h1 {
   padding: 0rem;
   font-size: 0.5rem;
   z-index: 10;
+}
+
+.dialog.tutorial {
+  z-index: 100;
+  padding: 1rem;
+  font-size: 0.8rem !important;
+  text-align: center;
+}
+.dialog.tutorial h2 {
+  font-size: 0.7rem !important;
+}
+.dialog.tutorial button {
+  z-index: 102;
+  padding-inline: 0.5rem !important;
+  font-size: 0.5rem !important;
 }
 
 @keyframes rotate {

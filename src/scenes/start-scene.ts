@@ -18,20 +18,20 @@ export class StartScene extends Scene {
       // Game.getInstance().startSelectionScene();
     });
     const aboutBtnRef = this.sceneRef.querySelector("button:first-of-type");
-    const dialog = this.sceneRef.querySelector(".dialog");
+    const dialog = this.sceneRef.querySelector(".dialog.nickname");
     aboutBtnRef?.addEventListener("click", () => {
       if (!Game.getInstance()) return;
       // Game.getInstance().startGameScene();
 
       Game.getInstance().startAboutScene();
     });
-    const closeBtnRef = this.sceneRef.querySelector(".dialog button:first-of-type");
+    const closeBtnRef = this.sceneRef.querySelector(".dialog.nickname button:first-of-type");
     closeBtnRef?.addEventListener("click", () => {
       dialog?.setAttribute("style", "display: none;");
       // Game.getInstance().startAboutScene();
     });
 
-    const startGameBtnRef = this.sceneRef.querySelector(".dialog button:last-of-type");
+    const startGameBtnRef = this.sceneRef.querySelector(".dialog.nickname button:last-of-type");
     startGameBtnRef?.addEventListener("click", () => {
       const inputRef = this.sceneRef?.querySelector("input");
       if (!inputRef) return;

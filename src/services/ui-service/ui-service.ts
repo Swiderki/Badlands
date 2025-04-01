@@ -13,6 +13,8 @@ export class UIService {
   private _scoreboardTotalTimeRef: HTMLElement | null = null;
   private _scoreboardListRef: HTMLElement | null = null;
   private _skipWrapper: HTMLElement | null = null;
+  private _dialogOverlay: HTMLElement | null = null;
+  private _dialogText: HTMLElement | null = null;
 
   lapCount: number = 3;
 
@@ -69,6 +71,8 @@ export class UIService {
     this._scoreboardListRef = document.querySelector(".scoreboard__wrapper ul");
     this._scoreboardTotalTimeRef = document.querySelector(".scoreboard__wrapper h3 .highlight");
     this._skipWrapper = document.querySelector(".skip__wrapper");
+    this._dialogOverlay = document.querySelector(".dialog-overlay");
+    this._dialogText = document.querySelector(".dialog-overlay__text");
     this.setAccMeterValue(0);
     this.setSpeedMeterValue(0);
     this.addSkipButtonListener();
@@ -134,5 +138,14 @@ export class UIService {
     });
   }
 
-  displayTutorialText(text: string) {}
+  displayTutorialText(text: string) {
+    if (!this._dialogOverlay || !this._dialogText) return;
+    this._dialogOverlay.style.display = "flex";
+    this._dialogText.innerHTML = text;
+  }
+
+  hideDialogOverlay() {
+    if (!this._dialogOverlay) return;
+    this._dialogOverlay.style.display = "none";
+  }
 }

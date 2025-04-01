@@ -46,7 +46,7 @@
           <button>About</button>
           <button class="mainBtn">Start</button>
         </div>
-        <div class="dialog">
+        <div class="dialog nickname">
           <div class="dialog__inner">
             <input type="text" name="nickname" placeholder="Your nickname..." id="nickname" value="noname" />
             <div class="btn_wrapper">
@@ -104,6 +104,15 @@
             <button id="play-btn" class="mainBtn">Play</button>
           </div>
           <img src="/assets/ui/level" alt="" />
+          <div class="dialog tutorial">
+            <div class="dialog__inner">
+              <h2>It seems that u have yet to complete the tutorial, would u like to do it now</h2>
+              <div class="btn_wrapper">
+                <button>Nope</button>
+                <button class="mainBtn">YES</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="about-scene" class="scene">
@@ -146,10 +155,12 @@
           <button>Back</button>
         </div>
       </div>
-      <div id="tutorial-scene" class="scene"></div>
       <div id="loading-screen" class="scene">
         <img src="/logo.png" alt="" />
         <h2>LOADING</h2>
+      </div>
+      <div class="dialog-overlay">
+        <div class="dialog-overlay__text">Lorem ipsum</div>
       </div>
     </div>
 

@@ -28,6 +28,7 @@ import Scene from "./_scene";
 import { startMusicWithFade } from "../util/music-utils";
 import { usePauseContext } from "../context/pauseContext";
 import DialogTrigger from "../services/effect/obstacle/dialog-trigger";
+import BananaPeelObstacle from "../services/effect/obstacle/banana-peel-obstacle";
 
 class GameScene extends Scene {
   displayDriver: DisplayDriver;
@@ -91,11 +92,12 @@ class GameScene extends Scene {
         this.track.traction
       );
       await this.initEffectObjects();
-    } else {
-      await this.initTutorial();
     }
     this.initPauseListeners();
     await startGameWithCountdown();
+    if (tutorial) {
+      await this.initTutorial();
+    }
     this.initGameListeners();
     this.music.loop = true;
     startMusicWithFade(this.music);
@@ -105,6 +107,10 @@ class GameScene extends Scene {
     const pauseContext = usePauseContext();
 
     document.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        pauseContext.resumeGame("gameLogic");
+        UIService.getInstance().hideDialogOverlay();
+      }
       if (e.key === "Escape") {
         if (pauseContext.pauseCauses.pauseMenu) {
           pauseContext.resumeGame("pauseMenu");
@@ -249,7 +255,85 @@ class GameScene extends Scene {
   }
 
   private async initTutorial() {
-    this.effectObjects.push(new DialogTrigger({ x: 100, y: 320 }, 200, Math.PI, "Testowy text do tutoriala"));
+    this.effectObjects.push(
+      new DialogTrigger({ x: 100, y: 280 }, 200, Math.PI, "Aby się poruszać, użyj strzałek(lub WASD)", () => {
+        this.effectObjects.shift();
+      })
+    );
+
+    this.effectObjects.push(
+      new DialogTrigger({ x: 300, y: 380 }, 200, Math.PI / 3, "Aby się użyć nitro, kliknij shift", () => {
+        this.effectObjects.shift();
+      })
+    );
+
+    this.effectObjects.push(
+      new DialogTrigger({ x: 640, y: 180 }, 200, Math.PI / 3, "Uważaj na niestabline podłoże", () => {
+        this.effectObjects.shift();
+      })
+    );
+
+    this.effectObjects.push(
+      new DialogTrigger(
+        { x: 640, y: 360 },
+        200,
+        (Math.PI * 2) / 3,
+        "Widzisz tą skorke do banana? Uważaj na nią, kto wie co się stanie jak w nią wjedziesz",
+        () => {
+          this.effectObjects.push(new BananaPeelObstacle({ x: 380, y: 180 }));
+        }
+      )
+    );
+
+    this.effectObjects.push(
+      new DialogTrigger(
+        { x: 250, y: 100 },
+        200,
+        (Math.PI * 2) / 3,
+        "W grze nie znajdują się jednak tylko przeszkody a i małe pomoce: klucz - naprawający samochód czy gwiazdka dająca przyspieszenie.",
+        () => {
+          this.effectObjects.push(
+            new DialogTrigger(
+              { x: 100, y: 280 },
+              200,
+              Math.PI,
+              "Aby się wygrać grę musisz ukończyć 3 okrążenia, których czas możesz zobaczyćw prawy górnym rogu",
+              () => {
+                this.effectObjects.shift();
+                this.effectObjects.shift();
+                this.effectObjects.shift();
+              }
+            )
+          );
+          this.effectObjects.push(
+            new DialogTrigger(
+              { x: 300, y: 380 },
+              200,
+              Math.PI / 3,
+              "Aby się upuścić przeszkodę, kliknij spację",
+              () => {
+                this.effectObjects.shift();
+                this.effectObjects.shift();
+              }
+            )
+          );
+          this.effectObjects.push(
+            new DialogTrigger(
+              { x: 640, y: 180 },
+              200,
+              Math.PI / 3,
+              "Świetna robota pozostało ci skończyć wyścig",
+              () => {
+                this.effectObjects.shift();
+                this.effectObjects.shift();
+                //* Save information that player have completed tutorial
+                localStorage.setItem("tutorial", "true");
+              }
+            )
+          );
+        }
+      )
+    );
   }
 
   override update(deltaTime: number) {
