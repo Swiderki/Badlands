@@ -177,7 +177,7 @@ class GameScene extends Scene {
     assert(opponentSprite4, "Failed to get opponent sprite");
 
     //* 20% that Jack will be ghost
-    if (Math.random() < 2) {
+    if (Math.random() < 0.2) {
       this.opponentControllersList.push(
         new OpponentController(
           opponentGhostSprite,
