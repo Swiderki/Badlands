@@ -176,6 +176,14 @@
     }
   },
   {
+    "name": "marucha",
+    "src": "/assets/sprites/marucha.png",
+    "config": {
+      "spriteWidth": 80,
+      "spriteHeight": 80
+    }
+  },
+  {
     "name": "pothole",
     "src": "/assets/effect_objects/pothole.png",
     "config": {
