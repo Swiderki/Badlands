@@ -166,6 +166,60 @@ class DisplayDriver {
     }
   }
 
+  displayCheckpointsWithDirection(checkpoints: CheckPoint[], color?: string) {
+    for (let i = 0; i < checkpoints.length; i++) {
+      const point = checkpoints[i];
+      this._ctx.fillStyle = color || "#63fc01";
+
+      // Calculate direction from previous point (or use tangent if first point)
+      let dirX, dirY;
+      if (i > 0) {
+        const prev = checkpoints[i - 1].point;
+        dirX = point.point.x - prev.x;
+        dirY = point.point.y - prev.y;
+      } else {
+        // For first point, use the tangent if available
+        dirX = point.tangent.x;
+        dirY = point.tangent.y;
+      }
+
+      // Normalize direction vector
+      const length = Math.sqrt(dirX * dirX + dirY * dirY);
+      if (length > 0) {
+        dirX /= length;
+        dirY /= length;
+      }
+
+      // Calculate triangle points
+      const size = 10;
+      const head = {
+        x: point.point.x + dirX * size,
+        y: point.point.y + dirY * size,
+      };
+      const side1 = {
+        x: point.point.x - (dirY * size) / 2,
+        y: point.point.y + (dirX * size) / 2,
+      };
+      const side2 = {
+        x: point.point.x + (dirY * size) / 2,
+        y: point.point.y - (dirX * size) / 2,
+      };
+
+      // Draw the triangle
+      this._ctx.beginPath();
+      this._ctx.moveTo(head.x, head.y);
+      this._ctx.lineTo(side1.x, side1.y);
+      this._ctx.lineTo(side2.x, side2.y);
+      this._ctx.closePath();
+      this._ctx.fill();
+
+      // Optional: draw the point itself
+      this._ctx.beginPath();
+      this._ctx.arc(point.point.x, point.point.y, 3, 0, Math.PI * 2);
+      this._ctx.fill();
+    }
+  }
+
   drawForceVector(position: Vec2D, force: Vec2D, color: string = "green") {
     this.topQueue.push(() => {
       this._ctx.strokeStyle = color;

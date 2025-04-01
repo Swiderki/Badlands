@@ -144,7 +144,7 @@ class GameScene extends Scene {
         if (!obstacle) return;
         this.effectObjects.push(obstacle);
       }
-      if (e.key === "`"){
+      if (e.key === "`") {
         this.debugVisible = !this.debugVisible;
       }
     });
@@ -382,6 +382,8 @@ class GameScene extends Scene {
     }
 
     this.displayDriver.displayTrack(this.track);
+    if (this.track.checkPointPath)
+      this.displayDriver.displayCheckpointsWithDirection(this.track.checkPointPath.sampledPoints);
     this.renderTraces();
     this.effectObjects.forEach((obstacle) => {
       if (!obstacle.visible) return;
@@ -403,7 +405,8 @@ class GameScene extends Scene {
     this.track.renderGates();
 
     //* drawCalls used to display things such debug overlay, ensuring that they will be drawn of the top
-    if(this.debugVisible) displayGameDebugInfo(this);
+    if (this.debugVisible) displayGameDebugInfo(this);
+
     this.displayDriver.performDrawCalls();
   }
 
