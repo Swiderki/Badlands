@@ -4,7 +4,6 @@ import { Vector } from "@/src/util/vec-util";
 import { Vec2D } from "@/types/physics";
 import DisplayDriver from "../display-driver/display-driver";
 import GameTimeline from "../game-logic/game-timeline";
-import { getDeltaTime } from "@/src/util/delta-time";
 import PlayerController from "@/src/controllers/player-controller";
 
 const audioEngine = new Audio("assets/sounds/idle.wav");
